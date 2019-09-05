@@ -1,0 +1,8 @@
+
+(tests
+  (names test1)
+  (libraries Src)
+  (deps test1.in)
+  (action (run %{test}))
+)
+
