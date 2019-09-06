@@ -1,0 +1,18 @@
+opam-version: "2.0"
+name: "monga_compiler"
+version: "0.1"
+synopsis: "Compiler for the Monga language"
+maintainer: "Gabriel Coutinho <38709327+GCdePaula@users.noreply.github.com>"
+authors: "Gabriel Coutinho <38709327+GCdePaula@users.noreply.github.com>"
+depends: [
+  "ocaml"
+  "dune"
+  "merlin"
+  "ocp-indent"
+]
+build: ["dune" "build" "-p" name "-j" jobs]
+dev-repo: "git+https://"
+url {
+  src:
+    "git+file:///Users/gabrielcpaula/Documents/Mestrado/Compiladores_grad/monga_compiler#master"
+}
