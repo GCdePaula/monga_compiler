@@ -5,7 +5,7 @@ synopsis: "Compiler for the Monga language"
 maintainer: "Gabriel Coutinho <38709327+GCdePaula@users.noreply.github.com>"
 authors: "Gabriel Coutinho <38709327+GCdePaula@users.noreply.github.com>"
 depends: [
-  "ocaml"
+  "ocaml" {= "4.08.1"}
   "dune"
   "merlin"
   "ocp-indent"
