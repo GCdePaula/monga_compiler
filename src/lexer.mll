@@ -20,9 +20,9 @@ let digit = ['0'-'9']
 let exa_digit = ['0'-'9' 'a'-'f' 'A'-'F']
 
 let exp = ['e' 'E'] ['-' '+']? digit+
-let exa_exp = ['p' 'P'] ['-' '+']? exa_digit+
+let exa_exp = ['p' 'P'] ['-' '+']? digit+
 
-let id = ['a'-'z' 'A'-'Z']['a'-'z' '0'-'9']*
+let id = ['a'-'z' 'A'-'Z' '_']['a'-'z' '0'-'9' '_']*
 
 let white = [' ' '\t']+
 let newline = '\r' | '\n' | "\r\n"
@@ -72,7 +72,8 @@ rule monga_lexer =
   | id as identifier {Id identifier}
 
   | white* { monga_lexer lexbuf }
-  | newline { monga_lexer lexbuf }
+  | newline { increment_line lexbuf; monga_lexer lexbuf }
+  | _ { raise (LexerError("Unrecognized character: " ^ Lexing.lexeme lexbuf)) }
   | eof { Eof }
 
 and read_string buf =

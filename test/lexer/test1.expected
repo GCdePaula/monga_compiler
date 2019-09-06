@@ -1,84 +1,151 @@
-StringLiteral(Hello, world!)
-StringLiteral()
-StringLiteral(")
-StringLiteral(	)
-StringLiteral(
+1:15 -- StringLiteral(Hello, world!)
+2:2 -- StringLiteral()
+3:4 -- StringLiteral(")
+4:4 -- StringLiteral(	)
+5:4 -- StringLiteral(
 )
-StringLiteral("	
+6:10 -- StringLiteral("	
 \)
-IntNumeral(0)
-IntNumeral(1)
-IntNumeral(10)
-IntNumeral(111)
-IntNumeral(123)
-IntNumeral(4)
-IntNumeral(5)
-IntNumeral(6)
-IntNumeral(7)
-IntNumeral(255)
-IntNumeral(0)
-FloatNumeral(1.23123e+12)
-FloatNumeral(0.)
-FloatNumeral(0.)
-FloatNumeral(0.1)
-FloatNumeral(0.1)
-FloatNumeral(0.1)
-FloatNumeral(1.)
-FloatNumeral(0.)
-FloatNumeral(0.0625)
-FloatNumeral(0.0625)
-FloatNumeral(0.5)
-FloatNumeral(2.)
-If
-Then
-Else
-Return
-While
-Int
-Char
-Float
-Void
-New
-As
-Id(bananas)
-Id(bananas2)
-Id(whilebananas)
-Id(while1)
-@
-;
-:
-,
-=
-[
-]
-(
-)
-{
-}
-+
--
-+
--
-=
-+
-==
-==
-=
-~=
-=
-+
--
-*
-=
-=
-*
--
-<
-<=
-=
->
->=
-&&
-||
-!
-EOF
+7:1 -- IntNumeral(0)
+8:1 -- IntNumeral(1)
+9:1 -- IntNumeral(10)
+10:1 -- IntNumeral(111)
+10:5 -- IntNumeral(123)
+10:9 -- IntNumeral(4)
+10:11 -- IntNumeral(5)
+10:13 -- IntNumeral(6)
+10:15 -- IntNumeral(7)
+11:1 -- IntNumeral(255)
+11:6 -- IntNumeral(0)
+12:1 -- FloatNumeral(0x1.1eab06db8p+40)
+12:12 -- FloatNumeral(0x0p+0)
+12:16 -- FloatNumeral(0x0p+0)
+12:21 -- FloatNumeral(0x1.999999999999ap-4)
+12:24 -- FloatNumeral(0x1.999999999999ap-4)
+12:28 -- FloatNumeral(0x1.999999999999ap-4)
+12:33 -- FloatNumeral(0x1p+0)
+13:1 -- FloatNumeral(0x0p+0)
+13:6 -- FloatNumeral(0x1p-4)
+13:14 -- FloatNumeral(0x1p-4)
+13:22 -- FloatNumeral(0x1p-1)
+13:29 -- FloatNumeral(0x1p+1)
+14:1 -- If
+15:1 -- Then
+15:6 -- Else
+16:1 -- Return
+16:9 -- While
+17:1 -- Int
+17:5 -- Char
+17:11 -- Float
+17:18 -- Void
+19:1 -- New
+20:1 -- As
+21:1 -- Id(bananas)
+22:1 -- Id(bananas2)
+23:1 -- Id(whilebananas)
+24:1 -- Id(while1)
+26:1 -- @
+27:1 -- ;
+27:2 -- :
+28:1 -- ,
+29:1 -- =
+30:1 -- [
+30:2 -- ]
+31:1 -- (
+31:2 -- )
+32:1 -- {
+32:2 -- }
+34:1 -- +
+34:2 -- -
+34:3 -- +
+34:4 -- -
+34:5 -- =
+34:6 -- +
+34:7 -- ==
+34:9 -- ==
+34:11 -- =
+34:12 -- ~=
+34:14 -- =
+35:1 -- +
+35:2 -- -
+35:3 -- *
+35:4 -- =
+35:7 -- =
+35:9 -- *
+35:11 -- -
+36:1 -- <
+36:2 -- <=
+36:4 -- =
+36:5 -- >
+36:6 -- >=
+37:1 -- &&
+37:3 -- ||
+37:5 -- !
+38:1 -- EOF
+1:1 -- IntNumeral(0)
+1:3 -- IntNumeral(1)
+1:5 -- IntNumeral(2)
+1:7 -- IntNumeral(3)
+1:9 -- IntNumeral(4)
+1:11 -- IntNumeral(9)
+1:13 -- IntNumeral(10)
+1:16 -- IntNumeral(11)
+1:19 -- IntNumeral(12)
+1:22 -- IntNumeral(99)
+1:25 -- IntNumeral(100)
+1:29 -- IntNumeral(101)
+1:33 -- IntNumeral(102)
+2:1 -- IntNumeral(0)
+2:5 -- IntNumeral(1)
+2:9 -- IntNumeral(2)
+2:13 -- IntNumeral(3)
+2:17 -- IntNumeral(4)
+2:21 -- IntNumeral(10)
+2:25 -- IntNumeral(11)
+2:29 -- IntNumeral(12)
+2:33 -- IntNumeral(15)
+2:37 -- IntNumeral(16)
+2:42 -- IntNumeral(17)
+2:47 -- IntNumeral(255)
+3:1 -- FloatNumeral(0x1.7d784p+26)
+4:1 -- FloatNumeral(0x0p+0)
+4:5 -- FloatNumeral(0x0p+0)
+4:8 -- FloatNumeral(0x0p+0)
+5:1 -- FloatNumeral(0x1p+1)
+5:5 -- FloatNumeral(0x1.999999999999ap-3)
+5:8 -- FloatNumeral(0x1.c6bf52634p+50)
+6:1 -- FloatNumeral(0x1.7d784p+26)
+6:7 -- FloatNumeral(0x1.1eab06db8p+40)
+7:1 -- FloatNumeral(0x0p+0)
+7:8 -- FloatNumeral(0x1.c6bf52634p+50)
+7:15 -- FloatNumeral(0x1.7d784p+26)
+7:22 -- FloatNumeral(0x1.1eab06db8p+40)
+8:1 -- FloatNumeral(0x0p+0)
+8:8 -- FloatNumeral(0x1.70ef54646d497p-56)
+8:15 -- FloatNumeral(0x1.5798ee2308c3ap-27)
+8:22 -- FloatNumeral(0x1.a70c22d895df7p-27)
+9:1 -- -
+9:2 -- FloatNumeral(0x0p+0)
+9:9 -- -
+9:10 -- FloatNumeral(0x1.c6bf52634p+50)
+9:17 -- -
+9:18 -- FloatNumeral(0x1.7d784p+26)
+9:25 -- -
+9:26 -- FloatNumeral(0x1.1eab06db8p+40)
+10:1 -- -
+10:2 -- FloatNumeral(0x0p+0)
+10:9 -- -
+10:10 -- FloatNumeral(0x1.70ef54646d497p-56)
+10:17 -- -
+10:18 -- FloatNumeral(0x1.5798ee2308c3ap-27)
+10:25 -- -
+10:26 -- FloatNumeral(0x1.a70c22d895df7p-27)
+11:1 -- FloatNumeral(0x1.12e0be826d695p-30)
+12:1 -- FloatNumeral(0x1.999999999999ap-4)
+13:1 -- FloatNumeral(0x1p+0)
+14:1 -- FloatNumeral(0x0p+0)
+15:1 -- FloatNumeral(0x1p-4)
+16:1 -- FloatNumeral(0x1p-4)
+17:1 -- FloatNumeral(0x1p-1)
+18:1 -- FloatNumeral(0x1p+1)
+20:1 -- EOF

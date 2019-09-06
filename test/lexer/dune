@@ -1,8 +1,8 @@
 
 (tests
-  (names test1)
+  (names lexerTest)
   (libraries Src)
-  (deps test1.in)
+  (deps inputs/test1.in inputs/test2.in)
   (action (run %{test}))
 )
 
