@@ -1,9 +1,9 @@
 
 # Issues
 
-### min_int numeral
+### integer numeral minimum value
 
-Monga's integer numerals are being stored as OCaml's integer after lexing. OCaml's `max_int` and `min_int` are `4611686018427387903` and `-4611686018427387904`, respectively. As the lexer cannot decide whether '-' is a unary or binary expression, it sees negative numerals as two separate tokens. The issue is that `min_int`, without the sign, doesn't fit in OCaml's integer. In other words, `-4611686018427387904` is lexed first as the token '-' and then as a numeral, which fails because it exceeds `max_int`. Therefore the smallest integer in monga cannot be represented by an integer numeral.
+Monga's integer numerals are being stored as OCaml's integer after lexing. OCaml's `max_int` and `min_int` are `4611686018427387903` and `-4611686018427387904`, respectively. As the lexer cannot decide whether '-' is a unary or binary expression, it sees negative numerals as two separate tokens. The issue is that `min_int`, without the sign, doesn't fit in OCaml's integer. In other words, `-4611686018427387904` is lexed first as the token '-' and then as a numeral, which fails because it exceeds `max_int`. Therefore the smallest integer in Monga cannot be represented by an integer numeral.
 
 
 # Installing
@@ -28,7 +28,7 @@ $ opam --version
 
 ### Dependencies.
 
-First install m4 with `$ sudo apt-get install m4`.
+First install `m4` with `$ sudo apt-get install m4`.
 
 At the project's root, run the following to install OCaml's base compiler and all other dependencies for this project only. It may take a while.
 ```

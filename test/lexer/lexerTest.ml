@@ -37,6 +37,7 @@ let main () =
     d^"test8.in";
     d^"test9.in";
     d^"test10.in";
+    d^"test11.in";
   ] in
 
   List.map test fnames;;
