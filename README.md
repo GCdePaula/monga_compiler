@@ -1,9 +1,9 @@
 
 # Issues
 
-### integer numeral minimum value
+### Integer numeral minimum value
 
-Monga's integer numerals are being stored as OCaml's integer after lexing. OCaml's `max_int` and `min_int` are `4611686018427387903` and `-4611686018427387904`, respectively. As the lexer cannot decide whether '-' is a unary or binary expression, it sees negative numerals as two separate tokens. The issue is that `min_int`, without the sign, doesn't fit in OCaml's integer. In other words, `-4611686018427387904` is lexed first as the token '-' and then as a numeral, which fails because it exceeds `max_int`. Therefore the smallest integer in Monga cannot be represented by an integer numeral.
+Monga's integer numerals are being stored as OCaml's integer after lexing. OCaml's `max_int` and `min_int` are `4611686018427387903` and `-4611686018427387904`, respectively. As the lexer cannot decide whether the token `-` is a unary or binary expression, it sees negative numerals as two separate tokens. The issue is that `min_int`, without the sign, doesn't fit in OCaml's integer. In other words, `-4611686018427387904` is lexed first as the token `-` and then as a numeral, which fails because it exceeds `max_int`. Therefore the smallest integer in Monga cannot be represented by an integer numeral.
 
 
 # Installing
@@ -18,7 +18,7 @@ The first step is to [install opam](https://opam.ocaml.org/doc/Install.html). Th
 $ sudo cp <downloaded file> /usr/local/bin/opam
 $ sudo chmod a+x /usr/local/bin/opam
 ```
-For this project, running `opam init` is not required.
+For this project, running `$ opam init` is not required.
 
 Verify install:
 ```
@@ -26,7 +26,7 @@ $ opam --version
 2.0.5
 ```
 
-### Dependencies.
+### Dependencies
 
 First install `m4` with `$ sudo apt-get install m4`.
 
@@ -49,5 +49,5 @@ menhir, version 20190626
 
 # Running tests
 
-Run `dune clean && dune runtest` at the project's root. It will run all tests and diff their output with the expected values.
+Run `$ dune clean && dune runtest` at the project's root. It will run all tests and diff their output with the expected values.
 
