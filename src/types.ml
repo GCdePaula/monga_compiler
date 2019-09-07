@@ -28,7 +28,7 @@ type token =
   | Eof
 
 
-(* Float values loses precision *)
+(* Float numerals might lose precision *)
 let string_of_tk = function
   | If -> "If"
   | Then -> "Then"
@@ -117,52 +117,4 @@ let print_tk = function
   | Or -> Printf.printf "||"
   | Not -> Printf.printf "!"
   | Eof -> Printf.printf "EOF"
-
-
-(*type monga_type =*)
-  (*| Int*)
-  (*| Char*)
-  (*| Float*)
-  (*| Void*)
-  (*| Array of monga_type*)
-
-(*type op =*)
-  (*| Add*)
-  (*| Sub*)
-  (*| Mul*)
-  (*| Div*)
-  (*| Eq*)
-  (*| Ne*)
-  (*| Le*)
-  (*| Ge*)
-  (*| Lt*)
-  (*| Gt*)
-  (*| And*)
-  (*| Or*)
-  (*| Not*)
-
-
-(* conversion functions for printing *)
-
-(*let rec string_of_mt = function*)
-  (*| Int -> "Int"*)
-  (*| Char -> "Char"*)
-  (*| Float -> "Float"*)
-  (*| Void -> "Void"*)
-  (*| Array tp -> "Array of " ^ (string_of_mt tp)*)
-
-(*let string_of_op = function*)
-(*  | Add -> "+"*)
-  (*| Sub -> "-"*)
-  (*| Mul -> "*"*)
-  (*| Div -> "/"*)
-  (*| Eq -> "=="*)
-  (*| Ne -> "~="*)
-  (*| Le -> "<="*)
-  (*| Ge -> ">="*)
-  (*| Lt -> "<"*)
-  (*| Gt -> ">"*)
-  (*| And -> "&&"*)
-  (*| Or -> "||"*)
-  (*| Not -> "!"*)
 

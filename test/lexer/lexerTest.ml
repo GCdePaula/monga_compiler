@@ -17,9 +17,11 @@ let rec parse lexbuf =
 
 let test fileName =
   printf "LEXING FILE %s\n" fileName;
+
   let cin = open_in fileName in
   let lexbuf = Lexing.from_channel cin in
   parse lexbuf;
+
   printf "DONE %s\n\n" fileName;;
 
 let main () =
@@ -33,6 +35,8 @@ let main () =
     d^"test6.in";
     d^"test7.in";
     d^"test8.in";
+    d^"test9.in";
+    d^"test10.in";
   ] in
 
   List.map test fnames;;

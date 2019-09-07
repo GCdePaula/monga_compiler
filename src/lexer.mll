@@ -30,7 +30,7 @@ let newline = '\r' | '\n' | "\r\n"
 (* Lexer definition *)
 rule monga_lexer =
   parse
-  | '"' {read_string (Buffer.create 17) lexbuf}
+  | '"' {read_string (Buffer.create 32) lexbuf}
 
   | digit+
   | exa_start exa_digit+ as inum
