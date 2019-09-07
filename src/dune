@@ -1,4 +1,4 @@
 (ocamllex lexer)
 
-(library (name Src) (libraries Str) (modules Lexer Types))
+(library (name Src) (modules Lexer Types))
 
