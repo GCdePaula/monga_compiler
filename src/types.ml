@@ -5,10 +5,12 @@ type token =
   | Else
   | Return
   | While
-  | Int | Char | Float | Void
+  | Int | Char | Float | Bool
   | StringLiteral of string
   | FloatNumeral of float
   | IntNumeral of int
+  | True
+  | False
   | Put
   | Colon
   | Semicolon
@@ -36,10 +38,12 @@ let string_of_tk = function
   | Int -> "Int"
   | Char -> "Char"
   | Float -> "Float"
-  | Void -> "Void"
+  | Bool -> "Bool"
   | StringLiteral str -> "StringLiteral(" ^ str ^ ")"
   | FloatNumeral f -> "FloatNumeral(" ^ (string_of_float f) ^ ")"
   | IntNumeral i -> "IntNumeral(" ^ (string_of_int i) ^ ")"
+  | True -> "True"
+  | False -> "False"
   | Put -> "@"
   | Colon -> ":"
   | Semicolon -> ";"
@@ -79,10 +83,12 @@ let print_tk = function
   | Int -> Printf.printf "Int"
   | Char -> Printf.printf "Char"
   | Float -> Printf.printf "Float"
-  | Void -> Printf.printf "Void"
+  | Bool -> Printf.printf "Bool"
   | StringLiteral str -> Printf.printf "StringLiteral(%s)" str
   | FloatNumeral f -> Printf.printf "FloatNumeral(%h)" f
   | IntNumeral i -> Printf.printf "IntNumeral(%d)" i
+  | True -> Printf.printf "True"
+  | False -> Printf.printf "False"
   | Put -> Printf.printf "@"
   | Colon -> Printf.printf ":"
   | Semicolon -> Printf.printf ";"

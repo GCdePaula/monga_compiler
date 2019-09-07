@@ -16,15 +16,25 @@ let rec parse lexbuf =
     Lexer.LexerError e -> printf "LexerError: %s\n" e;;
 
 let test fileName =
-  printf "LEXING FILE %s\n\n" fileName;
+  printf "LEXING FILE %s\n" fileName;
   let cin = open_in fileName in
   let lexbuf = Lexing.from_channel cin in
   parse lexbuf;
-  printf "\nDONE! %s\n\n" fileName;;
+  printf "DONE %s\n\n" fileName;;
 
 let main () =
   let d = "inputs/" in
-  let fnames = [d^"test1.in"; d^"test2.in"; d^"test3.in"] in
+  let fnames = [
+    d^"test1.in";
+    d^"test2.in";
+    d^"test3.in";
+    d^"test4.in";
+    d^"test5.in";
+    d^"test6.in";
+    d^"test7.in";
+    d^"test8.in";
+  ] in
+
   List.map test fnames;;
 
 let _ = Printexc.print main ()

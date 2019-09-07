@@ -2,7 +2,7 @@
 (tests
   (names lexerTest)
   (libraries Src)
-  (deps inputs/test1.in inputs/test2.in inputs/test3.in)
+  (deps (glob_files inputs/*.in))
   (action (run %{test}))
 )
 

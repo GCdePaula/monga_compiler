@@ -35,7 +35,8 @@ rule monga_lexer =
   | digit+
   | exa_start exa_digit+ as inum
     {
-      IntNumeral (int_of_string inum)
+      try IntNumeral (int_of_string inum)
+      with Failure _ -> raise (LexerError ("Invalid integer literal: " ^ inum))
     }
 
   | digit* ('.' digit*)? exp?
@@ -52,9 +53,11 @@ rule monga_lexer =
   | "int" {Int}
   | "char" {Char}
   | "float" {Float}
-  | "void" {Void}
+  | "bool" {Bool}
   | "new" {New}
   | "as" {As}
+  | "true" {True}
+  | "false" {False}
 
   | '@' {Put}
   | ':' {Colon}
@@ -71,8 +74,10 @@ rule monga_lexer =
 
   | id as identifier {Id identifier}
 
+  | '#' [^'\n']* '\n' {monga_lexer lexbuf}
   | white* { monga_lexer lexbuf }
   | newline { increment_line lexbuf; monga_lexer lexbuf }
+
   | _ { raise (LexerError("Unrecognized character: " ^ Lexing.lexeme lexbuf)) }
   | eof { Eof }
 
@@ -83,11 +88,12 @@ and read_string buf =
   | '\\' '\\' { Buffer.add_char buf '\\'; read_string buf lexbuf }
   | '\\' 'n'  { Buffer.add_char buf '\n'; read_string buf lexbuf }
   | '\\' 't'  { Buffer.add_char buf '\t'; read_string buf lexbuf }
-  | [^ '"' '\\']+
+  | [^ '"' '\\' '\n']+ as str
     {
-      Buffer.add_string buf (Lexing.lexeme lexbuf);
+      Buffer.add_string buf str;
       read_string buf lexbuf
     }
+  | '\n' { Buffer.add_char buf '\n'; increment_line lexbuf; read_string buf lexbuf }
   | _ { raise (LexerError ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }
   | eof { raise (LexerError ("String is not terminated")) }
 
