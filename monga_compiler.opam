@@ -7,8 +7,7 @@ authors: "Gabriel Coutinho <38709327+GCdePaula@users.noreply.github.com>"
 depends: [
   "ocaml" {= "4.08.1"}
   "dune"
-  "merlin"
-  "ocp-indent"
+  "menhir"
 ]
 build: ["dune" "build" "-p" name "-j" jobs]
 dev-repo: "git+https://"

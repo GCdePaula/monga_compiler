@@ -3,7 +3,7 @@
 "\""
 "\t"
 "\n"
-"\"\t\n\\"
+"\"\t\n\\bananas"
 "while"
 "if"
 "@"
@@ -11,4 +11,4 @@
 "# Hello, World!"
 "	Hello,  
 World!
-"
+""Hello, World!""bananas"
