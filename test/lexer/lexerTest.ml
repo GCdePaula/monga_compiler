@@ -4,8 +4,9 @@ open Printf
 let rec parse lexbuf =
   try
     let token = Lexer.monga_lexer lexbuf in
-    let c_num = lexbuf.lex_start_p.pos_cnum - lexbuf.lex_start_p.pos_bol + 1 in
-    printf "%d:%d -- " lexbuf.lex_curr_p.pos_lnum c_num;
+    let start_num = lexbuf.lex_start_p.pos_cnum - lexbuf.lex_start_p.pos_bol + 1 in
+    let cur_num = lexbuf.lex_curr_p.pos_cnum - lexbuf.lex_curr_p.pos_bol in
+    printf "%d:(%d-%d) -- " lexbuf.lex_curr_p.pos_lnum start_num cur_num;
     Types.print_tk token;
     printf "\n";
 

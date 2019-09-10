@@ -1,171 +1,171 @@
 LEXING FILE inputs/test1.in
-1:37 -- If
-2:1 -- Then
-3:1 -- Else
-4:1 -- Return
-5:1 -- While
-6:1 -- Int
-7:1 -- Char
-8:1 -- Float
-9:1 -- Bool
-10:1 -- True
-11:1 -- False
-12:1 -- New
-13:1 -- As
-15:1 -- Id(bananas)
-16:1 -- Id(bananas2)
-17:1 -- Id(whilebananas)
-18:1 -- Id(while1)
-19:1 -- Id(then3)
-20:1 -- Id(whilewhile)
-21:1 -- Id(thenwhile)
-23:1 -- @
-24:1 -- ;
-24:2 -- :
-25:1 -- ,
-26:1 -- =
-27:1 -- [
-27:2 -- ]
-28:1 -- (
-28:2 -- )
-29:1 -- {
-29:2 -- }
-31:1 -- +
-31:2 -- -
-31:3 -- +
-31:4 -- -
-31:5 -- =
-31:6 -- +
-31:7 -- ==
-31:9 -- ==
-31:11 -- =
-31:12 -- ~=
-31:14 -- =
-32:1 -- +
-32:2 -- -
-32:3 -- *
-32:4 -- =
-32:7 -- =
-32:9 -- *
-32:11 -- -
-33:1 -- <
-33:2 -- <=
-33:4 -- =
-33:5 -- >
-33:6 -- >=
-34:1 -- &&
-34:3 -- ||
-34:5 -- !
-36:1 -- &&
-36:3 -- Then
-36:7 -- ||
-36:9 -- <
-36:10 -- <=
-36:12 -- =
-36:13 -- While
-36:18 -- =
-36:19 -- Id(bananas)
-36:26 -- :
-36:27 -- Id(thenwhile)
-38:1 -- EOF
+2:(1-2) -- If
+3:(1-4) -- Then
+4:(1-4) -- Else
+5:(1-6) -- Return
+6:(1-5) -- While
+7:(1-3) -- Int
+8:(1-4) -- Char
+9:(1-5) -- Float
+10:(1-4) -- Bool
+11:(1-4) -- True
+12:(1-5) -- False
+13:(1-3) -- New
+14:(1-2) -- As
+16:(1-7) -- Id(bananas)
+17:(1-8) -- Id(bananas2)
+18:(1-12) -- Id(whilebananas)
+19:(1-6) -- Id(while1)
+20:(1-5) -- Id(then3)
+21:(1-10) -- Id(whilewhile)
+22:(1-9) -- Id(thenwhile)
+24:(1-1) -- @
+25:(1-1) -- ;
+25:(2-2) -- :
+26:(1-1) -- ,
+27:(1-1) -- =
+28:(1-1) -- [
+28:(2-2) -- ]
+29:(1-1) -- (
+29:(2-2) -- )
+30:(1-1) -- {
+30:(2-2) -- }
+32:(1-1) -- +
+32:(2-2) -- -
+32:(3-3) -- +
+32:(4-4) -- -
+32:(5-5) -- =
+32:(6-6) -- +
+32:(7-8) -- ==
+32:(9-10) -- ==
+32:(11-11) -- =
+32:(12-13) -- ~=
+32:(14-14) -- =
+33:(1-1) -- +
+33:(2-2) -- -
+33:(3-3) -- *
+33:(4-4) -- =
+33:(7-7) -- =
+33:(9-9) -- *
+33:(11-11) -- -
+34:(1-1) -- <
+34:(2-3) -- <=
+34:(4-4) -- =
+34:(5-5) -- >
+34:(6-7) -- >=
+35:(1-2) -- &&
+35:(3-4) -- ||
+35:(5-5) -- !
+37:(1-2) -- &&
+37:(3-6) -- Then
+37:(7-8) -- ||
+37:(9-9) -- <
+37:(10-11) -- <=
+37:(12-12) -- =
+37:(13-17) -- While
+37:(18-18) -- =
+37:(19-25) -- Id(bananas)
+37:(26-26) -- :
+37:(27-35) -- Id(thenwhile)
+39:(1-0) -- EOF
 DONE inputs/test1.in
 
 LEXING FILE inputs/test2.in
-1:33 -- StringLiteral(Hello, world!)
-2:2 -- StringLiteral()
-3:4 -- StringLiteral(")
-4:4 -- StringLiteral(	)
-5:4 -- StringLiteral(
+2:(1-15) -- StringLiteral(Hello, world!)
+3:(1-2) -- StringLiteral()
+4:(1-4) -- StringLiteral(")
+5:(1-4) -- StringLiteral(	)
+6:(1-4) -- StringLiteral(
 )
-6:17 -- StringLiteral("	
+7:(1-17) -- StringLiteral("	
 \bananas)
-7:7 -- StringLiteral(while)
-8:4 -- StringLiteral(if)
-9:3 -- StringLiteral(@)
-10:5 -- StringLiteral(; :)
-11:17 -- StringLiteral(# Hello, World!)
-14:1 -- StringLiteral(	Hello,  
+8:(1-7) -- StringLiteral(while)
+9:(1-4) -- StringLiteral(if)
+10:(1-3) -- StringLiteral(@)
+11:(1-5) -- StringLiteral(; :)
+12:(1-17) -- StringLiteral(# Hello, World!)
+15:(1-1) -- StringLiteral(	Hello,  
 World!
 )
-14:16 -- StringLiteral(Hello, World!)
-14:25 -- StringLiteral(bananas)
-16:873 -- StringLiteral(Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!)
-18:158 -- EOF
+15:(2-16) -- StringLiteral(Hello, World!)
+15:(17-25) -- StringLiteral(bananas)
+17:(1-873) -- StringLiteral(Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!)
+19:(158-157) -- EOF
 DONE inputs/test2.in
 
 LEXING FILE inputs/test3.in
-1:20 -- IntNumeral(0)
-1:22 -- IntNumeral(1)
-1:24 -- IntNumeral(2)
-1:26 -- IntNumeral(3)
-1:28 -- IntNumeral(4)
-1:30 -- IntNumeral(9)
-1:32 -- IntNumeral(10)
-1:35 -- IntNumeral(11)
-1:38 -- IntNumeral(12)
-1:41 -- IntNumeral(99)
-1:44 -- IntNumeral(100)
-1:48 -- IntNumeral(101)
-1:52 -- IntNumeral(102)
-2:1 -- IntNumeral(0)
-2:5 -- IntNumeral(1)
-2:9 -- IntNumeral(2)
-2:13 -- IntNumeral(3)
-2:17 -- IntNumeral(4)
-2:21 -- IntNumeral(10)
-2:25 -- IntNumeral(11)
-2:29 -- IntNumeral(12)
-2:33 -- IntNumeral(15)
-2:37 -- IntNumeral(16)
-2:42 -- IntNumeral(17)
-2:47 -- IntNumeral(255)
-4:1 -- IntNumeral(10)
-4:3 -- Id(x1)
-6:1 -- Id(while0x0)
-9:1 -- EOF
+2:(1-1) -- IntNumeral(0)
+2:(3-3) -- IntNumeral(1)
+2:(5-5) -- IntNumeral(2)
+2:(7-7) -- IntNumeral(3)
+2:(9-9) -- IntNumeral(4)
+2:(11-11) -- IntNumeral(9)
+2:(13-14) -- IntNumeral(10)
+2:(16-17) -- IntNumeral(11)
+2:(19-20) -- IntNumeral(12)
+2:(22-23) -- IntNumeral(99)
+2:(25-27) -- IntNumeral(100)
+2:(29-31) -- IntNumeral(101)
+2:(33-35) -- IntNumeral(102)
+3:(1-3) -- IntNumeral(0)
+3:(5-7) -- IntNumeral(1)
+3:(9-11) -- IntNumeral(2)
+3:(13-15) -- IntNumeral(3)
+3:(17-19) -- IntNumeral(4)
+3:(21-23) -- IntNumeral(10)
+3:(25-27) -- IntNumeral(11)
+3:(29-31) -- IntNumeral(12)
+3:(33-35) -- IntNumeral(15)
+3:(37-40) -- IntNumeral(16)
+3:(42-45) -- IntNumeral(17)
+3:(47-50) -- IntNumeral(255)
+5:(1-2) -- IntNumeral(10)
+5:(3-4) -- Id(x1)
+7:(1-8) -- Id(while0x0)
+10:(1-0) -- EOF
 DONE inputs/test3.in
 
 LEXING FILE inputs/test4.in
-1:18 -- FloatNumeral(0x1.7d784p+26)
-2:1 -- FloatNumeral(0x0p+0)
-2:5 -- FloatNumeral(0x0p+0)
-2:8 -- FloatNumeral(0x0p+0)
-3:1 -- FloatNumeral(0x1p+1)
-3:5 -- FloatNumeral(0x1.999999999999ap-3)
-3:8 -- FloatNumeral(0x1.c6bf52634p+50)
-4:1 -- FloatNumeral(0x1.7d784p+26)
-4:7 -- FloatNumeral(0x1.1eab06db8p+40)
-5:1 -- FloatNumeral(0x0p+0)
-5:8 -- FloatNumeral(0x1.c6bf52634p+50)
-5:15 -- FloatNumeral(0x1.7d784p+26)
-5:22 -- FloatNumeral(0x1.1eab06db8p+40)
-6:1 -- FloatNumeral(0x0p+0)
-6:8 -- FloatNumeral(0x1.70ef54646d497p-56)
-6:15 -- FloatNumeral(0x1.5798ee2308c3ap-27)
-6:22 -- FloatNumeral(0x1.a70c22d895df7p-27)
-7:1 -- FloatNumeral(0x1.12e0be826d695p-30)
-8:1 -- FloatNumeral(0x1.999999999999ap-4)
-9:1 -- FloatNumeral(0x1p+0)
-11:1 -- FloatNumeral(0x1p+8)
-12:1 -- FloatNumeral(0x1p+8)
-13:1 -- FloatNumeral(0x1p-8)
-14:1 -- FloatNumeral(0x0p+0)
-15:1 -- FloatNumeral(0x1p-4)
-16:1 -- FloatNumeral(0x1p-4)
-17:1 -- FloatNumeral(0x1p-1)
-18:1 -- FloatNumeral(0x1p+1)
-20:1 -- EOF
+2:(1-3) -- FloatNumeral(0x1.7d784p+26)
+3:(1-3) -- FloatNumeral(0x0p+0)
+3:(5-6) -- FloatNumeral(0x0p+0)
+3:(8-12) -- FloatNumeral(0x0p+0)
+4:(1-3) -- FloatNumeral(0x1p+1)
+4:(5-6) -- FloatNumeral(0x1.999999999999ap-3)
+4:(8-12) -- FloatNumeral(0x1.c6bf52634p+50)
+5:(1-5) -- FloatNumeral(0x1.7d784p+26)
+5:(7-16) -- FloatNumeral(0x1.1eab06db8p+40)
+6:(1-6) -- FloatNumeral(0x0p+0)
+6:(8-13) -- FloatNumeral(0x1.c6bf52634p+50)
+6:(15-20) -- FloatNumeral(0x1.7d784p+26)
+6:(22-32) -- FloatNumeral(0x1.1eab06db8p+40)
+7:(1-6) -- FloatNumeral(0x0p+0)
+7:(8-13) -- FloatNumeral(0x1.70ef54646d497p-56)
+7:(15-20) -- FloatNumeral(0x1.5798ee2308c3ap-27)
+7:(22-32) -- FloatNumeral(0x1.a70c22d895df7p-27)
+8:(1-6) -- FloatNumeral(0x1.12e0be826d695p-30)
+9:(1-4) -- FloatNumeral(0x1.999999999999ap-4)
+10:(1-3) -- FloatNumeral(0x1p+0)
+12:(1-5) -- FloatNumeral(0x1p+8)
+13:(1-6) -- FloatNumeral(0x1p+8)
+14:(1-6) -- FloatNumeral(0x1p-8)
+15:(1-4) -- FloatNumeral(0x0p+0)
+16:(1-5) -- FloatNumeral(0x1p-4)
+17:(1-7) -- FloatNumeral(0x1p-4)
+18:(1-6) -- FloatNumeral(0x1p-1)
+19:(1-5) -- FloatNumeral(0x1p+1)
+21:(1-0) -- EOF
 DONE inputs/test4.in
 
 LEXING FILE inputs/test5.in
-3:15 -- StringLiteral(Hello, world!)
-5:1 -- IntNumeral(123)
-6:1 -- While
-8:1 -- EOF
+33:(1-15) -- StringLiteral(Hello, world!)
+35:(1-3) -- IntNumeral(123)
+37:(1-5) -- While
+44:(1-0) -- EOF
 DONE inputs/test5.in
 
 LEXING FILE inputs/test6.in
-2:15 -- StringLiteral(Hello, world!)
+3:(1-15) -- StringLiteral(Hello, world!)
 LexerError: String is not terminated
 DONE inputs/test6.in
 
@@ -174,68 +174,68 @@ LexerError: Illegal string character: \
 DONE inputs/test7.in
 
 LEXING FILE inputs/test8.in
-1:35 -- IntNumeral(4611686018427387903)
+2:(1-19) -- IntNumeral(4611686018427387903)
 LexerError: Invalid integer literal: 4611686018427387904
 DONE inputs/test8.in
 
 LEXING FILE inputs/test9.in
-1:26 -- Id(a)
-1:28 -- Id(b)
-1:30 -- Id(c)
-2:1 -- !
-2:3 -- ==
-2:6 -- <
-2:8 -- >
+2:(1-1) -- Id(a)
+2:(3-3) -- Id(b)
+2:(5-5) -- Id(c)
+3:(1-1) -- !
+3:(3-4) -- ==
+3:(6-6) -- <
+3:(8-8) -- >
 LexerError: Unrecognized character: ^
 DONE inputs/test9.in
 
 LEXING FILE inputs/test10.in
-2:1 -- If
-3:1 -- Then
-3:6 -- Else
-3:12 -- Return
-3:21 -- While
-4:2 -- Int
-5:3 -- Char
-6:4 -- Float
-6:11 -- Bool
-6:16 -- True
-6:21 -- False
-7:1 -- New
-10:2 -- Id(a)
-10:4 -- Id(b)
-10:8 -- Id(c)
-16:1 -- As
-18:1 -- EOF
+3:(1-2) -- If
+4:(1-4) -- Then
+4:(6-9) -- Else
+4:(12-17) -- Return
+4:(21-25) -- While
+5:(2-4) -- Int
+6:(3-6) -- Char
+7:(4-8) -- Float
+7:(11-14) -- Bool
+7:(16-19) -- True
+7:(21-25) -- False
+8:(1-3) -- New
+11:(2-2) -- Id(a)
+11:(4-4) -- Id(b)
+11:(8-8) -- Id(c)
+17:(1-2) -- As
+19:(1-0) -- EOF
 DONE inputs/test10.in
 
 LEXING FILE inputs/test11.in
-2:1 -- IntNumeral(0)
-2:2 -- +
-2:3 -- IntNumeral(1)
-2:4 -- =
-2:5 -- IntNumeral(2)
-2:6 -- ==
-2:8 -- IntNumeral(3)
-2:9 -- >
-2:10 -- IntNumeral(4)
-2:11 -- <=
-2:13 -- IntNumeral(9)
-2:14 -- -
-2:15 -- IntNumeral(10)
-2:17 -- +
-2:18 -- IntNumeral(11)
-3:1 -- IntNumeral(12)
-3:4 -- !
-3:5 -- True
-3:10 -- ==
-3:13 -- IntNumeral(99)
-3:16 -- -
-3:18 -- IntNumeral(100)
-3:21 -- /
-3:22 -- IntNumeral(101)
-3:25 -- *
-3:26 -- IntNumeral(102)
-5:1 -- EOF
+3:(1-1) -- IntNumeral(0)
+3:(2-2) -- +
+3:(3-3) -- IntNumeral(1)
+3:(4-4) -- =
+3:(5-5) -- IntNumeral(2)
+3:(6-7) -- ==
+3:(8-8) -- IntNumeral(3)
+3:(9-9) -- >
+3:(10-10) -- IntNumeral(4)
+3:(11-12) -- <=
+3:(13-13) -- IntNumeral(9)
+3:(14-14) -- -
+3:(15-16) -- IntNumeral(10)
+3:(17-17) -- +
+3:(18-19) -- IntNumeral(11)
+4:(1-2) -- IntNumeral(12)
+4:(4-4) -- !
+4:(5-8) -- True
+4:(10-11) -- ==
+4:(13-14) -- IntNumeral(99)
+4:(16-16) -- -
+4:(18-20) -- IntNumeral(100)
+4:(21-21) -- /
+4:(22-24) -- IntNumeral(101)
+4:(25-25) -- *
+4:(26-28) -- IntNumeral(102)
+6:(1-0) -- EOF
 DONE inputs/test11.in
 
