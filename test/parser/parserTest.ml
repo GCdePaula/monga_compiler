@@ -24,6 +24,7 @@ let main () =
   let d = "inputs/" in
   let fnames = [
     d^"test1.in";
+    d^"test2.in";
   ] in
 
   List.map test fnames;;

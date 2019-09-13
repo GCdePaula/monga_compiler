@@ -40,14 +40,13 @@ m_type:
     | OpenBracket m_type CloseBracket { 0 }
 
 func_def:
-    | Id OpenParen separated_list(Comma, param) CloseParen Colon m_type block { 0 }
-    | Id OpenParen separated_list(Comma, param) CloseParen block { 0 }
+    | Id OpenParen; separated_list(Comma, param); CloseParen; option(pair(Colon, m_type)); block { 0 }
 
 param:
     | Id Colon m_type { 0 }
 
 block:
-    | OpenBraces CloseBraces { 0 }
+    | OpenBraces list(stat) CloseBraces { 0 }
 
 stat:
     | var_def { 0 }
@@ -64,6 +63,9 @@ command:
     | Put exp Semicolon { 0 }
     | block { 0 }
 
+var:
+    | Id { 0 }
+    | primary_expression OpenBracket exp CloseBracket { 0 }
 
 primary_expression:
     | IntNumeral { 0 }
@@ -72,14 +74,10 @@ primary_expression:
     | True { 0 }
     | False { 0 }
     | OpenParen exp CloseParen { 0 }
-    | var { 0 }
-
-var:
-    | Id { 0 }
-    | primary_expression OpenBracket exp CloseBracket { 0 }
+    | var {0}
 
 unary_exp:
-    | var { 0 }
+    | primary_expression { 0 }
     | Not unary_exp { 0 }
     | Sub unary_exp { 0 }
 
@@ -117,14 +115,6 @@ exp:
 
 
 func_call:
-    | Id OpenParen exp_list CloseParen { 0 }
-
-exp_list:
-    | (* empty *) { 0 }
-    | comma_exp exp { 0 }
-
-comma_exp:
-    | (* empty *) { 0 }
-    | comma_exp exp Comma { 0 }
+    | Id OpenParen separated_list(Comma, exp) CloseParen { 0 }
 
 

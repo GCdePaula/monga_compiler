@@ -1,11 +1,36 @@
 
-banana: int;
+bananas: int;
 bananas: [int];
-bananass: [[int]];
+bananas: [[int]];
+bananas: [[[int]]];
+bananas: [[[[int]]]];
+bananas: [[[[[int]]]]];
+bananas: [[[[[[int]]]]]];
+bananas: [[[[[[[int]]]]]]];
+bananas: [[[[[[[[int]]]]]]]];
+bananas: [[[[[[[[[int]]]]]]]]];
 
-main() {}
 
-f1(a: int, b: float, c: bool) {}
+a: char;
+a: float;
+a: bool;
 
-f2() : int {}
- 
+f0() {}
+
+f1() : int {}
+f2() : char {}
+f3() : float {}
+f4() : bool {}
+f5() : [int] {}
+f6() : [[int]] {}
+
+f(a: int) {}
+f(a: int, b: float) {}
+f(a: int, b: float, c: bool) {}
+f(a: int, b: float, c: bool, d: char) {}
+
+f() {{}}
+f() {{{}}}
+f() {{{{}}}}
+f() {{{{{}}}}}
+

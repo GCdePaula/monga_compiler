@@ -1,0 +1,11 @@
+
+banana: int;
+bananas: [int];
+bananass: [[int]];
+
+main() {}
+
+f1(a: int, b: float, c: bool) {}
+
+f2() : int {}
+ 

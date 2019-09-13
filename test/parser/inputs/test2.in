@@ -1,0 +1,64 @@
+
+
+main() {
+	a = 1;
+	a = true;
+	a = false;
+	a = "Hello, World!";
+	a = 0;
+	a = 0.0;
+
+	a = b;
+	a = b[0];
+	a = b[0][0];
+	a = b[0][0][0];
+	a = b[true];
+
+	a = -1;
+	a = -b;
+	a = !true;
+	a = !b;
+
+	a = 1 * 1;
+	a = b * 1;
+	a = 1 * b;
+	a = b * b;
+
+	a = 1 + 1;
+	a = b + 1;
+	a = 1 + b;
+
+	a = 1 == 1;
+	a = 1 ~= 1;
+	a = 1 > 1;
+	a = 1 < 1;
+	a = 1 <= 1;
+	a = 1 >= 1;
+	a = 1 == b;
+	a = b == 1;
+	a = b == b;
+
+	a = true && true;
+	a = b && true;
+	a = true && b;
+
+	a = true || true;
+	a = b || true;
+	a = true || b;
+
+
+	a = true && true && true ||
+		true && true && true ||
+		true && true && true;
+
+	a = true && b && c[0] ||
+		1 == 1 && b < 1 && c[0] >= 1 ||
+		1+1 && 1*1 && !true;
+
+	a = 1 + 1 >= 2;
+	a = 2 <= 1 + 1;
+	a = 1 + 2 * 3;
+	a = 3 * 2 + 1;
+	a = 1 + b[0] >= 1 + 2 * - c * b[1][0];
+}
+
