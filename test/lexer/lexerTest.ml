@@ -7,11 +7,11 @@ let rec parse lexbuf =
     let start_num = lexbuf.lex_start_p.pos_cnum - lexbuf.lex_start_p.pos_bol + 1 in
     let cur_num = lexbuf.lex_curr_p.pos_cnum - lexbuf.lex_curr_p.pos_bol in
     printf "%d:(%d-%d) -- " lexbuf.lex_curr_p.pos_lnum start_num cur_num;
-    Types.print_tk token;
+    Utils.print_tk token;
     printf "\n";
 
     match token with
-      | Types.Eof -> ()
+      | Parser.Eof -> ()
       | _ -> parse lexbuf
   with
     Lexer.LexerError e -> printf "LexerError: %s\n" e;;

@@ -1,7 +1,7 @@
 # Spaces
 
 if
-then else  return   while
+else  return   while
 	int
 		char
 			float		bool true	false

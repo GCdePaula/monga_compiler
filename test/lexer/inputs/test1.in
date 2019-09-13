@@ -1,6 +1,5 @@
 # Reserved words and operators test
 if
-then
 else
 return
 while

@@ -1,4 +1,7 @@
 (ocamllex lexer)
 
-(library (name Src) (modules Lexer Types))
+(menhir
+ (modules parser ))
+
+(library (name Src) (modules Lexer Utils Parser))
 

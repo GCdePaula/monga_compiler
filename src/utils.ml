@@ -1,43 +1,8 @@
-(*
-
-
-var:
-    | Id {}
-    | primary_expression OpenBracket exp CloseBracket {}
-
-type token =
-  | If
-  | Then
-  | Else
-  | Return
-  | While
-  | Int | Char | Float | Bool
-  | StringLiteral of string
-  | FloatNumeral of float
-  | IntNumeral of int
-  | True
-  | False
-  | Put
-  | Colon
-  | Semicolon
-  | Comma
-  | Assign
-  | OpenBracket | CloseBracket
-  | OpenParen | CloseParen
-  | OpenBraces | CloseBraces
-  | New
-  | As
-  | Id of string
-  | Add | Sub | Mul | Div
-  | Eq | Ne | Le | Ge | Lt | Gt
-  | And | Or | Not
-  | Eof
-
+open Parser
 
 (* Float numerals might lose precision *)
 let string_of_tk = function
   | If -> "If"
-  | Then -> "Then"
   | Else -> "Else"
   | Return -> "Return"
   | While -> "While"
@@ -82,7 +47,6 @@ let string_of_tk = function
 
 let print_tk = function
   | If -> Printf.printf "If"
-  | Then -> Printf.printf "Then"
   | Else -> Printf.printf "Else"
   | Return -> Printf.printf "Return"
   | While -> Printf.printf "While"
@@ -123,4 +87,3 @@ let print_tk = function
   | Or -> Printf.printf "||"
   | Not -> Printf.printf "!"
   | Eof -> Printf.printf "EOF"
-*)

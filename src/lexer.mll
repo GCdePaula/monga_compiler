@@ -1,7 +1,8 @@
 {
 
 open Lexing
-open Types
+(*open Types*)
+open Parser
 
 exception LexerError of string
 
@@ -46,7 +47,6 @@ rule monga_lexer =
     }
 
   | "if" {If}
-  | "then" {Then}
   | "else" {Else}
   | "return" {Return}
   | "while" {While}
