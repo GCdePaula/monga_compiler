@@ -1,0 +1,8 @@
+
+(tests
+  (names parserTest)
+  (libraries Src)
+  (deps (glob_files inputs/*.in))
+  (action (run %{test}))
+)
+

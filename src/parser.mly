@@ -23,117 +23,108 @@
 %%
 
 program :
-    |  defs Eof { 0 }
-
-defs:
-    | (* empty *) { 0 }
-    |  def defs { 0 }
+    |  list(def) Eof { 0 }
 
 def:
-    | var_def {}
-    | func_def {}
+    | var_def { 0 }
+    | func_def { 0 }
 
 var_def:
-    | Id Colon m_type Semicolon {}
+    | Id Colon m_type Semicolon { 0 }
 
 m_type:
-    | Int {}
-    | Float {}
-    | Char {}
-    | Bool {}
-    | OpenBracket m_type CloseBracket {}
+    | Int { 0 }
+    | Float { 0 }
+    | Char { 0 }
+    | Bool { 0 }
+    | OpenBracket m_type CloseBracket { 0 }
 
 func_def:
-    | Id OpenParen params CloseBracket Colon m_type block {}
-    | Id OpenParen params CloseBracket Colon block {}
-
-params:
-    | (* empty *) {}
-    | param params {}
+    | Id OpenParen separated_list(Comma, param) CloseParen Colon m_type block { 0 }
+    | Id OpenParen separated_list(Comma, param) CloseParen block { 0 }
 
 param:
-    | Id Colon m_type {}
+    | Id Colon m_type { 0 }
 
 block:
-    | OpenBraces stats CloseBraces {}
+    | OpenBraces CloseBraces { 0 }
 
-stats:
-    | (* empty *) {}
-    | var_def stats {}
-    | command stats {}
+stat:
+    | var_def { 0 }
+    | command { 0 }
 
 command:
-    | If exp block {}
-    | If exp block Else block {}
-    | While exp block {}
-    | var Assign exp Semicolon {}
-    | Return Semicolon {}
-    | Return exp Semicolon {}
-    | func_call Semicolon {}
-    | Put exp Semicolon {}
-    | block {}
+    | If exp block { 0 }
+    | If exp block Else block { 0 }
+    | While exp block { 0 }
+    | var Assign exp Semicolon { 0 }
+    | Return Semicolon { 0 }
+    | Return exp Semicolon { 0 }
+    | func_call Semicolon { 0 }
+    | Put exp Semicolon { 0 }
+    | block { 0 }
 
 
 primary_expression:
-    | IntNumeral {}
-    | FloatNumeral {}
-    | StringLiteral {}
-    | True {}
-    | False {}
-    | OpenParen exp CloseParen {}
-    | var {}
+    | IntNumeral { 0 }
+    | FloatNumeral { 0 }
+    | StringLiteral { 0 }
+    | True { 0 }
+    | False { 0 }
+    | OpenParen exp CloseParen { 0 }
+    | var { 0 }
 
 var:
-    | Id {}
-    | primary_expression OpenBracket exp CloseBracket {}
+    | Id { 0 }
+    | primary_expression OpenBracket exp CloseBracket { 0 }
 
 unary_exp:
-    | var {}
-    | Not unary_exp {}
-    | Sub unary_exp {}
+    | var { 0 }
+    | Not unary_exp { 0 }
+    | Sub unary_exp { 0 }
 
 mul_exp:
-    | unary_exp {}
-    | mul_exp Mul unary_exp {}
-    | mul_exp Div unary_exp {}
+    | unary_exp { 0 }
+    | mul_exp Mul unary_exp { 0 }
+    | mul_exp Div unary_exp { 0 }
 
 add_exp:
-    | mul_exp {}
-    | add_exp Add mul_exp {}
-    | add_exp Sub mul_exp {}
+    | mul_exp { 0 }
+    | add_exp Add mul_exp { 0 }
+    | add_exp Sub mul_exp { 0 }
 
 relational_expression:
-    | add_exp {}
-    | add_exp Eq add_exp {}
-    | add_exp Ne add_exp {}
-    | add_exp Gt add_exp {}
-    | add_exp Lt add_exp {}
-    | add_exp Ge add_exp {}
-    | add_exp Le add_exp {}
+    | add_exp { 0 }
+    | add_exp Eq add_exp { 0 }
+    | add_exp Ne add_exp { 0 }
+    | add_exp Gt add_exp { 0 }
+    | add_exp Lt add_exp { 0 }
+    | add_exp Ge add_exp { 0 }
+    | add_exp Le add_exp { 0 }
 
 and_exp:
-    | relational_expression {}
-    | and_exp And relational_expression {}
+    | relational_expression { 0 }
+    | and_exp And relational_expression { 0 }
 
 or_exp:
-    | and_exp {}
-    | or_exp Or and_exp {}
+    | and_exp { 0 }
+    | or_exp Or and_exp { 0 }
 
 exp:
-    | or_exp  {}
-    | exp As m_type {}
-    | New m_type OpenBracket exp CloseBracket {}
+    | or_exp  { 0 }
+    | exp As m_type { 0 }
+    | New m_type OpenBracket exp CloseBracket { 0 }
 
 
 func_call:
-    | Id OpenParen exp_list CloseParen {}
+    | Id OpenParen exp_list CloseParen { 0 }
 
 exp_list:
-    | (* empty *) {}
-    | comma_exp exp {}
+    | (* empty *) { 0 }
+    | comma_exp exp { 0 }
 
 comma_exp:
-    | (* empty *) {}
-    | comma_exp exp Comma {}
+    | (* empty *) { 0 }
+    | comma_exp exp Comma { 0 }
 
 
