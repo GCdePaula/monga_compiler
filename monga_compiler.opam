@@ -10,8 +10,3 @@ depends: [
   "menhir"
 ]
 build: ["dune" "build" "-p" name "-j" jobs]
-dev-repo: "git+https://"
-url {
-  src:
-    "git+file:///Users/gabrielcpaula/Documents/Mestrado/Compiladores_grad/monga_compiler#master"
-}
