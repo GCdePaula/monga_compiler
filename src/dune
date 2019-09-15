@@ -1,7 +1,9 @@
 (ocamllex lexer)
 
 (menhir
- (modules parser ))
+ (modules parser)
+ (flags ("--explain" "--dump"))
+)
 
-(library (name Src) (modules Lexer Utils Parser))
+(library (name Src) (modules Lexer Utils Parser Ast_nodes))
 

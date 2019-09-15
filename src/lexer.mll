@@ -36,54 +36,54 @@ rule monga_lexer =
   | digit+
   | exa_start exa_digit+ as inum
     {
-      try IntNumeral (int_of_string inum)
+      try INTNUMERAL (int_of_string inum)
       with Failure _ -> raise (LexerError ("Invalid integer literal: " ^ inum))
     }
 
   | digit* ('.' digit*)? exp?
   | exa_start exa_digit* ('.' exa_digit*)? exa_exp? as fnum
     {
-      FloatNumeral (float_of_string fnum)
+      FLOATNUMERAL (float_of_string fnum)
     }
 
-  | "if" {If}
-  | "else" {Else}
-  | "return" {Return}
-  | "while" {While}
-  | "int" {Int}
-  | "char" {Char}
-  | "float" {Float}
-  | "bool" {Bool}
-  | "new" {New}
-  | "as" {As}
-  | "true" {True}
-  | "false" {False}
+  | "if" {IF}
+  | "else" {ELSE}
+  | "return" {RETURN}
+  | "while" {WHILE}
+  | "int" {INT}
+  | "char" {CHAR}
+  | "float" {FLOAT}
+  | "bool" {BOOL}
+  | "new" {NEW}
+  | "as" {AS}
+  | "true" {TRUE}
+  | "false" {FALSE}
 
-  | '@' {Put}
-  | ':' {Colon}
-  | ';' {Semicolon}
-  | ',' {Comma}
-  | '=' {Assign}
-  | '[' {OpenBracket} | ']' {CloseBracket}
-  | '(' {OpenParen} | ')' {CloseParen}
-  | '{' {OpenBraces} | '}' {CloseBraces}
+  | '@' {PUT}
+  | ':' {COLON}
+  | ';' {SEMICOLON}
+  | ',' {COMMA}
+  | '=' {ASSIGN}
+  | '[' {OPENBRACKET} | ']' {CLOSEBRACKET}
+  | '(' {OPENPAREN} | ')' {CLOSEPAREN}
+  | '{' {OPENBRACES} | '}' {CLOSEBRACES}
 
-  | '+' {Add} | '-' {Sub} | '*' {Mul} | '/' {Div}
-  | "==" {Eq} | "~=" {Ne} | "<=" {Le} | ">=" {Ge} | '<' {Lt} | '>' {Gt}
-  | "&&" {And} | "||" {Or}  | '!' {Not}
+  | '+' {ADD} | '-' {SUB} | '*' {MUL} | '/' {DIV}
+  | "==" {EQ} | "~=" {NE} | "<=" {LE} | ">=" {GE} | '<' {LT} | '>' {GT}
+  | "&&" {AND} | "||" {OR}  | '!' {NOT}
 
-  | id as identifier {Id identifier}
+  | id as identifier {ID identifier}
 
             | '#' [^'\n']* '\n' {incr_line lexbuf; monga_lexer lexbuf}
   | white* { monga_lexer lexbuf }
   | newline { incr_line lexbuf; monga_lexer lexbuf }
 
   | _ { raise (LexerError("Unrecognized character: " ^ Lexing.lexeme lexbuf)) }
-  | eof { Eof }
+  | eof { EOF }
 
 and read_string buf start_p =
   parse
-  | '"'       { lexbuf.lex_start_p <- start_p; StringLiteral (Buffer.contents buf) }
+  | '"'       { lexbuf.lex_start_p <- start_p; STRINGLITERAL (Buffer.contents buf) }
   | '\\' '"'  { Buffer.add_char buf '"'; read_string buf start_p lexbuf }
   | '\\' '\\' { Buffer.add_char buf '\\'; read_string buf start_p lexbuf }
   | '\\' 'n'  { Buffer.add_char buf '\n'; read_string buf start_p lexbuf }

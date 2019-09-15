@@ -11,7 +11,7 @@ let rec parse lexbuf =
     printf "\n";
 
     match token with
-      | Parser.Eof -> ()
+      | Parser.EOF -> ()
       | _ -> parse lexbuf
   with
     Lexer.LexerError e -> printf "LexerError: %s\n" e;;
