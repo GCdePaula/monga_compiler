@@ -26,6 +26,7 @@ let main () =
   let fnames = [
     d^"test1.in";
     d^"test2.in";
+    d^"test3.in";
   ] in
 
   List.map test fnames;;

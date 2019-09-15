@@ -29,6 +29,9 @@ f(a: int, b: float) {}
 f(a: int, b: float, c: bool) {}
 f(a: int, b: float, c: bool, d: char) {}
 
+f() {{} {} {} {}}
+
+
 f() {{}}
 f() {{{}}}
 f() {{{{}}}}

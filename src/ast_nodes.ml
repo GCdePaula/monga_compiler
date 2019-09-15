@@ -107,30 +107,31 @@ and print_block block depth =
   | Stats (lstat) ->
     List.iter p_stat lstat;
 
-  print_depth depth; print_string "block end\n"
+  print_depth depth; print_string "block end\n\n"
 
 and print_stat stat depth =
   match stat with
   | IfElseStat (exp, then_block, else_block_opt) ->
     print_depth depth; print_string "if_else_statement begin\n";
     print_depth (depth+1); print_string "condition = ";
-    print_exp exp (depth+1);
+    print_exp exp (depth+1); print_string "\n";
     print_depth (depth+1); print_string "then_block = ";
     print_block then_block (depth+1);
     (match else_block_opt with
     | Some else_block ->
+      print_string "\n";
       print_depth (depth+1); print_string "else_block = ";
       print_block else_block (depth+1);
     | None -> ());
-    print_depth depth; print_string "if_else_statement end\n"
+    print_depth depth; print_string "if_else_statement end\n\n"
 
   | WhileStat (exp, block) ->
     print_depth depth; print_string "while_statement begin\n";
-   print_depth (depth+1); print_string "condition = ";
-    print_exp exp (depth+1);
+    print_depth (depth+1); print_string "condition = ";
+    print_exp exp (depth+1); print_string "\n";
     print_depth (depth+1); print_string "block = ";
     print_block block (depth+1);
-    print_depth depth; print_string "while_statement end\n"
+    print_depth depth; print_string "while_statement end\n\n"
 
   | ReturnStat (opt_exp) ->
     print_depth depth; print_string "return_statement begin\n";
@@ -139,44 +140,46 @@ and print_stat stat depth =
        print_depth (depth+1); print_string "return_exp = ";
        print_exp exp (depth+1);
      | None -> ());
-    print_depth depth; print_string "return_statement end\n"
+    print_depth depth; print_string "return_statement end\n\n"
 
   | AssignStat (exp1, exp2) ->
     print_depth depth; print_string "assign_stat begin\n";
     print_depth (depth+1); print_string "lhs = ";
-    print_exp exp1 (depth+1);
+    print_exp exp1 (depth+1); print_string "\n";
     print_depth (depth+1); print_string "rhs = ";
     print_exp exp2 (depth+1);
-    print_depth depth; print_string "assign_stat end\n"
+    print_depth depth; print_string "assign_stat end\n\n"
 
   | CallStat (fname, lexp) ->
     print_depth depth; print_string "fcall_stat begin\n";
-    print_depth (depth+1); printf "name = %s" fname;
+    print_depth (depth+1); printf "name = %s\n" fname;
     print_depth (depth+1); print_string "parameters = ";
-    print_exp_list lexp (depth+2)
+    print_exp_list lexp (depth+2);
+    print_depth depth; print_string "fcall_stat end\n\n"
 
   | PutStat (exp) ->
     print_depth depth; print_string "put_stat begin\n";
     print_depth (depth+1); print_string "exp = ";
     print_exp exp (depth+1);
-    print_depth depth; print_string "put_stat end\n"
+    print_depth depth; print_string "put_stat end\n\n"
 
   | BlockStat (block) ->
-    print_depth (depth); print_block block (depth)
+    print_depth (depth); print_block block (depth);
+    print_string "\n"
 
   | VarDefStat (id, t) ->
     print_depth depth; print_string "var_def begin\n";
-    print_depth (depth+1); printf "id = %s\n"id;
+    print_depth (depth+1); printf "id = %s\n\n"id;
     print_depth (depth+1); print_string "type = ";
     print_monga_type t; print_string "\n";
-    print_string "var_def end\n"
+    print_string "var_def end\n\n"
 
 and print_exp exp depth =
   let print_bin_exp lhs rhs =
     print_depth (depth+1); print_string "lhs = ";
-    print_exp lhs (depth+2);
+    print_exp lhs (depth+1); print_string "\n";
     print_depth (depth+1); print_string "rhs = ";
-    print_exp rhs (depth+2)
+    print_exp rhs (depth+1)
   in
 
   match exp with
@@ -268,7 +271,7 @@ and print_exp exp depth =
   | NewExp (t, exp) ->
     print_string "new_exp begin\n";
     print_depth (depth+1); print_string "type = ";
-    print_monga_type t; print_string "\n";
+    print_monga_type t; print_string "\n\n";
     print_depth (depth+1); print_string "size = ";
     print_exp exp (depth+2);
     print_depth depth; print_string "new_exp end\n"
@@ -276,7 +279,7 @@ and print_exp exp depth =
   | CastExp (exp, t) ->
     print_string "cast_exp begin\n";
     print_depth (depth+1); print_string "exp = ";
-    print_exp exp (depth+2);
+    print_exp exp (depth+2); print_string "\n";
     print_depth (depth+1); print_string "type = ";
     print_monga_type t; print_string "\n";
     print_depth depth; print_string "lookup_exp end\n"
@@ -284,9 +287,9 @@ and print_exp exp depth =
   | LookupExp (exp1, exp2) ->
     print_string "lookup_exp begin\n";
     print_depth (depth+1); print_string "var = ";
-    print_exp exp1 (depth+2);
+    print_exp exp1 (depth+1); print_string "\n";
     print_depth (depth+1); print_string "idx = ";
-    print_exp exp2 (depth+2);
+    print_exp exp2 (depth+1);
     print_depth depth; print_string "lookup_exp end\n"
 
   | IdExp id ->
@@ -294,15 +297,15 @@ and print_exp exp depth =
 
   | CallExp (fname, params) ->
     print_string "call_exp begin\n";
-    print_depth (depth+1); printf "name = %s" fname;
+    print_depth (depth+1); printf "name = %s\n\n" fname;
     print_depth (depth+1); print_string "parameters = ";
     print_exp_list params (depth+2);
     print_depth depth; print_string "call_exp end\n"
 
 and print_exp_list exp_list depth =
   let p_single_exp exp =
-    print_depth (depth+1);
-    print_exp exp (depth+1)
+    print_depth (depth);
+    print_exp exp (depth)
   in
 
   let rec p_lexp lexp =
@@ -311,7 +314,8 @@ and print_exp_list exp_list depth =
     | [exp] ->
       p_single_exp exp
     | exp :: exps ->
-      p_single_exp exp; print_string ",\n";
+      p_single_exp exp;
+      print_depth depth; print_string ";\n";
       p_lexp exps
   in
   print_string "exp_list begin\n";
