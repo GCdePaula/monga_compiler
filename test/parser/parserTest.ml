@@ -3,7 +3,8 @@ open Printf
 
 let parse lexbuf =
   try
-      let _ = Parser.program Lexer.monga_lexer lexbuf in ();
+    let ast = Parser.program Lexer.monga_lexer lexbuf in
+    Ast_nodes.print_program ast
   with
     Parser.Error ->
         let pos = lexbuf.lex_curr_p in

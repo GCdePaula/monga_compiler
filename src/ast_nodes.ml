@@ -68,7 +68,7 @@ let rec print_monga_type t =
 
 
 let rec print_def def =
-  let rec print_params = function
+  let rec print_sig = function
     | [] -> ()
     | [(id, t)] ->
       printf "%s : " id;
@@ -77,33 +77,31 @@ let rec print_def def =
       printf "%s : " id;
       print_monga_type t;
       print_string ", ";
-      print_params xs
+      print_sig xs
   in
 
   match def with
   | VarDef (id, t) ->
-    printf "var_def {\n\tid = %s\n\ttype = " id;
+    printf "var_def begin\n\tid = %s\n\ttype = " id;
     print_monga_type t;
-    print_string "\n}"
+    print_string "\nvar_def end\n"
 
-  | FuncDef (id, params, Some t, b) ->
-    printf "func_def {\n\tid = %s\n\tparameters = (" id;
-    print_params params;
-    print_string ")\n\treturn_type = ";
-    print_monga_type t;
-    print_string "\n}";
+  | FuncDef (id, signature, opt_t, b) ->
+    printf "func_def begin\n\tid = %s\n\tsignature = (" id;
+    print_sig signature;
+    print_string ")";
+    (match opt_t with
+      | Some t -> 
+        print_string "\n\treturn_type = ";
+        print_monga_type t
+      | None -> ()
+    );
+    print_string "\n\tblock = ";
     print_block b 1
-
-  | FuncDef (id, params, None, b) ->
-    printf "FuncDef {\n\tid = %s\n\tparameters = (" id;
-    print_params params;
-    print_string ")\n}";
-    print_block b 1
-
 
 and print_block block depth =
-  let p_stat stat = print_stat stat depth in
-  print_depth depth; print_string "block begin\n";
+  let p_stat stat = print_stat stat (depth+1) in
+  print_string "block begin\n";
 
   match block with
   | Stats (lstat) ->
@@ -128,7 +126,7 @@ and print_stat stat depth =
 
   | WhileStat (exp, block) ->
     print_depth depth; print_string "while_statement begin\n";
-    print_depth (depth+1); print_string "condition = ";
+   print_depth (depth+1); print_string "condition = ";
     print_exp exp (depth+1);
     print_depth (depth+1); print_string "block = ";
     print_block block (depth+1);
@@ -164,7 +162,7 @@ and print_stat stat depth =
     print_depth depth; print_string "put_stat end\n"
 
   | BlockStat (block) ->
-    print_block block (depth+1)
+    print_depth (depth); print_block block (depth)
 
   | VarDefStat (id, t) ->
     print_depth depth; print_string "var_def begin\n";
@@ -253,10 +251,10 @@ and print_exp exp depth =
     print_depth depth; print_string "unary_not_exp end\n"
 
   | TrueExp ->
-    print_string "true_exp\n"
+    print_string "true\n"
 
   | FalseExp ->
-    print_string "false_exp\n"
+    print_string "false\n"
 
   | FloatExp fnum ->
     printf "%h\n" fnum
@@ -272,21 +270,24 @@ and print_exp exp depth =
     print_depth (depth+1); print_string "type = ";
     print_monga_type t; print_string "\n";
     print_depth (depth+1); print_string "size = ";
-    print_exp exp (depth+2)
+    print_exp exp (depth+2);
+    print_depth depth; print_string "new_exp end\n"
 
   | CastExp (exp, t) ->
     print_string "cast_exp begin\n";
     print_depth (depth+1); print_string "exp = ";
     print_exp exp (depth+2);
     print_depth (depth+1); print_string "type = ";
-    print_monga_type t; print_string "\n"
+    print_monga_type t; print_string "\n";
+    print_depth depth; print_string "lookup_exp end\n"
 
   | LookupExp (exp1, exp2) ->
     print_string "lookup_exp begin\n";
     print_depth (depth+1); print_string "var = ";
     print_exp exp1 (depth+2);
     print_depth (depth+1); print_string "idx = ";
-    print_exp exp2 (depth+2)
+    print_exp exp2 (depth+2);
+    print_depth depth; print_string "lookup_exp end\n"
 
   | IdExp id ->
     printf "%s\n" id
@@ -295,7 +296,8 @@ and print_exp exp depth =
     print_string "call_exp begin\n";
     print_depth (depth+1); printf "name = %s" fname;
     print_depth (depth+1); print_string "parameters = ";
-    print_exp_list params (depth+2)
+    print_exp_list params (depth+2);
+    print_depth depth; print_string "call_exp end\n"
 
 and print_exp_list exp_list depth =
   let p_single_exp exp =
@@ -321,6 +323,6 @@ let rec print_program defs =
   match defs with
   | [] -> ()
   | def :: xs ->
-    printf "Def = {\n"; print_def def; printf "}\n";
+    print_def def;
     print_program xs
 

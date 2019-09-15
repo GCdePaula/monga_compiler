@@ -1,0 +1,556 @@
+PARSING FILE inputs/test1.in
+var_def begin
+	id = bananas
+	type = int
+var_def end
+var_def begin
+	id = bananas
+	type = [int]
+var_def end
+var_def begin
+	id = bananas
+	type = [[int]]
+var_def end
+var_def begin
+	id = bananas
+	type = [[[int]]]
+var_def end
+var_def begin
+	id = bananas
+	type = [[[[int]]]]
+var_def end
+var_def begin
+	id = bananas
+	type = [[[[[int]]]]]
+var_def end
+var_def begin
+	id = bananas
+	type = [[[[[[int]]]]]]
+var_def end
+var_def begin
+	id = bananas
+	type = [[[[[[[int]]]]]]]
+var_def end
+var_def begin
+	id = bananas
+	type = [[[[[[[[int]]]]]]]]
+var_def end
+var_def begin
+	id = bananas
+	type = [[[[[[[[[int]]]]]]]]]
+var_def end
+var_def begin
+	id = a
+	type = char
+var_def end
+var_def begin
+	id = a
+	type = float
+var_def end
+var_def begin
+	id = a
+	type = bool
+var_def end
+func_def begin
+	id = f0
+	signature = ()
+	block = block begin
+	block end
+func_def begin
+	id = f1
+	signature = ()
+	return_type = int
+	block = block begin
+	block end
+func_def begin
+	id = f2
+	signature = ()
+	return_type = char
+	block = block begin
+	block end
+func_def begin
+	id = f3
+	signature = ()
+	return_type = float
+	block = block begin
+	block end
+func_def begin
+	id = f4
+	signature = ()
+	return_type = bool
+	block = block begin
+	block end
+func_def begin
+	id = f5
+	signature = ()
+	return_type = [int]
+	block = block begin
+	block end
+func_def begin
+	id = f6
+	signature = ()
+	return_type = [[int]]
+	block = block begin
+	block end
+func_def begin
+	id = f
+	signature = (a : int)
+	block = block begin
+	block end
+func_def begin
+	id = f
+	signature = (a : int, b : float)
+	block = block begin
+	block end
+func_def begin
+	id = f
+	signature = (a : int, b : float, c : bool)
+	block = block begin
+	block end
+func_def begin
+	id = f
+	signature = (a : int, b : float, c : bool, d : char)
+	block = block begin
+	block end
+func_def begin
+	id = f
+	signature = ()
+	block = block begin
+		block begin
+		block end
+	block end
+func_def begin
+	id = f
+	signature = ()
+	block = block begin
+		block begin
+			block begin
+			block end
+		block end
+	block end
+func_def begin
+	id = f
+	signature = ()
+	block = block begin
+		block begin
+			block begin
+				block begin
+				block end
+			block end
+		block end
+	block end
+func_def begin
+	id = f
+	signature = ()
+	block = block begin
+		block begin
+			block begin
+				block begin
+					block begin
+					block end
+				block end
+			block end
+		block end
+	block end
+DONE inputs/test1.in
+
+PARSING FILE inputs/test2.in
+func_def begin
+	id = main
+	signature = ()
+	block = block begin
+		assign_stat begin
+			lhs = a
+			rhs = 1
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = true
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = false
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = "Hello, World!"
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = 0
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = 0x0p+0
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = b
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = lookup_exp begin
+				var = b
+				idx = 0
+			lookup_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = lookup_exp begin
+				var = lookup_exp begin
+						var = b
+						idx = 0
+					lookup_exp end
+				idx = 0
+			lookup_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = lookup_exp begin
+				var = lookup_exp begin
+						var = lookup_exp begin
+								var = b
+								idx = 0
+							lookup_exp end
+						idx = 0
+					lookup_exp end
+				idx = 0
+			lookup_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = lookup_exp begin
+				var = b
+				idx = true
+			lookup_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = unary_minus_exp begin
+				exp = 1
+			unary_minus_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = unary_minus_exp begin
+				exp = b
+			unary_minus_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = unary_not_exp begin
+				exp = true
+			unary_not_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = unary_not_exp begin
+				exp = b
+			unary_not_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = mul_exp begin
+				lhs = 1
+				rhs = 1
+			mul_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = mul_exp begin
+				lhs = b
+				rhs = 1
+			mul_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = mul_exp begin
+				lhs = 1
+				rhs = b
+			mul_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = mul_exp begin
+				lhs = b
+				rhs = b
+			mul_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = add_exp begin
+				lhs = 1
+				rhs = 1
+			add_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = add_exp begin
+				lhs = b
+				rhs = 1
+			add_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = add_exp begin
+				lhs = 1
+				rhs = b
+			add_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = equals_exp begin
+				lhs = 1
+				rhs = 1
+			equals_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = add_exp begin
+				lhs = 1
+				rhs = 1
+			add_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = greater_than_exp begin
+				lhs = 1
+				rhs = 1
+			greater_than_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = less_than_exp begin
+				lhs = 1
+				rhs = 1
+			less_than_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = less_equal_exp begin
+				lhs = 1
+				rhs = 1
+			less_equal_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = greater_equal_exp begin
+				lhs = 1
+				rhs = 1
+			greater_equal_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = equals_exp begin
+				lhs = 1
+				rhs = b
+			equals_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = equals_exp begin
+				lhs = b
+				rhs = 1
+			equals_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = equals_exp begin
+				lhs = b
+				rhs = b
+			equals_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = and_exp begin
+				lhs = true
+				rhs = true
+			and_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = and_exp begin
+				lhs = b
+				rhs = true
+			and_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = and_exp begin
+				lhs = true
+				rhs = b
+			and_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = or_exp begin
+				lhs = true
+				rhs = true
+			or_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = or_exp begin
+				lhs = b
+				rhs = true
+			or_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = or_exp begin
+				lhs = true
+				rhs = b
+			or_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = or_exp begin
+				lhs = or_exp begin
+						lhs = and_exp begin
+								lhs = and_exp begin
+										lhs = true
+										rhs = true
+									and_exp end
+								rhs = true
+							and_exp end
+						rhs = and_exp begin
+								lhs = and_exp begin
+										lhs = true
+										rhs = true
+									and_exp end
+								rhs = true
+							and_exp end
+					or_exp end
+				rhs = and_exp begin
+						lhs = and_exp begin
+								lhs = true
+								rhs = true
+							and_exp end
+						rhs = true
+					and_exp end
+			or_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = or_exp begin
+				lhs = or_exp begin
+						lhs = and_exp begin
+								lhs = and_exp begin
+										lhs = true
+										rhs = b
+									and_exp end
+								rhs = lookup_exp begin
+										var = c
+										idx = 0
+									lookup_exp end
+							and_exp end
+						rhs = and_exp begin
+								lhs = and_exp begin
+										lhs = equals_exp begin
+												lhs = 1
+												rhs = 1
+											equals_exp end
+										rhs = less_than_exp begin
+												lhs = b
+												rhs = 1
+											less_than_exp end
+									and_exp end
+								rhs = greater_equal_exp begin
+										lhs = lookup_exp begin
+												var = c
+												idx = 0
+											lookup_exp end
+										rhs = 1
+									greater_equal_exp end
+							and_exp end
+					or_exp end
+				rhs = and_exp begin
+						lhs = and_exp begin
+								lhs = add_exp begin
+										lhs = 1
+										rhs = 1
+									add_exp end
+								rhs = mul_exp begin
+										lhs = 1
+										rhs = 1
+									mul_exp end
+							and_exp end
+						rhs = unary_not_exp begin
+								exp = true
+							unary_not_exp end
+					and_exp end
+			or_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = greater_equal_exp begin
+				lhs = add_exp begin
+						lhs = 1
+						rhs = 1
+					add_exp end
+				rhs = 2
+			greater_equal_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = less_equal_exp begin
+				lhs = 2
+				rhs = add_exp begin
+						lhs = 1
+						rhs = 1
+					add_exp end
+			less_equal_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = add_exp begin
+				lhs = 1
+				rhs = mul_exp begin
+						lhs = 2
+						rhs = 3
+					mul_exp end
+			add_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = add_exp begin
+				lhs = mul_exp begin
+						lhs = 3
+						rhs = 2
+					mul_exp end
+				rhs = 1
+			add_exp end
+		assign_stat end
+		assign_stat begin
+			lhs = a
+			rhs = greater_equal_exp begin
+				lhs = add_exp begin
+						lhs = 1
+						rhs = lookup_exp begin
+								var = b
+								idx = 0
+							lookup_exp end
+					add_exp end
+				rhs = add_exp begin
+						lhs = 1
+						rhs = mul_exp begin
+								lhs = mul_exp begin
+										lhs = 2
+										rhs = unary_minus_exp begin
+												exp = c
+											unary_minus_exp end
+									mul_exp end
+								rhs = lookup_exp begin
+										var = lookup_exp begin
+												var = b
+												idx = 1
+											lookup_exp end
+										idx = 0
+									lookup_exp end
+							mul_exp end
+					add_exp end
+			greater_equal_exp end
+		assign_stat end
+	block end
+DONE inputs/test2.in
+

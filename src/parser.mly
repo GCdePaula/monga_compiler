@@ -20,7 +20,7 @@
 
 %type <Ast_nodes.exp_node> exp var primary_expression unary_exp mul_exp add_exp relational_expression and_exp or_exp
 %type <Ast_nodes.stat_node> stat
-%type <string * Ast_nodes.exp list> func_call
+%type <string * Ast_nodes.exp_node list> func_call
 %start <Ast_nodes.def_node list> program
 
 %%
