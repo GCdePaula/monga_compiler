@@ -14,7 +14,7 @@ let rec parse lexbuf =
       | Parser.EOF -> ()
       | _ -> parse lexbuf
   with
-    Lexer.LexerError e -> printf "LexerError: %s\n" e;;
+    Lexer.LexerError e -> printf "LexerError: %s\n" e
 
 let test fileName =
   printf "LEXING FILE %s\n" fileName;
@@ -23,7 +23,7 @@ let test fileName =
   let lexbuf = Lexing.from_channel cin in
   parse lexbuf;
 
-  printf "DONE %s\n\n" fileName;;
+  printf "DONE %s\n\n" fileName
 
 let main () =
   let d = "inputs/" in
@@ -41,7 +41,7 @@ let main () =
     d^"test11.in";
   ] in
 
-  List.map test fnames;;
+  List.map test fnames
 
 let _ = Printexc.print main ()
 
