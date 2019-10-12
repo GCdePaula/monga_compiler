@@ -2,6 +2,7 @@ open Parser
 open Ast_nodes
 open Printf
 
+
 (* Float numerals might lose precision *)
 let string_of_tk = function
   | IF -> "If"
@@ -110,44 +111,51 @@ let rec print_monga_type t =
 let rec print_def def =
   let rec print_sig = function
     | [] -> ()
-    | [(id, t)] ->
-      printf "%s : " id;
-      print_monga_type t;
-    | (id, t) :: xs ->
-      printf "%s : " id;
-      print_monga_type t;
+    | [m_var] ->
+      printf "%s : " m_var.id;
+      print_monga_type m_var.t;
+    | m_var :: xs ->
+      printf "%s : " m_var.id;
+      print_monga_type m_var.t;
       print_string ", ";
       print_sig xs
   in
 
   match def with
-  | VarDef (id, t) ->
-    printf "var_def begin\n\tid = %s\n\ttype = " id;
-    print_monga_type t;
-    print_string "\nvar_def end\n"
+  | VarDef vdef ->
+    printf "var_def begin\n\tid = %s\n\ttype = " vdef.id;
+    print_monga_type vdef.t;
+    print_string "\nvar_def end\n\n"
 
   | FuncDef (id, signature, opt_t, b) ->
     printf "func_def begin\n\tid = %s\n\tsignature = (" id;
     print_sig signature;
     print_string ")";
     (match opt_t with
-      | Some t -> 
+      | Some t ->
         print_string "\n\treturn_type = ";
         print_monga_type t
       | None -> ()
     );
     print_string "\n\tblock = ";
-    print_block b 1
+    print_block b 1;
+    print_string "func_def end\n\n"
 
 and print_block block depth =
+  let p_var m_var =
+    print_depth (depth+1); print_string "var_def begin\n";
+    print_depth (depth+2); printf "id = %s\n\n" m_var.id;
+    print_depth (depth+2); print_string "type = ";
+    print_monga_type m_var.t; print_string "\n";
+    print_string "var_def end\n\n"
+  in
   let p_stat stat = print_stat stat (depth+1) in
   print_string "block begin\n";
 
-  match block with
-  | Stats (lstat) ->
-    List.iter p_stat lstat;
+  List.iter p_var block.var_decs;
+  List.iter p_stat block.statements;
 
-  print_depth depth; print_string "block end\n\n"
+  print_depth depth; print_string "block end\n"
 
 and print_stat stat depth =
   match stat with
@@ -205,14 +213,6 @@ and print_stat stat depth =
 
   | BlockStat (block) ->
     print_depth (depth); print_block block (depth);
-    print_string "\n"
-
-  | VarDefStat (id, t) ->
-    print_depth depth; print_string "var_def begin\n";
-    print_depth (depth+1); printf "id = %s\n\n"id;
-    print_depth (depth+1); print_string "type = ";
-    print_monga_type t; print_string "\n";
-    print_string "var_def end\n\n"
 
 and print_exp exp depth =
   let print_bin_exp lhs rhs =
@@ -332,7 +332,7 @@ and print_exp exp depth =
     print_exp exp2 (depth+1);
     print_depth depth; print_string "lookup_exp end\n"
 
-  | IdExp id ->
+  | VarExp id ->
     printf "%s\n" id
 
   | CallExp (fname, params) ->

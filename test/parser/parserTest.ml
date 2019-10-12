@@ -21,7 +21,10 @@ let test fileName =
 
 let main () =
   let d = "inputs/" in
-  let fnames = [
+  let fnames = [ 
+    (* add empty program *)
+    (* add function_end statement, fix block double linebreak *)
+    (* rename definition to declaration *)
     d^"test1.in";
     d^"test2.in";
     d^"test3.in";

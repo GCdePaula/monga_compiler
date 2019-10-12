@@ -8,5 +8,7 @@ depends: [
   "ocaml" {= "4.08.1"}
   "dune"
   "menhir"
+  "merlin"
+  "ocp-indent"
 ]
 build: ["dune" "build" "-p" name "-j" jobs]
