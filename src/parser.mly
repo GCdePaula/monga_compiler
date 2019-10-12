@@ -12,20 +12,20 @@
 %token OPENBRACES CLOSEBRACES
 %token NEW
 %token AS
-%token <Ast_nodes.name> ID
+%token <AstTypes.name> ID
 %token ADD SUB MUL DIV
 %token EQ NE LE GE LT GT
 %token AND OR NOT
 %token EOF
 
-%type <Ast_nodes.exp_node> exp var primary_expression unary_exp mul_exp add_exp relational_expression and_exp or_exp
-%type <Ast_nodes.stat_node> stat
-%type <Ast_nodes.name * Ast_nodes.exp_node list> func_call
-%type <Ast_nodes.block_node> block
-%type <Ast_nodes.monga_type> m_type
-%type <Ast_nodes.monga_variable> var_def
+%type <UntypedAst.exp_node> exp var primary_expression unary_exp mul_exp add_exp relational_expression and_exp or_exp
+%type <UntypedAst.stat_node> stat
+%type <AstTypes.name * UntypedAst.exp_node list> func_call
+%type <UntypedAst.block_node> block
+%type <AstTypes.monga_type> m_type
+%type <AstTypes.monga_variable> var_def
 
-%start <Ast_nodes.def_node list> program
+%start <UntypedAst.def_node list> program
 
 %%
 
@@ -33,102 +33,102 @@ program :
   | def_l = list(def) EOF { def_l }
 
 def:
-  | v = var_def SEMICOLON { Ast_nodes.VarDef v }
+  | v = var_def SEMICOLON { UntypedAst.VarDef v }
   | f = func_def { f }
 
 var_def:
-  | id = ID COLON t = m_type { Ast_nodes.{id = id; t = t} }
+  | id = ID COLON t = m_type { AstTypes.{id = id; t = t} }
 
 m_type:
-  | INT { Ast_nodes.Int }
-  | FLOAT { Ast_nodes.Float }
-  | CHAR { Ast_nodes.Char }
-  | BOOL { Ast_nodes.Bool }
-  | OPENBRACKET t = m_type CLOSEBRACKET { Ast_nodes.Array t }
+  | INT { AstTypes.Int }
+  | FLOAT { AstTypes.Float }
+  | CHAR { AstTypes.Char }
+  | BOOL { AstTypes.Bool }
+  | OPENBRACKET t = m_type CLOSEBRACKET { AstTypes.Array t }
 
 func_def:
   | id = ID OPENPAREN p = separated_list(COMMA, var_def) CLOSEPAREN b = block
-    { Ast_nodes.FuncDef (id, p, None, b) }
+    { UntypedAst.FuncDef (id, p, None, b) }
   | id = ID OPENPAREN p = separated_list(COMMA, var_def) CLOSEPAREN COLON t = m_type b = block
-    { Ast_nodes.FuncDef (id, p, Some t, b) }
+    { UntypedAst.FuncDef (id, p, Some t, b) }
 
 block:
   | OPENBRACES b = block_content CLOSEBRACES { b }
 
 block_content:
   | v = var_def SEMICOLON vs = block_content
-    { Ast_nodes.{vs with var_decs = v :: vs.var_decs} }
+    { UntypedAst.{vs with var_decs = v :: vs.var_decs} }
   | s = list(stat)
-    { Ast_nodes.{var_decs=[]; statements=s} }
+    { UntypedAst.{var_decs=[]; statements=s} }
 
 stat:
   | IF e = exp b = block
-    { Ast_nodes.IfElseStat (e, b, None)  }
+    { UntypedAst.IfElseStat (e, b, None)  }
   | IF e = exp b1 = block ELSE b2 = block
-    { Ast_nodes.IfElseStat (e, b1, (Some b2)) }
+    { UntypedAst.IfElseStat (e, b1, (Some b2)) }
   | WHILE e = exp b = block
-    { Ast_nodes.WhileStat (e, b) }
+    { UntypedAst.WhileStat (e, b) }
   | id = var ASSIGN e = exp SEMICOLON
-    { Ast_nodes.AssignStat (id, e) }
+    { UntypedAst.AssignStat (id, e) }
   | RETURN e = option(exp) SEMICOLON
-    { Ast_nodes.ReturnStat e }
+    { UntypedAst.ReturnStat e }
   | f = func_call SEMICOLON
-    { let (id, args_list) = f in Ast_nodes.CallStat (id, args_list) }
+    { let (id, args_list) = f in UntypedAst.CallStat (id, args_list) }
   | PUT e = exp SEMICOLON
-    { Ast_nodes.PutStat e }
+    { UntypedAst.PutStat e }
   | b = block
-    { Ast_nodes.BlockStat b }
+    { UntypedAst.BlockStat b }
 
 var:
-  | id = ID { Ast_nodes.VarExp id }
-  | e1 = primary_expression OPENBRACKET e2 = exp CLOSEBRACKET { Ast_nodes.LookupExp (e1, e2) }
+  | id = ID { UntypedAst.VarExp id }
+  | e1 = primary_expression OPENBRACKET e2 = exp CLOSEBRACKET { UntypedAst.LookupExp (e1, e2) }
 
 primary_expression:
-  | i = INTNUMERAL { Ast_nodes.IntExp i }
-  | f = FLOATNUMERAL { Ast_nodes.FloatExp f }
-  | s = STRINGLITERAL { Ast_nodes.StringExp s }
-  | TRUE { Ast_nodes.TrueExp }
-  | FALSE { Ast_nodes.FalseExp }
+  | i = INTNUMERAL { UntypedAst.IntExp i }
+  | f = FLOATNUMERAL { UntypedAst.FloatExp f }
+  | s = STRINGLITERAL { UntypedAst.StringExp s }
+  | TRUE { UntypedAst.TrueExp }
+  | FALSE { UntypedAst.FalseExp }
   | OPENPAREN e = exp CLOSEPAREN { e }
-  | f = func_call { let (id, args_list) = f in Ast_nodes.CallExp (id, args_list) }
+  | f = func_call { let (id, args_list) = f in UntypedAst.CallExp (id, args_list) }
   | e = var { e }
 
 unary_exp:
   | e = primary_expression { e }
-  | NOT e = unary_exp { Ast_nodes.UnaryNotExp e }
-  | SUB e = unary_exp { Ast_nodes.UnaryMinusExp e }
+  | NOT e = unary_exp { UntypedAst.UnaryNotExp e }
+  | SUB e = unary_exp { UntypedAst.UnaryMinusExp e }
 
 mul_exp:
   | e = unary_exp { e }
-  | e1 = mul_exp MUL e2 = unary_exp { Ast_nodes.MulExp (e1, e2) }
-  | e1 = mul_exp DIV e2 = unary_exp { Ast_nodes.DivExp (e1, e2) }
+  | e1 = mul_exp MUL e2 = unary_exp { UntypedAst.MulExp (e1, e2) }
+  | e1 = mul_exp DIV e2 = unary_exp { UntypedAst.DivExp (e1, e2) }
 
 add_exp:
   | e = mul_exp { e }
-  | e1 = add_exp ADD e2 = mul_exp { Ast_nodes.AddExp (e1, e2) }
-  | e1 = add_exp SUB e2 = mul_exp { Ast_nodes.SubExp (e1, e2) }
+  | e1 = add_exp ADD e2 = mul_exp { UntypedAst.AddExp (e1, e2) }
+  | e1 = add_exp SUB e2 = mul_exp { UntypedAst.SubExp (e1, e2) }
 
 relational_expression:
   | e = add_exp { e }
-  | e1 = add_exp EQ e2 = add_exp { Ast_nodes.EqExp (e1, e2) }
-  | e1 = add_exp NE e2 = add_exp { Ast_nodes.NeExp (e1, e2) }
-  | e1 = add_exp GT e2 = add_exp { Ast_nodes.GtExp (e1, e2) }
-  | e1 = add_exp LT e2 = add_exp { Ast_nodes.LtExp (e1, e2) }
-  | e1 = add_exp GE e2 = add_exp { Ast_nodes.GeExp (e1, e2) }
-  | e1 = add_exp LE e2 = add_exp { Ast_nodes.LeExp (e1, e2) }
+  | e1 = add_exp EQ e2 = add_exp { UntypedAst.EqExp (e1, e2) }
+  | e1 = add_exp NE e2 = add_exp { UntypedAst.NeExp (e1, e2) }
+  | e1 = add_exp GT e2 = add_exp { UntypedAst.GtExp (e1, e2) }
+  | e1 = add_exp LT e2 = add_exp { UntypedAst.LtExp (e1, e2) }
+  | e1 = add_exp GE e2 = add_exp { UntypedAst.GeExp (e1, e2) }
+  | e1 = add_exp LE e2 = add_exp { UntypedAst.LeExp (e1, e2) }
 
 and_exp:
   | e = relational_expression { e }
-  | e1 = and_exp AND e2 = relational_expression { Ast_nodes.AndExp (e1, e2) }
+  | e1 = and_exp AND e2 = relational_expression { UntypedAst.AndExp (e1, e2) }
 
 or_exp:
   | e = and_exp { e }
-    | e1 = or_exp OR e2 = and_exp { Ast_nodes.OrExp (e1, e2) }
+    | e1 = or_exp OR e2 = and_exp { UntypedAst.OrExp (e1, e2) }
 
 exp:
   | e = or_exp  { e }
-  | e = exp AS t = m_type { Ast_nodes.CastExp (e, t) }
-  | NEW t = m_type OPENBRACKET e = exp CLOSEBRACKET { Ast_nodes.NewExp (t, e) }
+  | e = exp AS t = m_type { UntypedAst.CastExp (e, t) }
+  | NEW t = m_type OPENBRACKET e = exp CLOSEBRACKET { UntypedAst.NewExp (t, e) }
 
 
 func_call:

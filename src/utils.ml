@@ -1,5 +1,6 @@
 open Parser
-open Ast_nodes
+open UntypedAst
+open AstTypes
 open Printf
 
 

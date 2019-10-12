@@ -1,19 +1,25 @@
 
-type monga_type =
-  | Int
-  | Float
-  | Bool
-  | Char
-  | Array of monga_type
+open AstTypes
 
-type name = string
+type def_node =
+  | VarDef of monga_variable
+  | FuncDef of name * monga_variable list * monga_type option * block_node
 
-type monga_variable = {
-  id: name;
-  t: monga_type
+and block_node = {
+  var_decs : monga_variable list;
+  statements : stat_node list
 }
 
-type exp_node =
+and stat_node =
+  | IfElseStat of exp_node * block_node * block_node option
+  | WhileStat of exp_node * block_node
+  | ReturnStat of exp_node option
+  | AssignStat of exp_node * exp_node
+  | CallStat of name * exp_node list
+  | PutStat of exp_node
+  | BlockStat of block_node
+
+and exp_node =
   | AddExp of exp_node * exp_node
   | SubExp of exp_node * exp_node
   | MulExp of exp_node * exp_node
@@ -37,22 +43,4 @@ type exp_node =
   | LookupExp of exp_node * exp_node
   | VarExp of name
   | CallExp of name * exp_node list
-
-and stat_node =
-  | IfElseStat of exp_node * block_node * block_node option
-  | WhileStat of exp_node * block_node
-  | ReturnStat of exp_node option
-  | AssignStat of exp_node * exp_node
-  | CallStat of name * exp_node list
-  | PutStat of exp_node
-  | BlockStat of block_node
-
-and block_node = {
-  var_decs : monga_variable list;
-  statements : stat_node list
-}
-
-and def_node =
-  | VarDef of monga_variable
-  | FuncDef of name * monga_variable list * monga_type option * block_node
 
