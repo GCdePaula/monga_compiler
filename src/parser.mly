@@ -12,7 +12,7 @@
 %token OPENBRACES CLOSEBRACES
 %token NEW
 %token AS
-%token <AstTypes.name> ID
+%token <AstTypes.id> ID
 %token ADD SUB MUL DIV
 %token EQ NE LE GE LT GT
 %token AND OR NOT
@@ -20,12 +20,12 @@
 
 %type <UntypedAst.exp_node> exp var primary_expression unary_exp mul_exp add_exp relational_expression and_exp or_exp
 %type <UntypedAst.stat_node> stat
-%type <AstTypes.name * UntypedAst.exp_node list> func_call
+%type <AstTypes.id * UntypedAst.exp_node list> func_call
 %type <UntypedAst.block_node> block
 %type <AstTypes.monga_type> m_type
 %type <AstTypes.monga_variable> var_def
 
-%start <UntypedAst.def_node list> program
+%start <UntypedAst.untyped_tree> program
 
 %%
 
@@ -37,7 +37,7 @@ def:
   | f = func_def { f }
 
 var_def:
-  | id = ID COLON t = m_type { AstTypes.{id = id; t = t} }
+  | id = ID COLON t = m_type { AstTypes.{name = id; t = t} }
 
 m_type:
   | INT { AstTypes.Int }
@@ -48,9 +48,9 @@ m_type:
 
 func_def:
   | id = ID OPENPAREN p = separated_list(COMMA, var_def) CLOSEPAREN b = block
-    { UntypedAst.FuncDef (id, p, None, b) }
+    { UntypedAst.FuncDef (id, {parameters = p; ret_type = None}, b) }
   | id = ID OPENPAREN p = separated_list(COMMA, var_def) CLOSEPAREN COLON t = m_type b = block
-    { UntypedAst.FuncDef (id, p, Some t, b) }
+    { UntypedAst.FuncDef (id, {parameters = p; ret_type = Some t}, b) }
 
 block:
   | OPENBRACES b = block_content CLOSEBRACES { b }

@@ -6,6 +6,7 @@ maintainer: "Gabriel Coutinho <38709327+GCdePaula@users.noreply.github.com>"
 authors: "Gabriel Coutinho <38709327+GCdePaula@users.noreply.github.com>"
 depends: [
   "ocaml" {= "4.08.1"}
+  "base"
   "dune"
   "menhir"
   "merlin"

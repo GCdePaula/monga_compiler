@@ -110,13 +110,14 @@ let rec print_monga_type t =
 
 
 let rec print_def def =
-  let rec print_sig = function
+  let rec print_sig (var_list : monga_variable list) =
+    match var_list with
     | [] -> ()
     | [m_var] ->
-      printf "%s : " m_var.id;
+      printf "%s : " m_var.name;
       print_monga_type m_var.t;
     | m_var :: xs ->
-      printf "%s : " m_var.id;
+      printf "%s : " m_var.name;
       print_monga_type m_var.t;
       print_string ", ";
       print_sig xs
@@ -124,15 +125,15 @@ let rec print_def def =
 
   match def with
   | VarDef vdef ->
-    printf "var_def begin\n\tid = %s\n\ttype = " vdef.id;
+    printf "var_def begin\n\tid = %s\n\ttype = " vdef.name;
     print_monga_type vdef.t;
     print_string "\nvar_def end\n\n"
 
-  | FuncDef (id, signature, opt_t, b) ->
-    printf "func_def begin\n\tid = %s\n\tsignature = (" id;
-    print_sig signature;
+  | FuncDef (name, signature, b) ->
+    printf "func_def begin\n\tid = %s\n\tsignature = (" name;
+    print_sig signature.parameters;
     print_string ")";
-    (match opt_t with
+    (match signature.ret_type with
       | Some t ->
         print_string "\n\treturn_type = ";
         print_monga_type t
@@ -143,9 +144,9 @@ let rec print_def def =
     print_string "func_def end\n\n"
 
 and print_block block depth =
-  let p_var m_var =
+  let p_var (m_var : monga_variable) =
     print_depth (depth+1); print_string "var_def begin\n";
-    print_depth (depth+2); printf "id = %s\n\n" m_var.id;
+    print_depth (depth+2); printf "id = %s\n\n" m_var.name;
     print_depth (depth+2); print_string "type = ";
     print_monga_type m_var.t; print_string "\n";
     print_string "var_def end\n\n"

@@ -6,10 +6,15 @@ type monga_type =
   | Char
   | Array of monga_type
 
-type name = string
+type id = string
 
 type monga_variable = {
-  id: name;
+  name: id;
   t: monga_type
+}
+
+type monga_function_type = {
+  parameters: monga_variable list;
+  ret_type: monga_type option;
 }
 
