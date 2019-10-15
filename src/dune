@@ -5,5 +5,5 @@
  (flags ("--explain" "--dump"))
 )
 
-(library (name Src) (modules Lexer Utils Parser UntypedAst AstTypes))
+(library (name Src) (libraries base) (modules Lexer Parser AstTypes UntypedAst TypedAst Utils))
 

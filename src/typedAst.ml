@@ -1,4 +1,5 @@
 open AstTypes
+open Base
 
 (* Typed Expression *)
 type t_exp_node = {
@@ -57,21 +58,21 @@ type typed_tree = t_def_node list
 
 
 
-
-module TypeEnv = Map.Make(String)
+module TypeEnv = Stdlib.Map.Make(String)
 type env_element =
   | Func of monga_function_type
   | Var of monga_type
 
 
-let rec type_exp env exp =
 
+let rec type_exp env exp =
+  (* let (>>=) = Result.bind in *)
+  let open Result in
   let arthm lhs rhs =
-    let open Base.Result in
     type_exp env lhs >>= fun t_lhs ->
     type_exp env rhs >>= fun t_rhs ->
 
-    (match t_lhs.t, t_rhs.t with
+    match t_lhs.t, t_rhs.t with
     | Int, Int ->
       Ok (t_lhs, t_rhs, Int)
 
@@ -85,7 +86,7 @@ let rec type_exp env exp =
       } in
       Ok (cast_lhs, t_rhs, Float)
 
-    | Float, Int -> 
+    | Float, Int ->
       let cast_rhs = {
         exp = CastExp (t_rhs, Float);
         t = Float
@@ -94,71 +95,198 @@ let rec type_exp env exp =
 
     | _, _ ->
       Error "Type Error"
-    )
+  in
+
+  (* Equality doesn't promote int to float *)
+  let eq_exp lhs rhs =
+    type_exp env lhs >>= fun t_lhs ->
+    type_exp env rhs >>= fun t_rhs ->
+    if Poly.equal t_lhs.t t_rhs.t then
+      Ok (t_lhs, t_rhs, Bool)
+    else
+      Error "Type Error"
+  in
+
+  let log_exp lhs rhs =
+    type_exp env lhs >>= fun t_lhs ->
+    type_exp env rhs >>= fun t_rhs ->
+    match t_lhs.t, t_rhs.t with
+    | Bool, Bool -> Ok (t_lhs, t_rhs, Bool)
+    | _, _ ->  Error "Type Error"
   in
 
 
-  let open UntypedAst in
   match exp with
-
   (* base cases *)
-  | TrueExp ->
-    {exp = TrueExp; t = Bool}
+  | UntypedAst.TrueExp ->
+    Ok {exp = TrueExp; t = Bool}
 
-  | FalseExp ->
-    {exp = FalseExp; t = Bool}
+  | UntypedAst.FalseExp ->
+    Ok {exp = FalseExp; t = Bool}
 
-  | FloatExp fnum ->
-    {exp = FloatExp fnum; t = Float}
+  | UntypedAst.FloatExp fnum ->
+    Ok {exp = FloatExp fnum; t = Float}
 
-  | IntExp inum ->
-    {exp = IntExp inum; t = Int}
+  | UntypedAst.IntExp inum ->
+    Ok {exp = IntExp inum; t = Int}
 
-  | StringExp str ->
-    {exp = StringExp str; t = Array Char}
+  | UntypedAst.StringExp str ->
+    Ok {exp = StringExp str; t = Array Char}
+
 
   (* Arithmetic bin exp *)
-  | AddExp (lhs, rhs) ->
-    let t_lhs = type_exp env lhs in
-    let t_rhs = type_exp env rhs in
+  | UntypedAst.AddExp (lhs, rhs) ->
+    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = AddExp (t_lhs, t_rhs) in
+    Ok {exp; t}
+
+  | UntypedAst.SubExp (lhs, rhs) ->
+    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = SubExp (t_lhs, t_rhs) in
+    Ok {exp; t}
+
+  | UntypedAst.MulExp (lhs, rhs) ->
+    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = MulExp (t_lhs, t_rhs) in
+    Ok {exp; t}
+
+  | UntypedAst.DivExp (lhs, rhs) ->
+    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = DivExp (t_lhs, t_rhs) in
+    Ok {exp; t}
 
 
+  (* Equality Exp *)
+  | UntypedAst.EqExp (lhs, rhs) ->
+    eq_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = EqExp (t_lhs, t_rhs) in
+    Ok {exp; t}
 
-  | SubExp (lhs, rhs) -> ()
+  | UntypedAst.NeExp (lhs, rhs) ->
+    eq_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = NeExp (t_lhs, t_rhs) in
+    Ok {exp; t}
 
-  | MulExp (lhs, rhs) -> ()
 
-  | DivExp (lhs, rhs) -> ()
+  (* Relational Exp, same semantics as arithm *)
+  | UntypedAst.LeExp (lhs, rhs) ->
+    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = LeExp (t_lhs, t_rhs) in
+    Ok {exp; t}
 
-  | EqExp (lhs, rhs) -> ()
+  | UntypedAst.GeExp (lhs, rhs) ->
+    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = GeExp (t_lhs, t_rhs) in
+    Ok {exp; t}
 
-  | NeExp (lhs, rhs) -> ()
+  | UntypedAst.LtExp (lhs, rhs) ->
+    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = LtExp (t_lhs, t_rhs) in
+    Ok {exp; t}
 
-  | LeExp (lhs, rhs) -> ()
+  | UntypedAst.GtExp (lhs, rhs) ->
+    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = GtExp (t_lhs, t_rhs) in
+    Ok {exp; t}
 
-  | GeExp (lhs, rhs) -> ()
 
-  | LtExp (lhs, rhs) -> ()
+  (* Logical Exp *)
+  | UntypedAst.AndExp (lhs, rhs) ->
+    log_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = AndExp (t_lhs, t_rhs) in
+    Ok {exp; t}
 
-  | GtExp (lhs, rhs) -> ()
+  | UntypedAst.OrExp (lhs, rhs) ->
+    log_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    let exp = AndExp (t_lhs, t_rhs) in
+    Ok {exp; t}
 
-  | AndExp (lhs, rhs) -> ()
+  (* Unary *)
+  | UntypedAst.UnaryMinusExp e ->
+    type_exp env e >>= fun t_exp ->
+    (match t_exp.t with
+    | Float -> Ok {exp = UnaryMinusExp t_exp; t = Float}
+    | Int -> Ok {exp = UnaryMinusExp t_exp; t = Int}
+    | _ -> Error "Type Error")
 
-  | OrExp (lhs, rhs) -> ()
+  | UntypedAst.UnaryNotExp e ->
+    type_exp env e >>= fun t_exp ->
+    (match t_exp.t with
+    | Bool -> Ok {exp = UnaryNotExp t_exp; t = Bool}
+    | _ -> Error "Type Error")
 
-  | UnaryMinusExp e -> ()
+  | UntypedAst.NewExp (mt, e) ->
+    type_exp env e >>= fun t_exp ->
+    (match t_exp.t with
+    | Int -> Ok {exp = NewExp (mt, t_exp); t = Array mt}
+    | _ -> Error "Type Error")
 
-  | UnaryNotExp e -> ()
+  | UntypedAst.CastExp (_, _) ->
+    Error "CastExp"
 
-  | NewExp (mt, e) -> ()
+  (* Named expressions *)
+  | UntypedAst.VarExp name ->
+    if TypeEnv.mem name env then
+      (match TypeEnv.find name env with
+       | Var mt -> Ok {exp = VarExp name; t = mt}
+       | Func _ -> Error "Type Error")
+    else
+      Error "Type Error"
 
-  | CastExp (e, t) -> ()
+  | UntypedAst.LookupExp (e, idx) ->
+    type_exp env e >>= fun t_exp ->
+    type_exp env idx >>= fun t_idx ->
+    (match t_exp.t, t_idx.t with
+     | Array t, Int -> Ok {exp = LookupExp (t_exp, t_idx); t}
+     | _, _ -> Error "Type Error")
 
-  | LookupExp (var, idx) -> ()
+  | UntypedAst.CallExp (name, args) ->
+    if TypeEnv.mem name env then
+      (match TypeEnv.find name env with
 
-  | VarExp name -> ()
+       (* Functions with no return type cannot be used in expressions *)
+       | Func {parameters; ret_type = Some ret_type} ->
 
-  | CallExp (name, args) -> ()
+         (* Type all arguments first, getting a list of results *)
+         let t_args_res = List.map ~f:(type_exp env) args in
+
+         (match
+
+            (* Combine list of results into a result that contains a list *)
+            Result.combine_errors t_args_res >>= fun t_args ->
+
+            (* Checks if arguments types match with parameter types.
+               If there's a count mismatch, raises exception *)
+            let exception WrongArgumentCount in
+            let rec zip a (b : monga_variable list) =
+              match a, b with
+              | [], [] -> [Ok ()]
+              | arg :: xs,  param :: ys ->
+                let tail = zip xs ys in
+                if Poly.equal arg.t param.t then
+                  Ok () :: tail
+                else
+                  Error "" :: tail
+              | _, _ ->
+                raise WrongArgumentCount
+            in
+
+            try
+              let res = Result.combine_errors (zip t_args parameters) in
+              (match res with
+               | Ok _ -> Ok t_args
+               | Error x -> Error x)
+            with
+            | WrongArgumentCount -> Error [""]
+
+          with
+          | Ok t_args -> Ok {exp = CallExp (name, t_args); t = ret_type}
+          | Error _ -> Error "")
+
+       | Func { parameters = _ ; ret_type = None} -> Error ""
+       | Var _ -> Error "Type Error")
+    else
+      Error "Type Error"
 
 
 
