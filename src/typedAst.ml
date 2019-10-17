@@ -63,60 +63,124 @@ type env_element =
   | Func of monga_function_type
   | Var of monga_type
 
+let combine_res x y f_ok =
+    Result.combine x y ~ok:f_ok ~err: List.append
 
-
-let rec type_exp env exp =
-  (* let (>>=) = Result.bind in *)
+let rec type_func env args parameters =
   let open Result in
+
+  (* Type all arguments first, getting a list of results.
+   * Each member is either Ok of a typed expression, or
+   * Error of a list of error types.
+  *)
+  let t_args_res = List.map ~f:(type_exp env) args in
+
+  (* Combine list of results into a result that contains a list.
+   * The type of result's error case is a list of list of errors.
+   * The map_error flattens that list of lists.*)
+  map_error (
+    combine_errors t_args_res >>= fun t_args ->
+
+    (* Checks if arguments types match with parameter types.
+               If there's a count mismatch, raises exception *)
+    let exception WrongArgumentCount in
+    let rec zip a (b : monga_variable list) =
+      match a, b with
+      | [], [] -> [Ok ()]
+      | arg :: xs,  param :: ys ->
+        let tail = zip xs ys in
+        if Poly.equal arg.t param.t then
+          Ok () :: tail
+        else
+          Error "Type Error" :: tail
+      | _, _ ->
+        raise WrongArgumentCount
+    in
+
+    try
+      let res = combine_errors (zip t_args parameters) in
+      (match res with
+       | Ok _ -> Ok t_args
+       | Error x -> Error [x])
+    with
+    | WrongArgumentCount -> Error [[""]]
+  ) ~f:List.concat
+
+and type_exp env exp =
+
   let arthm lhs rhs =
-    type_exp env lhs >>= fun t_lhs ->
-    type_exp env rhs >>= fun t_rhs ->
+    let t_lhs_res = type_exp env lhs in
+    let t_rhs_res = type_exp env rhs in
+    let exception ArthmError in
 
-    match t_lhs.t, t_rhs.t with
-    | Int, Int ->
-      Ok (t_lhs, t_rhs, Int)
+    try
+      combine_res t_lhs_res t_rhs_res (
+        fun t_lhs t_rhs ->
+          match t_lhs.t, t_rhs.t with
+          | Int, Int ->
+            (t_lhs, t_rhs, Int)
 
-    | Float, Float ->
-      Ok (t_lhs, t_rhs, Float)
+          | Float, Float ->
+            (t_lhs, t_rhs, Float)
 
-    | Int, Float ->
-      let cast_lhs = {
-        exp = CastExp (t_lhs, Float);
-        t = Float
-      } in
-      Ok (cast_lhs, t_rhs, Float)
+          | Int, Float ->
+            let cast_lhs = {
+              exp = CastExp (t_lhs, Float);
+              t = Float
+            } in
+            (cast_lhs, t_rhs, Float)
 
-    | Float, Int ->
-      let cast_rhs = {
-        exp = CastExp (t_rhs, Float);
-        t = Float
-      } in
-      Ok (t_lhs, cast_rhs, Float)
+          | Float, Int ->
+            let cast_rhs = {
+              exp = CastExp (t_rhs, Float);
+              t = Float
+            } in
+            (t_lhs, cast_rhs, Float)
 
-    | _, _ ->
-      Error "Type Error"
+          | _, _ ->
+            raise ArthmError
+      )
+    with
+    | ArthmError -> Error ["Type Error"]
   in
 
   (* Equality doesn't promote int to float *)
   let eq_exp lhs rhs =
-    type_exp env lhs >>= fun t_lhs ->
-    type_exp env rhs >>= fun t_rhs ->
-    if Poly.equal t_lhs.t t_rhs.t then
-      Ok (t_lhs, t_rhs, Bool)
-    else
-      Error "Type Error"
+    let t_lhs_res = type_exp env lhs in
+    let t_rhs_res = type_exp env rhs in
+    let exception EqError in
+
+    try
+      combine_res t_lhs_res t_rhs_res (
+        fun t_lhs t_rhs ->
+          if Poly.equal t_lhs.t t_rhs.t then
+            (t_lhs, t_rhs, Bool)
+          else
+            raise EqError
+      )
+    with
+    | EqError -> Error ["Type Error"]
   in
 
-  let log_exp lhs rhs =
-    type_exp env lhs >>= fun t_lhs ->
-    type_exp env rhs >>= fun t_rhs ->
-    match t_lhs.t, t_rhs.t with
-    | Bool, Bool -> Ok (t_lhs, t_rhs, Bool)
-    | _, _ ->  Error "Type Error"
+  let logic_exp lhs rhs =
+    let t_lhs_res = type_exp env lhs in
+    let t_rhs_res = type_exp env rhs in
+
+    let exception LogicError in
+    try
+      combine_res t_lhs_res t_rhs_res (
+        fun t_lhs t_rhs ->
+          match t_lhs.t, t_rhs.t with
+          | Bool, Bool -> (t_lhs, t_rhs, Bool)
+          | _, _ -> raise LogicError
+      )
+    with
+    | LogicError -> Error ["Type Error"]
   in
 
-
+  let open Result in
   match exp with
+
   (* base cases *)
   | UntypedAst.TrueExp ->
     Ok {exp = TrueExp; t = Bool}
@@ -132,7 +196,6 @@ let rec type_exp env exp =
 
   | UntypedAst.StringExp str ->
     Ok {exp = StringExp str; t = Array Char}
-
 
   (* Arithmetic bin exp *)
   | UntypedAst.AddExp (lhs, rhs) ->
@@ -155,7 +218,6 @@ let rec type_exp env exp =
     let exp = DivExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
-
   (* Equality Exp *)
   | UntypedAst.EqExp (lhs, rhs) ->
     eq_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
@@ -166,7 +228,6 @@ let rec type_exp env exp =
     eq_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
     let exp = NeExp (t_lhs, t_rhs) in
     Ok {exp; t}
-
 
   (* Relational Exp, same semantics as arithm *)
   | UntypedAst.LeExp (lhs, rhs) ->
@@ -189,15 +250,14 @@ let rec type_exp env exp =
     let exp = GtExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
-
   (* Logical Exp *)
   | UntypedAst.AndExp (lhs, rhs) ->
-    log_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    logic_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
     let exp = AndExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
   | UntypedAst.OrExp (lhs, rhs) ->
-    log_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    logic_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
     let exp = AndExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
@@ -207,90 +267,56 @@ let rec type_exp env exp =
     (match t_exp.t with
     | Float -> Ok {exp = UnaryMinusExp t_exp; t = Float}
     | Int -> Ok {exp = UnaryMinusExp t_exp; t = Int}
-    | _ -> Error "Type Error")
+    | _ -> Error ["Type Error"])
 
   | UntypedAst.UnaryNotExp e ->
     type_exp env e >>= fun t_exp ->
     (match t_exp.t with
     | Bool -> Ok {exp = UnaryNotExp t_exp; t = Bool}
-    | _ -> Error "Type Error")
+    | _ -> Error ["Type Error"])
 
   | UntypedAst.NewExp (mt, e) ->
     type_exp env e >>= fun t_exp ->
     (match t_exp.t with
     | Int -> Ok {exp = NewExp (mt, t_exp); t = Array mt}
-    | _ -> Error "Type Error")
+    | _ -> Error ["Type Error"])
 
+  (* Cast *)
   | UntypedAst.CastExp (_, _) ->
-    Error "CastExp"
+    Error ["CastExp"]
 
   (* Named expressions *)
   | UntypedAst.VarExp name ->
     if TypeEnv.mem name env then
       (match TypeEnv.find name env with
        | Var mt -> Ok {exp = VarExp name; t = mt}
-       | Func _ -> Error "Type Error")
+       | Func _ -> Error ["Type Error"])
     else
-      Error "Type Error"
+      Error ["Type Error"]
 
   | UntypedAst.LookupExp (e, idx) ->
     type_exp env e >>= fun t_exp ->
     type_exp env idx >>= fun t_idx ->
     (match t_exp.t, t_idx.t with
      | Array t, Int -> Ok {exp = LookupExp (t_exp, t_idx); t}
-     | _, _ -> Error "Type Error")
+     | _, _ -> Error ["Type Error"])
 
   | UntypedAst.CallExp (name, args) ->
-    if TypeEnv.mem name env then
+    try
       (match TypeEnv.find name env with
 
-       (* Functions with no return type cannot be used in expressions *)
+       (* Only functions with return type can be used in expressions *)
        | Func {parameters; ret_type = Some ret_type} ->
+         type_func env args parameters >>= fun t_args ->
+         Ok {exp = CallExp (name, t_args); t = ret_type}
 
-         (* Type all arguments first, getting a list of results *)
-         let t_args_res = List.map ~f:(type_exp env) args in
-
-         (match
-
-            (* Combine list of results into a result that contains a list *)
-            Result.combine_errors t_args_res >>= fun t_args ->
-
-            (* Checks if arguments types match with parameter types.
-               If there's a count mismatch, raises exception *)
-            let exception WrongArgumentCount in
-            let rec zip a (b : monga_variable list) =
-              match a, b with
-              | [], [] -> [Ok ()]
-              | arg :: xs,  param :: ys ->
-                let tail = zip xs ys in
-                if Poly.equal arg.t param.t then
-                  Ok () :: tail
-                else
-                  Error "" :: tail
-              | _, _ ->
-                raise WrongArgumentCount
-            in
-
-            try
-              let res = Result.combine_errors (zip t_args parameters) in
-              (match res with
-               | Ok _ -> Ok t_args
-               | Error x -> Error x)
-            with
-            | WrongArgumentCount -> Error [""]
-
-          with
-          | Ok t_args -> Ok {exp = CallExp (name, t_args); t = ret_type}
-          | Error _ -> Error "")
-
-       | Func { parameters = _ ; ret_type = None} -> Error ""
-       | Var _ -> Error "Type Error")
-    else
-      Error "Type Error"
+       | Func { parameters = _ ; ret_type = None} -> Error [""]
+       | Var _ -> Error ["Type Error"])
+    with
+    | Not_found -> Error ["Type Error"]
 
 
 
-(*
 let add_var var env =
   if (TypeEnv.mem var.name env) then
     (* Error, uses newest declaration of var and keeps typing *)
@@ -322,7 +348,9 @@ let rec compose_env env_res = function
       let new_res = compose_env res vs in
       compose_error old_error new_res
 
-let rec build_block env_res curr_func (block : UntypedAst.block_node) =
+let rec build_block env curr_func (block : UntypedAst.block_node) =
+  Ok {var_decs = []; statements = []}
+    (*
   let block_env = compose_env env_res block.var_decs in
 
   let rec compose_stat = function
@@ -349,41 +377,91 @@ let rec build_block env_res curr_func (block : UntypedAst.block_node) =
   match t_stats_res with
   | Ok t_stats -> Ok {var_decs = block.var_decs; statements = t_stats}
   | Error (msg, t_stats) -> Error (msg, {var_decs = block.var_decs; statements = t_stats})
+                     *)
 
-and build_statement env_res curr_func = function
-  | UntypedAst.IfElseStat (condition, then_block, None) ->
-    let t_cond = type_exp env_res condition in
-    let t_then = build_block env_res curr_func then_block in
-    Ok(IfElseStat (t_cond, t_then, None))
+and build_statement env curr_func stat =
+  let open Result in
 
+  match stat with
   | UntypedAst.IfElseStat (condition, then_block, Some else_block) ->
-    let t_cond = type_exp env_res condition in
-    let t_then = build_block env_res curr_func then_block in
-    let t_else = build_block env_res curr_func else_block in
-    Ok(IfElseStat (t_cond, t_then, Some t_else))
+    let t_cond_res = type_exp env condition in
+    let t_then_res = build_block env curr_func then_block in
+    let t_else_res = build_block env curr_func else_block in
+
+    let partial_res = combine_res t_cond_res t_then_res (
+        fun t_cond t_then ->
+          (t_cond, t_then)
+      )
+    in
+    combine_res partial_res t_else_res (
+      fun (t_cond, t_then) t_else ->
+        IfElseStat (t_cond, t_then, Some t_else)
+    )
+
+  | UntypedAst.IfElseStat (condition, then_block, None) ->
+    let t_cond_res = type_exp env condition in
+    let t_then_res = build_block env curr_func then_block in
+    combine_res t_cond_res t_then_res (
+      fun t_cond t_then ->
+        IfElseStat (t_cond, t_then, None)
+    )
 
   | UntypedAst.WhileStat (condition, block) ->
-    let t_exp = type_exp env_res condition in
-    let t_block = build_block env_res curr_func block in
-    Ok(WhileStat (t_exp, t_block))
+    let t_cond_res = type_exp env condition in
+    let t_block_res = build_block env curr_func block in
+    combine_res t_cond_res t_block_res (
+      fun t_cond t_block ->
+        WhileStat (t_cond, t_block)
+    )
 
-  | UntypedAst.ReturnStat (None) -> 
-    ()
+  | UntypedAst.ReturnStat (exp_opt) ->
+    (match curr_func.ret_type, exp_opt with
+     | None, None ->
+       Ok (ReturnStat None)
 
-  | UntypedAst.ReturnStat (Some exp) -> 
-    ()
+    | Some ret_type, Some exp ->
+      type_exp env exp >>= fun t_exp ->
+        if Poly.equal ret_type t_exp.t then
+          Ok (ReturnStat (Some t_exp))
+        else
+          Error [""]
+    | _, _ -> Error [""])
 
   | UntypedAst.AssignStat (var, exp) ->
-    ()
+    (match var with
+    | LookupExp _ | VarExp _ ->
+      type_exp env var >>= fun t_var ->
+      type_exp env exp >>= fun t_exp ->
 
-  | UntypedAst.CallStat (func, args) ->
-    ()
+      if Poly.equal t_var.t t_exp.t then
+        Ok (AssignStat (t_var, t_exp))
+      else
+        Error [""]
+
+    | _ -> Error [""])
+
+  | UntypedAst.CallStat (f_name, args) ->
+    (try
+      (match TypeEnv.find f_name env with
+
+       (* Only functions without return type can be used in statements *)
+       | Func {parameters; ret_type = None} ->
+         type_func env args parameters >>= fun t_args ->
+         Ok (CallStat (f_name, t_args))
+
+       | Func { parameters = _ ; ret_type = Some _} -> Error [""]
+       | Var _ -> Error [""]
+      )
+   with
+    | Not_found -> Error [""])
 
   | UntypedAst.PutStat exp ->
-    ()
+    type_exp env exp >>= fun t_exp ->
+    Ok (PutStat t_exp)
 
   | UntypedAst.BlockStat block ->
-    ()
+    build_block env curr_func block >>= fun t_block ->
+    Ok (BlockStat t_block)
 
 
 let build_def def env =
@@ -399,4 +477,3 @@ let build_def def env =
       Error (error_msg, new_env)
     else
       Ok (env)
-*)
