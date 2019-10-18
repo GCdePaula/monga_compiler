@@ -63,8 +63,8 @@ type env_element =
   | Func of monga_function_type
   | Var of monga_type
 
-let combine_res x y f_ok =
-    Result.combine x y ~ok:f_ok ~err: List.append
+let combine_res x_res y_res f_ok =
+    Result.combine x_res y_res ~ok:f_ok ~err: List.append
 
 let rec type_func env args parameters =
   let open Result in
@@ -316,68 +316,42 @@ and type_exp env exp =
     | Not_found -> Error ["Type Error"]
 
 
+let compose_env env var_decs =
+  let acc_var (env, err_list) var =
+    if (TypeEnv.mem var.name env) then
+      (* Error, uses newest declaration of var *)
+      let new_env = TypeEnv.add var.name (Var var.t) env in
+      let error_msg = "Redeclared name" in
+      (new_env, error_msg :: err_list)
+    else
+      let new_env = TypeEnv.add var.name (Var var.t) env in
+      (new_env, err_list)
+ in
 
-let add_var var env =
-  if (TypeEnv.mem var.name env) then
-    (* Error, uses newest declaration of var and keeps typing *)
-    let new_env = TypeEnv.add var.name (Var var.t) env in
-    let error_msg = "Redeclared name" in
-    Error (error_msg, new_env)
-  else
-    let new_env = TypeEnv.add var.name (Var var.t) env in
-    Ok (new_env)
-
-let compose_error error = function
-  | Ok (new_env) ->
-    Error (error, new_env)
-
-  | Error (new_error, new_env) ->
-    let error_msg = error ^ new_error in
-    Error (error_msg, new_env)
-
-let rec compose_env env_res = function
-  | [] -> env_res
-  | v :: vs ->
-    match env_res with
-    | Ok old_env ->
-      let res = add_var v old_env in
-      compose_env res vs
-
-    | Error (old_error, old_env) ->
-      let res = add_var v old_env in
-      let new_res = compose_env res vs in
-      compose_error old_error new_res
-
-let rec build_block env curr_func (block : UntypedAst.block_node) =
-  Ok {var_decs = []; statements = []}
-    (*
-  let block_env = compose_env env_res block.var_decs in
-
-  let rec compose_stat = function
-    | [] -> Ok []
-    | x :: xs ->
-      let stat_res = build_statement block_env curr_func x in
-      let stats_res = compose_stat xs in
-      match stat_res, stats_res with
-      | Ok t_stat, Ok t_stats ->
-        Ok (t_stat :: t_stats)
-
-      | Ok t_stat, Error (msg, t_stats) ->
-        Error (msg, t_stat :: t_stats)
-
-      | Error (msg, t_stat), Ok t_stats ->
-        Error (msg, t_stat :: t_stats)
-
-      | Error (msg1, t_stat), Error (msg2, t_stats) ->
-        let error_msg = msg1 ^ msg2 in
-        Error (error_msg, t_stat :: t_stats)
+  let merge_env env1 env2 =
+    TypeEnv.union (fun _ _ elem -> Some elem) env1 env2
   in
 
-  let t_stats_res = compose_stat block.statements in
-  match t_stats_res with
-  | Ok t_stats -> Ok {var_decs = block.var_decs; statements = t_stats}
-  | Error (msg, t_stats) -> Error (msg, {var_decs = block.var_decs; statements = t_stats})
-                     *)
+  let (new_env, err_list) =
+    (List.fold_left var_decs ~init:(TypeEnv.empty, []) ~f:acc_var)
+  in
+
+  (* List is built in reverse, so we correct it *)
+  (merge_env env new_env, List.rev err_list)
+
+
+let rec build_block env curr_func (block : UntypedAst.block_node) =
+  let (new_env, err_list) = compose_env env block.var_decs in
+  let f (stat: UntypedAst.stat_node) : (t_stat_node, string list) Result.t = build_statement new_env curr_func stat in
+  let stats_res = List.map block.statements ~f:f in
+
+  match Result.combine_errors stats_res with
+  | Ok t_stats ->
+    (match err_list with
+    | [] -> Ok {var_decs = block.var_decs; statements = t_stats}
+    | x -> Error x)
+  | Error x -> Error (err_list @ (List.concat x))
+
 
 and build_statement env curr_func stat =
   let open Result in
@@ -464,16 +438,16 @@ and build_statement env curr_func stat =
     Ok (BlockStat t_block)
 
 
-let build_def def env =
-  match def with
-  | UntypedAst.VarDef var ->
-    add_var var env
+(* let build_def def env = *)
+(*   match def with *)
+(*   | UntypedAst.VarDef var -> *)
+(*     add_var var env *)
 
-  | UntypedAst.FuncDef (name, func_type, block) ->
-    if (TypeEnv.mem name env) then
-      (* Error, uses newest declaration of var and keeps typing *)
-      let new_env = TypeEnv.add name (Func func_type) env in
-      let error_msg = "Redeclared name" in
-      Error (error_msg, new_env)
-    else
-      Ok (env)
+(*   | UntypedAst.FuncDef (name, func_type, block) -> *)
+(*     if (TypeEnv.mem name env) then *)
+(*       (1* Error, uses newest declaration of var and keeps typing *1) *)
+(*       let new_env = TypeEnv.add name (Func func_type) env in *)
+(*       let error_msg = "Redeclared name" in *)
+(*       Error (error_msg, new_env) *)
+(*     else *)
+(*       Ok (env) *)
