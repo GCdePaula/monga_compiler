@@ -681,7 +681,7 @@ let string_of_type_error (err : TypedAst.type_error) =
       ", type {" ^ (string_of_monga_type t2) ^ "} is not an integer")
 
   | WrongNumberOfArgs (got, want) ->
-    "Got " ^ (string_of_int got) ^ "arguments, but expected " ^ (string_of_int want)
+    "Got " ^ (string_of_int got) ^ " arguments, but expected " ^ (string_of_int want)
 
   | UnboundName name ->
     "Name not bound " ^ name

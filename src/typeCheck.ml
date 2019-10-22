@@ -256,7 +256,7 @@ and type_func env args parameters =
           Error (IncompatibleTypeError (arg.t, param.t)) :: tail
 
       | x, [] ->
-        raise (WrongArgumentCount (count, count + List.length x))
+        raise (WrongArgumentCount (count + List.length x, count))
       | [], y  ->
         raise (WrongArgumentCount (count, count + List.length y))
     in

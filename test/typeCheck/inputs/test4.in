@@ -1,0 +1,68 @@
+
+bananas : char;
+bananas : char;
+bananas : bool;
+
+f0() {
+	return 0;
+}
+
+f1() : bool {
+	return;
+}
+
+f2() : bool {
+	return 0;
+}
+
+f3() : bool {return bananas;}
+
+f4(a: int) {
+	f3(0);
+}
+
+f5() {
+	f4();
+}
+
+f5() : bool {}
+f6() {}
+
+main() {
+	a : bool;
+	a2 : [bool];
+	b : int;
+	b2 : [int];
+
+
+	a = f5();
+	a = f6();
+
+	a = a();
+	a = f6;
+	f6 = 0;
+
+	a = a2[true];
+	a = (1)[0];
+	a = (1)[true];
+
+	b = true + 0;
+	b = 0 + true;
+	b = true + b;
+	b = b + true;
+	b = true + true;
+
+	b = b2 + 0;
+	b = 0 + b2;
+	b = b2 + b;
+	b = b + b2;
+	b = b2 + b2;
+
+	bananas2 = 0;
+	b = bananas3();
+
+
+	a = 0 == 0.0;
+	a = 0 > true;
+	a = b <= b2;
+}
