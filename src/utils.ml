@@ -683,20 +683,20 @@ let string_of_type_error (err : TypedAst.type_error) =
   | WrongNumberOfArgs (got, want) ->
     "Got " ^ (string_of_int got) ^ "arguments, but expected " ^ (string_of_int want)
 
-  | NameNotBound name ->
+  | UnboundName name ->
     "Name not bound " ^ name
 
   | NotAssignable ->
     "Cannot assign expression"
 
   | NotAVar name ->
-    "Name " ^ name ^ " is not a variable"
+    "Name '" ^ name ^ "' is not a variable"
 
   | NotAFunc name ->
-    "Name " ^ name ^ " is not a function"
+    "Name '" ^ name ^ "' is not a function"
 
   | RedeclaredName name ->
-    "Name " ^ name ^ " redeclaration"
+    "Name '" ^ name ^ "' redeclaration"
 
 let print_type_error (err : TypedAst.type_error) =
   print_endline (string_of_type_error err)
