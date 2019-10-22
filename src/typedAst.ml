@@ -57,6 +57,26 @@ and t_stat_node =
 type typed_tree = t_def_node list
 
 
+type type_error =
+  | IncompatibleTypeError of monga_type * monga_type
+  | IncompatibleRetType
+  | NotArithmeticTypeError of monga_type
+  | IndexTypeError of monga_type * monga_type
+  | WrongNumberOfArgs of int * int
+  | UnboundName of id
+  | NotAssignable
+  | NotAVar of id
+  | NotAFunc of id
+  | RedeclaredName of id
+
+type error = {
+  loc: int;
+  err: type_error
+}
+
+
+
+
 
 module TypeEnv = Stdlib.Map.Make(String)
 type env_element =
@@ -66,52 +86,13 @@ type env_element =
 let combine_res x_res y_res f_ok =
     Result.combine x_res y_res ~ok:f_ok ~err: List.append
 
-let rec type_func env args parameters =
-  let open Result in
-
-  (* Type all arguments first, getting a list of results.
-   * Each member is either Ok of a typed expression, or
-   * Error of a list of error types.
-  *)
-  let t_args_res = List.map ~f:(type_exp env) args in
-
-  (* Combine list of results into a result that contains a list.
-   * The type of result's error case is a list of list of errors.
-   * The map_error flattens that list of lists.*)
-  map_error (
-    combine_errors t_args_res >>= fun t_args ->
-
-    (* Checks if arguments types match with parameter types.
-     * If there's a count mismatch, raises exception *)
-    let exception WrongArgumentCount in
-    let rec zip a (b : monga_variable list) =
-      match a, b with
-      | [], [] -> [Ok ()]
-      | arg :: xs,  param :: ys ->
-        let tail = zip xs ys in
-        if Poly.equal arg.t param.t then
-          Ok () :: tail
-        else
-          Error "Type Error" :: tail
-      | _, _ ->
-        raise WrongArgumentCount
-    in
-
-    try
-      let res = combine_errors (zip t_args parameters) in
-      (match res with
-       | Ok _ -> Ok t_args
-       | Error x -> Error [x])
-    with
-    | WrongArgumentCount -> Error [[""]]
-  ) ~f:List.concat
-
-and type_exp env exp =
+let rec type_exp env exp =
 
   let arthm lhs rhs =
+    let is_arthm x = (match x with Float | Int -> true | _ -> false) in
     let t_lhs_res = type_exp env lhs in
     let t_rhs_res = type_exp env rhs in
-    let exception ArthmError in
+    let exception ArthmError of monga_type list in
 
     try
       combine_res t_lhs_res t_rhs_res (
@@ -137,18 +118,20 @@ and type_exp env exp =
             } in
             (t_lhs, cast_rhs, Float)
 
-          | _, _ ->
-            raise ArthmError
+          | x, y ->
+            let x_err = if is_arthm x then [] else [x] in
+            let y_err = if is_arthm y then [] else [y] in
+            raise (ArthmError (x_err @ y_err))
       )
     with
-    | ArthmError -> Error ["Type Error"]
+    | ArthmError xs -> Error (List.map xs ~f:(fun x -> NotArithmeticTypeError x))
   in
 
   (* Equality doesn't promote int to float *)
   let eq_exp lhs rhs =
     let t_lhs_res = type_exp env lhs in
     let t_rhs_res = type_exp env rhs in
-    let exception EqError in
+    let exception EqError of monga_type * monga_type in
 
     try
       combine_res t_lhs_res t_rhs_res (
@@ -156,26 +139,29 @@ and type_exp env exp =
           if Poly.equal t_lhs.t t_rhs.t then
             (t_lhs, t_rhs, Bool)
           else
-            raise EqError
+            raise (EqError (t_lhs.t, t_rhs.t))
       )
     with
-    | EqError -> Error ["Type Error"]
+    | EqError (l_type, r_type) -> Error [IncompatibleTypeError (r_type, l_type)]
   in
 
   let logic_exp lhs rhs =
     let t_lhs_res = type_exp env lhs in
     let t_rhs_res = type_exp env rhs in
 
-    let exception LogicError in
+    let exception LogicError of monga_type list in
     try
       combine_res t_lhs_res t_rhs_res (
         fun t_lhs t_rhs ->
           match t_lhs.t, t_rhs.t with
           | Bool, Bool -> (t_lhs, t_rhs, Bool)
-          | _, _ -> raise LogicError
+          | x, y ->
+            let x_err = if Poly.equal x Bool then [] else [x] in
+            let y_err = if Poly.equal y Bool then [] else [y] in
+            raise (LogicError (x_err @ y_err))
       )
     with
-    | LogicError -> Error ["Type Error"]
+    | LogicError xs -> Error (List.map xs ~f:(fun x -> IncompatibleTypeError (x, Bool)))
   in
 
   let open Result in
@@ -267,39 +253,39 @@ and type_exp env exp =
     (match t_exp.t with
     | Float -> Ok {exp = UnaryMinusExp t_exp; t = Float}
     | Int -> Ok {exp = UnaryMinusExp t_exp; t = Int}
-    | _ -> Error ["Type Error"])
+    | _ -> Error [NotArithmeticTypeError t_exp.t])
 
   | UntypedAst.UnaryNotExp e ->
     type_exp env e >>= fun t_exp ->
     (match t_exp.t with
     | Bool -> Ok {exp = UnaryNotExp t_exp; t = Bool}
-    | _ -> Error ["Type Error"])
+    | _ -> Error [IncompatibleTypeError (t_exp.t, Bool)])
 
   | UntypedAst.NewExp (mt, e) ->
     type_exp env e >>= fun t_exp ->
     (match t_exp.t with
     | Int -> Ok {exp = NewExp (mt, t_exp); t = Array mt}
-    | _ -> Error ["Type Error"])
+    | _ -> Error [IncompatibleTypeError (t_exp.t, Int)])
 
   (* Cast *)
   | UntypedAst.CastExp (_, _) ->
-    Error ["CastExp"]
+    Error []
 
   (* Named expressions *)
   | UntypedAst.VarExp name ->
-    if TypeEnv.mem name env then
+    (try
       (match TypeEnv.find name env with
        | Var mt -> Ok {exp = VarExp name; t = mt}
-       | Func _ -> Error ["Type Error"])
-    else
-      Error ["Type Error"]
+       | Func _ -> Error [NotAVar name])
+    with
+    | Caml.Not_found -> Error [UnboundName name])
 
   | UntypedAst.LookupExp (e, idx) ->
     type_exp env e >>= fun t_exp ->
     type_exp env idx >>= fun t_idx ->
     (match t_exp.t, t_idx.t with
      | Array t, Int -> Ok {exp = LookupExp (t_exp, t_idx); t}
-     | _, _ -> Error ["Type Error"])
+     | _, _ -> Error [IndexTypeError (t_exp.t, t_idx.t)])
 
   | UntypedAst.CallExp (name, args) ->
     try
@@ -310,10 +296,54 @@ and type_exp env exp =
          type_func env args parameters >>= fun t_args ->
          Ok {exp = CallExp (name, t_args); t = ret_type}
 
-       | Func { parameters = _ ; ret_type = None} -> Error [""]
-       | Var _ -> Error ["Type Error"])
+       | Func { parameters = _ ; ret_type = None} -> Error [IncompatibleRetType]
+       | Var _ -> Error [NotAFunc name])
     with
-    | Not_found -> Error ["Type Error"]
+    | Caml.Not_found -> Error [UnboundName name]
+
+and type_func env args parameters =
+  let open Result in
+
+  (* Type all arguments first, getting a list of results.
+   * Each member is either Ok of a typed expression, or
+   * Error of a list of error types.
+  *)
+  let t_args_res = List.map ~f:(type_exp env) args in
+
+  (* Combine list of results into a result that contains a list.
+   * The type of result's error case is a list of list of errors.
+   * The map_error flattens that list of lists.*)
+  map_error (
+    combine_errors t_args_res >>= fun t_args ->
+
+    (* Checks if arguments types match with parameter types.
+     * If there's a count mismatch, raises exception *)
+    let exception WrongArgumentCount of int * int in
+    let rec zip a (b : monga_variable list) count =
+      match a, b with
+      | [], [] -> [Ok ()]
+      | arg :: xs,  param :: ys ->
+        let tail = zip xs ys (count+1) in
+        if Poly.equal arg.t param.t then
+          Ok () :: tail
+        else
+          Error (IncompatibleTypeError (arg.t, param.t)) :: tail
+
+      | x, [] ->
+        raise (WrongArgumentCount (count, count + List.length x))
+      | [], y  ->
+        raise (WrongArgumentCount (count, count + List.length y))
+    in
+
+    try
+      let res = combine_errors (zip t_args parameters 0) in
+      (match res with
+       | Ok _ -> Ok t_args
+       | Error x -> Error [x])
+    with
+    | WrongArgumentCount (got, want)-> Error [[WrongNumberOfArgs (got, want)]]
+  ) ~f:List.concat
+
 
 
 
@@ -323,8 +353,7 @@ let rec build_block env curr_func (block : UntypedAst.block_node) =
       if (TypeEnv.mem var.name env) then
         (* Error, uses newest declaration of var *)
         let new_env = TypeEnv.add var.name (Var var.t) env in
-        let error_msg = "Redeclared name" in
-        (new_env, error_msg :: err_list)
+        (new_env, RedeclaredName var.name :: err_list)
       else
         let new_env = TypeEnv.add var.name (Var var.t) env in
         (new_env, err_list)
@@ -396,8 +425,8 @@ and build_statement env curr_func stat =
         if Poly.equal ret_type t_exp.t then
           Ok (ReturnStat (Some t_exp))
         else
-          Error [""]
-    | _, _ -> Error [""])
+          Error [IncompatibleTypeError (t_exp.t, ret_type)]
+    | _, _ -> Error [IncompatibleRetType])
 
   | UntypedAst.AssignStat (var, exp) ->
     (match var with
@@ -408,24 +437,23 @@ and build_statement env curr_func stat =
       if Poly.equal t_var.t t_exp.t then
         Ok (AssignStat (t_var, t_exp))
       else
-        Error [""]
+        Error [IncompatibleTypeError (t_exp.t, t_var.t)]
 
-    | _ -> Error [""])
+    | _ -> Error [NotAssignable])
 
   | UntypedAst.CallStat (f_name, args) ->
     (try
       (match TypeEnv.find f_name env with
 
        (* Only functions without return type can be used in statements *)
-       | Func {parameters; ret_type = None} ->
+       | Func {parameters; ret_type = _} ->
          type_func env args parameters >>= fun t_args ->
          Ok (CallStat (f_name, t_args))
 
-       | Func { parameters = _ ; ret_type = Some _} -> Error [""]
-       | Var _ -> Error [""]
+       | Var _ -> Error [NotAFunc f_name]
       )
    with
-    | Not_found -> Error [""])
+    | Caml.Not_found -> Error [UnboundName f_name])
 
   | UntypedAst.PutStat exp ->
     type_exp env exp >>= fun t_exp ->
@@ -435,14 +463,16 @@ and build_statement env curr_func stat =
     build_block env curr_func block >>= fun t_block ->
     Ok (BlockStat t_block)
 
-let build_typed_tree u_tree : (typed_tree, string list) Result.t =
+
+
+let build_typed_tree u_tree : (typed_tree, type_error list) Result.t =
   let acc_def (env, t_defs_res) def =
     match def with
     | UntypedAst.VarDef var ->
       if TypeEnv.mem var.name env then
         (* Error, uses newest declaration of var and keeps typing *)
         let new_env = TypeEnv.add var.name (Var var.t) env in
-        (new_env, Error ["Redeclared var"] :: t_defs_res)
+        (new_env, Error [RedeclaredName var.name] :: t_defs_res)
       else
         let new_env = TypeEnv.add var.name (Var var.t) env in
         (new_env, Ok (VarDef var) :: t_defs_res)
@@ -451,16 +481,19 @@ let build_typed_tree u_tree : (typed_tree, string list) Result.t =
       if TypeEnv.mem name env then
         (* Error, uses newest declaration of func and keeps typing *)
         let new_env = TypeEnv.add name (Func func_type) env in
+        let new_block = {block with var_decs = func_type.parameters @ block.var_decs} in
 
-        match build_block new_env func_type block with
+        match build_block new_env func_type new_block with
         | Error x ->
-          (new_env, Error x :: Error ["Redeclared func"] :: t_defs_res)
+          (new_env, Error x :: Error [RedeclaredName name] :: t_defs_res)
         | _ ->
-          (new_env, Error ["Redeclared func"] :: t_defs_res)
+          (new_env, Error [RedeclaredName name] :: t_defs_res)
 
       else
         let new_env = TypeEnv.add name (Func func_type) env in
-        match build_block new_env func_type block with
+        let new_block = {block with var_decs = func_type.parameters @ block.var_decs} in
+
+        match build_block new_env func_type new_block with
         | Error x ->
           (new_env, Error x :: t_defs_res)
         | Ok t_block ->
