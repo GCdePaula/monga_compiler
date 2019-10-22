@@ -53,8 +53,8 @@ let rec type_exp env exp =
     | ArthmError xs -> Error (List.map xs ~f:(fun x -> NotArithmeticTypeError x))
   in
 
-  (* Equality doesn't promote int to float *)
-  let eq_exp lhs rhs =
+  (* Relational doesn't promote int to float *)
+  let relational_exp lhs rhs =
     let t_lhs_res = type_exp env lhs in
     let t_rhs_res = type_exp env rhs in
     let exception EqError of monga_type * monga_type in
@@ -130,37 +130,37 @@ let rec type_exp env exp =
     let exp = DivExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
-  (* Equality Exp *)
+  (* Relational Exp *)
   | UntypedAst.EqExp (lhs, rhs) ->
-    eq_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    relational_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
     let exp = EqExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
   | UntypedAst.NeExp (lhs, rhs) ->
-    eq_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    relational_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
     let exp = NeExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
-  (* Relational Exp, same semantics as arithm *)
   | UntypedAst.LeExp (lhs, rhs) ->
-    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    relational_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
     let exp = LeExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
   | UntypedAst.GeExp (lhs, rhs) ->
-    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    relational_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
     let exp = GeExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
   | UntypedAst.LtExp (lhs, rhs) ->
-    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    relational_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
     let exp = LtExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
   | UntypedAst.GtExp (lhs, rhs) ->
-    arthm lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    relational_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
     let exp = GtExp (t_lhs, t_rhs) in
     Ok {exp; t}
+
 
   (* Logical Exp *)
   | UntypedAst.AndExp (lhs, rhs) ->

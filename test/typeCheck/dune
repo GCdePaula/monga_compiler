@@ -1,0 +1,8 @@
+
+(tests
+  (names typeTest)
+  (libraries Src)
+  (deps (glob_files inputs/*.in))
+  (action (run %{test}))
+)
+

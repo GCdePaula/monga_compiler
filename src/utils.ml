@@ -500,7 +500,7 @@ and print_typed_exp (exp : TypedAst.t_exp_node) depth =
   in
 
   let print_type e =
-    print_string "{"; print_monga_type e; print_string "}\n"
+    print_string " {"; print_monga_type e; print_string "}\n"
   in
 
   match exp.exp with
