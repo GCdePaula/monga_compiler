@@ -1,3 +1,7 @@
+%{
+  open UntypedAst
+%}
+
 %token IF ELSE RETURN WHILE
 %token INT CHAR FLOAT BOOL
 %token <string> STRINGLITERAL
@@ -80,55 +84,57 @@ stat:
     { UntypedAst.BlockStat b }
 
 var:
-  | id = ID { UntypedAst.VarExp id }
-  | e1 = primary_expression OPENBRACKET e2 = exp CLOSEBRACKET { UntypedAst.LookupExp (e1, e2) }
+  | id = ID { {loc = $sloc; exp = VarExp id} }
+  | arr = primary_expression OPENBRACKET idx = exp CLOSEBRACKET
+    { {loc = $sloc; exp = LookupExp (arr, idx)} }
 
 primary_expression:
-  | i = INTNUMERAL { UntypedAst.IntExp i }
-  | f = FLOATNUMERAL { UntypedAst.FloatExp f }
-  | s = STRINGLITERAL { UntypedAst.StringExp s }
-  | TRUE { UntypedAst.TrueExp }
-  | FALSE { UntypedAst.FalseExp }
+  | i = INTNUMERAL { {loc = $sloc; exp = IntExp i} }
+  | f = FLOATNUMERAL { {loc = $sloc; exp = FloatExp f} }
+  | s = STRINGLITERAL { {loc = $sloc; exp = StringExp s} }
+  | TRUE { {loc = $sloc; exp = TrueExp} }
+  | FALSE { {loc = $sloc; exp = FalseExp} }
   | OPENPAREN e = exp CLOSEPAREN { e }
-  | f = func_call { let (id, args_list) = f in UntypedAst.CallExp (id, args_list) }
+  | f = func_call
+    { let (id, args_list) = f in {loc = $sloc; exp = CallExp (id, args_list)} }
   | e = var { e }
 
 unary_exp:
   | e = primary_expression { e }
-  | NOT e = unary_exp { UntypedAst.UnaryNotExp e }
-  | SUB e = unary_exp { UntypedAst.UnaryMinusExp e }
+  | NOT e = unary_exp { {loc = $sloc; exp = UnaryNotExp e} }
+  | SUB e = unary_exp { {loc = $sloc; exp = UnaryMinusExp e} }
 
 mul_exp:
   | e = unary_exp { e }
-  | e1 = mul_exp MUL e2 = unary_exp { UntypedAst.MulExp (e1, e2) }
-  | e1 = mul_exp DIV e2 = unary_exp { UntypedAst.DivExp (e1, e2) }
+  | e1 = mul_exp MUL e2 = unary_exp { {loc = $sloc; exp = MulExp (e1, e2)} }
+  | e1 = mul_exp DIV e2 = unary_exp { {loc = $sloc; exp = DivExp (e1, e2)} }
 
 add_exp:
   | e = mul_exp { e }
-  | e1 = add_exp ADD e2 = mul_exp { UntypedAst.AddExp (e1, e2) }
-  | e1 = add_exp SUB e2 = mul_exp { UntypedAst.SubExp (e1, e2) }
+  | e1 = add_exp ADD e2 = mul_exp { {loc = $sloc; exp = AddExp (e1, e2)} }
+  | e1 = add_exp SUB e2 = mul_exp { {loc = $sloc; exp = SubExp (e1, e2)} }
 
 relational_expression:
   | e = add_exp { e }
-  | e1 = add_exp EQ e2 = add_exp { UntypedAst.EqExp (e1, e2) }
-  | e1 = add_exp NE e2 = add_exp { UntypedAst.NeExp (e1, e2) }
-  | e1 = add_exp GT e2 = add_exp { UntypedAst.GtExp (e1, e2) }
-  | e1 = add_exp LT e2 = add_exp { UntypedAst.LtExp (e1, e2) }
-  | e1 = add_exp GE e2 = add_exp { UntypedAst.GeExp (e1, e2) }
-  | e1 = add_exp LE e2 = add_exp { UntypedAst.LeExp (e1, e2) }
+  | e1 = add_exp EQ e2 = add_exp { {loc = $sloc; exp = EqExp (e1, e2)} }
+  | e1 = add_exp NE e2 = add_exp { {loc = $sloc; exp = NeExp (e1, e2)} }
+  | e1 = add_exp GT e2 = add_exp { {loc = $sloc; exp = GtExp (e1, e2)} }
+  | e1 = add_exp LT e2 = add_exp { {loc = $sloc; exp = LtExp (e1, e2)} }
+  | e1 = add_exp GE e2 = add_exp { {loc = $sloc; exp = GeExp (e1, e2)} }
+  | e1 = add_exp LE e2 = add_exp { {loc = $sloc; exp = LeExp (e1, e2)} }
 
 and_exp:
   | e = relational_expression { e }
-  | e1 = and_exp AND e2 = relational_expression { UntypedAst.AndExp (e1, e2) }
+  | e1 = and_exp AND e2 = relational_expression { {loc = $sloc; exp = AndExp (e1, e2)} }
 
 or_exp:
   | e = and_exp { e }
-    | e1 = or_exp OR e2 = and_exp { UntypedAst.OrExp (e1, e2) }
+  | e1 = or_exp OR e2 = and_exp { {loc = $sloc; exp = OrExp (e1, e2)} }
 
 exp:
   | e = or_exp  { e }
-  | e = exp AS t = m_type { UntypedAst.CastExp (e, t) }
-  | NEW t = m_type OPENBRACKET e = exp CLOSEBRACKET { UntypedAst.NewExp (t, e) }
+  | e = exp AS t = m_type { {loc = $sloc; exp = CastExp (e, t)} }
+  | NEW t = m_type OPENBRACKET e = exp CLOSEBRACKET { {loc = $sloc; exp = NewExp (t, e)} }
 
 
 func_call:

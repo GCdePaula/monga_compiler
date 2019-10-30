@@ -1,7 +1,13 @@
 open AstTypes
 
+
 (* Expressions *)
-type exp_node =
+type exp_node = {
+  loc : Lexing.position * Lexing.position;
+  exp : exp
+}
+
+and exp =
   | AddExp of exp_node * exp_node
   | SubExp of exp_node * exp_node
   | MulExp of exp_node * exp_node

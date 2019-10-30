@@ -25,7 +25,7 @@ let exa_exp = ['p' 'P'] ['-' '+']? digit+
 
 let id = ['a'-'z' 'A'-'Z' '_']['a'-'z' '0'-'9' '_']*
 
-let white = [' ' '\t']+
+let white = [' ' '\t']
 let newline = '\r' | '\n' | "\r\n"
 
 (* Lexer definition *)
@@ -74,9 +74,9 @@ rule monga_lexer =
 
   | id as identifier {ID identifier}
 
-            | '#' [^'\n']* '\n' {incr_line lexbuf; monga_lexer lexbuf}
+  | '#' [^'\n']* '\n' {new_line lexbuf; monga_lexer lexbuf}
   | white* { monga_lexer lexbuf }
-  | newline { incr_line lexbuf; monga_lexer lexbuf }
+  | newline { new_line lexbuf; monga_lexer lexbuf }
 
   | _ { raise (LexerError("Unrecognized character: " ^ Lexing.lexeme lexbuf)) }
   | eof { EOF }
@@ -93,7 +93,7 @@ and read_string buf start_p =
       Buffer.add_string buf str;
       read_string buf start_p lexbuf
     }
-  | '\n' { Buffer.add_char buf '\n'; incr_line lexbuf; read_string buf start_p lexbuf }
+  | '\n' { Buffer.add_char buf '\n'; new_line lexbuf; read_string buf start_p lexbuf }
   | _ { raise (LexerError ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }
   | eof { raise (LexerError ("String is not terminated")) }
 

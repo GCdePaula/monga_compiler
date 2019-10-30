@@ -115,6 +115,16 @@ let rec print_monga_type t =
   | Bool -> print_string "bool"
   | Array t2 -> print_string "["; print_monga_type t2; print_string "]"
 
+let string_of_loc ((loc_start, loc_end) : (Lexing.position * Lexing.position)) =
+  let line_start = string_of_int loc_start.pos_lnum in
+  let col_start = string_of_int (loc_start.pos_cnum - loc_start.pos_bol + 1) in
+  let line_end = string_of_int loc_end.pos_lnum in
+  let col_end = string_of_int (loc_end.pos_cnum - loc_end.pos_bol) in
+  "(" ^ line_start ^ ":" ^ col_start ^
+  "," ^ line_end ^ ":" ^ col_end ^ ")"
+
+
+(* UntypedAst print *)
 
 let rec print_def def =
   let open UntypedAst in
@@ -232,74 +242,75 @@ and print_exp exp depth =
     print_exp rhs (depth+1)
   in
 
-  match exp with
+
+  match exp.exp with
   | AddExp (exp1, exp2) ->
-    print_string "add_exp begin\n";
+    print_string ("add_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "add_exp end\n"
 
   | SubExp (exp1, exp2) ->
-    print_string "sub_exp begin\n";
+    print_string ("sub_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "sub_exp end\n"
 
   | MulExp (exp1, exp2) ->
-    print_string "mul_exp begin\n";
+    print_string ("mul_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "mul_exp end\n"
 
   | DivExp (exp1, exp2) ->
-    print_string "div_exp begin\n";
+    print_string ("div_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "div_exp end\n"
 
   | EqExp (exp1, exp2) ->
-    print_string "equals_exp begin\n";
+    print_string ("equals_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "equals_exp end\n"
 
   | NeExp (exp1, exp2) ->
-    print_string "add_exp begin\n";
+    print_string ("add_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "add_exp end\n"
 
   | LeExp (exp1, exp2) ->
-    print_string "less_equal_exp begin\n";
+    print_string ("less_equal_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "less_equal_exp end\n"
 
   | GeExp (exp1, exp2) ->
-    print_string "greater_equal_exp begin\n";
+    print_string ("greater_equal_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "greater_equal_exp end\n"
 
   | LtExp (exp1, exp2) ->
-    print_string "less_than_exp begin\n";
+    print_string ("less_than_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "less_than_exp end\n"
 
   | GtExp (exp1, exp2) ->
-    print_string "greater_than_exp begin\n";
+    print_string ("greater_than_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "greater_than_exp end\n"
 
   | AndExp (exp1, exp2) ->
-    print_string "and_exp begin\n";
+    print_string ("and_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "and_exp end\n"
 
   | OrExp (exp1, exp2) ->
-    print_string "or_exp begin\n";
+    print_string ("or_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_bin_exp exp1 exp2;
     print_depth depth; print_string "or_exp end\n"
 
   | UnaryMinusExp exp ->
-    print_string "unary_minus_exp begin\n";
+    print_string ("unary_minus_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_depth (depth+1); print_string "exp = "; print_exp exp (depth+1);
     print_depth depth; print_string "unary_minus_exp end\n"
 
   | UnaryNotExp exp ->
-    print_string "unary_not_exp begin\n";
+    print_string ("unary_not_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_depth (depth+1); print_string "exp = "; print_exp exp (depth+1);
     print_depth depth; print_string "unary_not_exp end\n"
 
@@ -319,7 +330,7 @@ and print_exp exp depth =
     printf "\"%s\"\n" str
 
   | NewExp (t, exp) ->
-    print_string "new_exp begin\n";
+    print_string ("new_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_depth (depth+1); print_string "type = ";
     print_monga_type t; print_string "\n\n";
     print_depth (depth+1); print_string "size = ";
@@ -327,7 +338,7 @@ and print_exp exp depth =
     print_depth depth; print_string "new_exp end\n"
 
   | CastExp (exp, t) ->
-    print_string "cast_exp begin\n";
+    print_string ("cast_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_depth (depth+1); print_string "exp = ";
     print_exp exp (depth+2); print_string "\n";
     print_depth (depth+1); print_string "type = ";
@@ -335,7 +346,7 @@ and print_exp exp depth =
     print_depth depth; print_string "lookup_exp end\n"
 
   | LookupExp (exp1, exp2) ->
-    print_string "lookup_exp begin\n";
+    print_string ("lookup_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_depth (depth+1); print_string "var = ";
     print_exp exp1 (depth+1); print_string "\n";
     print_depth (depth+1); print_string "idx = ";
@@ -346,7 +357,7 @@ and print_exp exp depth =
     printf "%s\n" id
 
   | CallExp (fname, params) ->
-    print_string "call_exp begin\n";
+    print_string ("call_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
     print_depth (depth+1); printf "name = %s\n\n" fname;
     print_depth (depth+1); print_string "parameters = ";
     print_exp_list params (depth+2);

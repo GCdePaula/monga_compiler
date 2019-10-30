@@ -13,7 +13,7 @@ let combine_res x_res y_res f_ok =
 
 
 (* Type expresions and function *)
-let rec type_exp env exp =
+let rec type_exp env (exp_node: UntypedAst.exp_node) =
   let arthm lhs rhs =
     let is_arthm x = (match x with Float | Int -> true | _ -> false) in
     let t_lhs_res = type_exp env lhs in
@@ -91,7 +91,7 @@ let rec type_exp env exp =
   in
 
   let open Result in
-  match exp with
+  match exp_node.exp with
 
   (* base cases *)
   | UntypedAst.TrueExp ->
@@ -355,7 +355,7 @@ and build_statement env curr_func stat =
     | _, _ -> Error [IncompatibleRetType])
 
   | UntypedAst.AssignStat (var, exp) ->
-    (match var with
+    (match var.exp with
     | LookupExp _ | VarExp _ ->
       type_exp env var >>= fun t_var ->
       type_exp env exp >>= fun t_exp ->
