@@ -62,7 +62,6 @@ main() {
 	b = bananas3();
 
 
-	a = 0 == 0.0;
 	a = 0 > true;
 	a = b <= b2;
 

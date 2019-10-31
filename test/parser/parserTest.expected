@@ -1,77 +1,77 @@
 PARSING FILE inputs/test1.in
-var_def begin
+var_def (2:1,2:13) begin
 	id = bananas
 	type = int
 var_def end
 
-var_def begin
+var_def (3:1,3:15) begin
 	id = bananas
 	type = [int]
 var_def end
 
-var_def begin
+var_def (4:1,4:17) begin
 	id = bananas
 	type = [[int]]
 var_def end
 
-var_def begin
+var_def (5:1,5:19) begin
 	id = bananas
 	type = [[[int]]]
 var_def end
 
-var_def begin
+var_def (6:1,6:21) begin
 	id = bananas
 	type = [[[[int]]]]
 var_def end
 
-var_def begin
+var_def (7:1,7:23) begin
 	id = bananas
 	type = [[[[[int]]]]]
 var_def end
 
-var_def begin
+var_def (8:1,8:25) begin
 	id = bananas
 	type = [[[[[[int]]]]]]
 var_def end
 
-var_def begin
+var_def (9:1,9:27) begin
 	id = bananas
 	type = [[[[[[[int]]]]]]]
 var_def end
 
-var_def begin
+var_def (10:1,10:29) begin
 	id = bananas
 	type = [[[[[[[[int]]]]]]]]
 var_def end
 
-var_def begin
+var_def (11:1,11:31) begin
 	id = bananas
 	type = [[[[[[[[[int]]]]]]]]]
 var_def end
 
-var_def begin
+var_def (14:1,14:8) begin
 	id = a
 	type = char
 var_def end
 
-var_def begin
+var_def (15:1,15:9) begin
 	id = a
 	type = float
 var_def end
 
-var_def begin
+var_def (16:1,16:8) begin
 	id = a
 	type = bool
 var_def end
 
-func_def begin
+func_def (18:1,18:7) begin
 	id = f0
 	signature = ()
 	block = block begin
 	block end
 func_def end
 
-func_def begin
+func_def (20:1,20:13) begin
 	id = f1
 	signature = ()
 	return_type = int
@@ -79,7 +79,7 @@ func_def begin
 	block end
 func_def end
 
-func_def begin
+func_def (21:1,21:14) begin
 	id = f2
 	signature = ()
 	return_type = char
@@ -87,7 +87,7 @@ func_def begin
 	block end
 func_def end
 
-func_def begin
+func_def (22:1,22:15) begin
 	id = f3
 	signature = ()
 	return_type = float
@@ -95,7 +95,7 @@ func_def begin
 	block end
 func_def end
 
-func_def begin
+func_def (23:1,23:14) begin
 	id = f4
 	signature = ()
 	return_type = bool
@@ -103,7 +103,7 @@ func_def begin
 	block end
 func_def end
 
-func_def begin
+func_def (24:1,24:15) begin
 	id = f5
 	signature = ()
 	return_type = [int]
@@ -111,7 +111,7 @@ func_def begin
 	block end
 func_def end
 
-func_def begin
+func_def (25:1,25:17) begin
 	id = f6
 	signature = ()
 	return_type = [[int]]
@@ -119,35 +119,35 @@ func_def begin
 	block end
 func_def end
 
-func_def begin
+func_def (27:1,27:12) begin
 	id = f
 	signature = (a : int)
 	block = block begin
 	block end
 func_def end
 
-func_def begin
+func_def (28:1,28:22) begin
 	id = f
 	signature = (a : int, b : float)
 	block = block begin
 	block end
 func_def end
 
-func_def begin
+func_def (29:1,29:31) begin
 	id = f
 	signature = (a : int, b : float, c : bool)
 	block = block begin
 	block end
 func_def end
 
-func_def begin
+func_def (30:1,30:40) begin
 	id = f
 	signature = (a : int, b : float, c : bool, d : char)
 	block = block begin
 	block end
 func_def end
 
-func_def begin
+func_def (32:1,32:17) begin
 	id = f
 	signature = ()
 	block = block begin
@@ -162,7 +162,7 @@ func_def begin
 	block end
 func_def end
 
-func_def begin
+func_def (35:1,35:8) begin
 	id = f
 	signature = ()
 	block = block begin
@@ -171,7 +171,7 @@ func_def begin
 	block end
 func_def end
 
-func_def begin
+func_def (36:1,36:10) begin
 	id = f
 	signature = ()
 	block = block begin
@@ -182,7 +182,7 @@ func_def begin
 	block end
 func_def end
 
-func_def begin
+func_def (37:1,37:12) begin
 	id = f
 	signature = ()
 	block = block begin
@@ -195,7 +195,7 @@ func_def begin
 	block end
 func_def end
 
-func_def begin
+func_def (38:1,38:14) begin
 	id = f
 	signature = ()
 	block = block begin
@@ -213,19 +213,19 @@ func_def end
 DONE inputs/test1.in
 
 PARSING FILE inputs/test2.in
-func_def begin
+func_def (2:1,26:1) begin
 	id = f0
 	signature = ()
 	block = block begin
-		if_else_statement begin
-			condition = true
+		if_else_statement (3:3,3:12) begin
+			condition = true (3:6,3:9)
 
 			then_block = block begin
 			block end
 		if_else_statement end
 
-		if_else_statement begin
-			condition = true
+		if_else_statement (5:3,6:9) begin
+			condition = true (5:6,5:9)
 
 			then_block = block begin
 			block end
@@ -234,22 +234,22 @@ func_def begin
 			block end
 		if_else_statement end
 
-		if_else_statement begin
-			condition = true
+		if_else_statement (8:3,8:56) begin
+			condition = true (8:6,8:9)
 
 			then_block = block begin
 			block end
 
 			else_block = block begin
-				if_else_statement begin
-					condition = true
+				if_else_statement (8:20,8:55) begin
+					condition = true (8:23,8:26)
 
 					then_block = block begin
 					block end
 
 					else_block = block begin
-						if_else_statement begin
-							condition = true
+						if_else_statement (8:37,8:54) begin
+							condition = true (8:40,8:43)
 
 							then_block = block begin
 							block end
@@ -264,122 +264,122 @@ func_def begin
 			block end
 		if_else_statement end
 
-		while_statement begin
-			condition = true
+		while_statement (10:3,10:15) begin
+			condition = true (10:9,10:12)
 
 			block = block begin
 			block end
 		while_statement end
 
-		return_statement begin
+		return_statement (12:3,12:9) begin
 		return_statement end
 
-		return_statement begin
-			return_exp = true
+		return_statement (13:3,13:14) begin
+			return_exp = true (13:10,13:13)
 		return_statement end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (15:3,15:11) begin
+			lhs = a (15:3,15:3)
 
-			rhs = true
-		assign_stat end
+			rhs = true (15:7,15:10)
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (15:13,15:18) begin
+			lhs = a (15:13,15:13)
 
-			rhs = b
-		assign_stat end
+			rhs = b (15:17,15:17)
+		assign_statment end
 
-		fcall_stat begin
+		fcall_statement (17:3,17:7) begin
 			name = f0
 			parameters = exp_list begin
 				exp_list end
-		fcall_stat end
+		fcall_statement end
 
-		fcall_stat begin
+		fcall_statement (18:3,18:11) begin
 			name = f0
 			parameters = exp_list begin
-				a
+				a (18:6,18:6)
 				;
-				b
+				b (18:9,18:9)
 				exp_list end
-		fcall_stat end
+		fcall_statement end
 
-		fcall_stat begin
+		fcall_statement (19:3,19:14) begin
 			name = f0
 			parameters = exp_list begin
-				a
+				a (19:6,19:6)
 				;
-				b
+				b (19:9,19:9)
 				;
-				c
+				c (19:12,19:12)
 				exp_list end
-		fcall_stat end
+		fcall_statement end
 
-		fcall_stat begin
+		fcall_statement (20:3,20:26) begin
 			name = f0
 			parameters = exp_list begin
-				a
+				a (20:6,20:6)
 				;
-				true
+				true (20:9,20:12)
 				;
 				less_than_exp (20:15,20:19) begin
-					lhs = a
+					lhs = a (20:15,20:15)
 
-					rhs = b
+					rhs = b (20:19,20:19)
 				less_than_exp end
 				;
 				add_exp (20:22,20:24) begin
-					lhs = 1
+					lhs = 1 (20:22,20:22)
 
-					rhs = 1
+					rhs = 1 (20:24,20:24)
 				add_exp end
 				exp_list end
-		fcall_stat end
+		fcall_statement end
 
-		put_stat begin
-			exp = a
-		put_stat end
+		put_statement (22:3,22:6) begin
+			exp = a (22:5,22:5)
+		put_statement end
 
-		put_stat begin
-			exp = "Hello, World!"
-		put_stat end
+		put_statement (23:3,23:20) begin
+			exp = "Hello, World!" (23:5,23:19)
+		put_statement end
 
 		block begin
 		block end
 	block end
 func_def end
 
-func_def begin
+func_def (28:1,44:1) begin
 	id = f1
 	signature = ()
 	block = block begin
-		if_else_statement begin
-			condition = true
+		if_else_statement (29:3,43:3) begin
+			condition = true (29:6,29:9)
 
 			then_block = block begin
-				while_statement begin
-					condition = true
+				while_statement (30:5,35:5) begin
+					condition = true (30:11,30:14)
 
 					block = block begin
-						if_else_statement begin
-							condition = false
+						if_else_statement (31:7,31:17) begin
+							condition = false (31:10,31:14)
 
 							then_block = block begin
 							block end
 						if_else_statement end
 
-						put_stat begin
-							exp = a
-						put_stat end
+						put_statement (32:7,32:10) begin
+							exp = a (32:9,32:9)
+						put_statement end
 
-						assign_stat begin
-							lhs = a
+						assign_statement (33:7,33:12) begin
+							lhs = a (33:7,33:7)
 
-							rhs = b
-						assign_stat end
+							rhs = b (33:11,33:11)
+						assign_statment end
 
-						return_statement begin
+						return_statement (34:7,34:13) begin
 						return_statement end
 
 					block end
@@ -388,12 +388,12 @@ func_def begin
 			block end
 
 			else_block = block begin
-				while_statement begin
-					condition = true
+				while_statement (37:5,42:5) begin
+					condition = true (37:11,37:14)
 
 					block = block begin
-						if_else_statement begin
-							condition = false
+						if_else_statement (38:7,38:25) begin
+							condition = false (38:10,38:14)
 
 							then_block = block begin
 							block end
@@ -402,17 +402,17 @@ func_def begin
 							block end
 						if_else_statement end
 
-						put_stat begin
-							exp = a
-						put_stat end
+						put_statement (39:7,39:10) begin
+							exp = a (39:9,39:9)
+						put_statement end
 
-						assign_stat begin
-							lhs = a
+						assign_statement (40:7,40:12) begin
+							lhs = a (40:7,40:7)
 
-							rhs = b
-						assign_stat end
+							rhs = b (40:11,40:11)
+						assign_statment end
 
-						return_statement begin
+						return_statement (41:7,41:13) begin
 						return_statement end
 
 					block end
@@ -424,23 +424,23 @@ func_def begin
 	block end
 func_def end
 
-func_def begin
+func_def (47:1,51:1) begin
 	id = main
 	signature = ()
 	block = block begin
-		var_def begin
+		var_def (48:3,50:10) begin
 			id = a
 
 			type = char
 var_def end
 
-		var_def begin
+		var_def (49:3,50:10) begin
 			id = a
 
 			type = float
 var_def end
 
-		var_def begin
+		var_def (50:3,50:10) begin
 			id = a
 
 			type = bool
@@ -452,436 +452,436 @@ func_def end
 DONE inputs/test2.in
 
 PARSING FILE inputs/test3.in
-func_def begin
+func_def (3:1,83:1) begin
 	id = main
 	signature = ()
 	block = block begin
-		assign_stat begin
-			lhs = a
+		assign_statement (4:2,4:7) begin
+			lhs = a (4:2,4:2)
 
-			rhs = 1
-		assign_stat end
+			rhs = 1 (4:6,4:6)
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (5:2,5:10) begin
+			lhs = a (5:2,5:2)
 
-			rhs = true
-		assign_stat end
+			rhs = true (5:6,5:9)
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (6:2,6:11) begin
+			lhs = a (6:2,6:2)
 
-			rhs = false
-		assign_stat end
+			rhs = false (6:6,6:10)
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (7:2,7:21) begin
+			lhs = a (7:2,7:2)
 
-			rhs = "Hello, World!"
-		assign_stat end
+			rhs = "Hello, World!" (7:6,7:20)
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (8:2,8:7) begin
+			lhs = a (8:2,8:2)
 
-			rhs = 0
-		assign_stat end
+			rhs = 0 (8:6,8:6)
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (9:2,9:9) begin
+			lhs = a (9:2,9:2)
 
-			rhs = 0x0p+0
-		assign_stat end
+			rhs = 0x0p+0 (9:6,9:8)
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (11:2,11:7) begin
+			lhs = a (11:2,11:2)
 
-			rhs = b
-		assign_stat end
+			rhs = b (11:6,11:6)
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (12:2,12:10) begin
+			lhs = a (12:2,12:2)
 
 			rhs = lookup_exp (12:6,12:9) begin
-				var = b
+				var = b (12:6,12:6)
 
-				idx = 0
+				idx = 0 (12:8,12:8)
 			lookup_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (13:2,13:13) begin
+			lhs = a (13:2,13:2)
 
 			rhs = lookup_exp (13:6,13:12) begin
 				var = lookup_exp (13:6,13:9) begin
-					var = b
+					var = b (13:6,13:6)
 
-					idx = 0
+					idx = 0 (13:8,13:8)
 				lookup_exp end
 
-				idx = 0
+				idx = 0 (13:11,13:11)
 			lookup_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (14:2,14:16) begin
+			lhs = a (14:2,14:2)
 
 			rhs = lookup_exp (14:6,14:15) begin
 				var = lookup_exp (14:6,14:12) begin
 					var = lookup_exp (14:6,14:9) begin
-						var = b
+						var = b (14:6,14:6)
 
-						idx = 0
+						idx = 0 (14:8,14:8)
 					lookup_exp end
 
-					idx = 0
+					idx = 0 (14:11,14:11)
 				lookup_exp end
 
-				idx = 0
+				idx = 0 (14:14,14:14)
 			lookup_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (15:2,15:13) begin
+			lhs = a (15:2,15:2)
 
 			rhs = lookup_exp (15:6,15:12) begin
-				var = b
+				var = b (15:6,15:6)
 
-				idx = true
+				idx = true (15:8,15:11)
 			lookup_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (17:2,17:8) begin
+			lhs = a (17:2,17:2)
 
 			rhs = unary_minus_exp (17:7,17:7) begin
-				exp = 1
+				exp = 1 (17:7,17:7)
 			unary_minus_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (18:2,18:8) begin
+			lhs = a (18:2,18:2)
 
 			rhs = unary_minus_exp (18:7,18:7) begin
-				exp = b
+				exp = b (18:7,18:7)
 			unary_minus_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (19:2,19:11) begin
+			lhs = a (19:2,19:2)
 
 			rhs = unary_not_exp (19:7,19:10) begin
-				exp = true
+				exp = true (19:7,19:10)
 			unary_not_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (20:2,20:8) begin
+			lhs = a (20:2,20:2)
 
 			rhs = unary_not_exp (20:7,20:7) begin
-				exp = b
+				exp = b (20:7,20:7)
 			unary_not_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (22:2,22:11) begin
+			lhs = a (22:2,22:2)
 
 			rhs = mul_exp (22:6,22:10) begin
-				lhs = 1
+				lhs = 1 (22:6,22:6)
 
-				rhs = 1
+				rhs = 1 (22:10,22:10)
 			mul_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (23:2,23:11) begin
+			lhs = a (23:2,23:2)
 
 			rhs = mul_exp (23:6,23:10) begin
-				lhs = b
+				lhs = b (23:6,23:6)
 
-				rhs = 1
+				rhs = 1 (23:10,23:10)
 			mul_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (24:2,24:11) begin
+			lhs = a (24:2,24:2)
 
 			rhs = mul_exp (24:6,24:10) begin
-				lhs = 1
+				lhs = 1 (24:6,24:6)
 
-				rhs = b
+				rhs = b (24:10,24:10)
 			mul_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (25:2,25:11) begin
+			lhs = a (25:2,25:2)
 
 			rhs = mul_exp (25:6,25:10) begin
-				lhs = b
+				lhs = b (25:6,25:6)
 
-				rhs = b
+				rhs = b (25:10,25:10)
 			mul_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (27:2,27:11) begin
+			lhs = a (27:2,27:2)
 
 			rhs = add_exp (27:6,27:10) begin
-				lhs = 1
+				lhs = 1 (27:6,27:6)
 
-				rhs = 1
+				rhs = 1 (27:10,27:10)
 			add_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (28:2,28:11) begin
+			lhs = a (28:2,28:2)
 
 			rhs = add_exp (28:6,28:10) begin
-				lhs = b
+				lhs = b (28:6,28:6)
 
-				rhs = 1
+				rhs = 1 (28:10,28:10)
 			add_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (29:2,29:11) begin
+			lhs = a (29:2,29:2)
 
 			rhs = add_exp (29:6,29:10) begin
-				lhs = 1
+				lhs = 1 (29:6,29:6)
 
-				rhs = b
+				rhs = b (29:10,29:10)
 			add_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (31:2,31:12) begin
+			lhs = a (31:2,31:2)
 
 			rhs = equals_exp (31:6,31:11) begin
-				lhs = 1
+				lhs = 1 (31:6,31:6)
 
-				rhs = 1
+				rhs = 1 (31:11,31:11)
 			equals_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (32:2,32:12) begin
+			lhs = a (32:2,32:2)
 
 			rhs = add_exp (32:6,32:11) begin
-				lhs = 1
+				lhs = 1 (32:6,32:6)
 
-				rhs = 1
+				rhs = 1 (32:11,32:11)
 			add_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (33:2,33:11) begin
+			lhs = a (33:2,33:2)
 
 			rhs = greater_than_exp (33:6,33:10) begin
-				lhs = 1
+				lhs = 1 (33:6,33:6)
 
-				rhs = 1
+				rhs = 1 (33:10,33:10)
 			greater_than_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (34:2,34:11) begin
+			lhs = a (34:2,34:2)
 
 			rhs = less_than_exp (34:6,34:10) begin
-				lhs = 1
+				lhs = 1 (34:6,34:6)
 
-				rhs = 1
+				rhs = 1 (34:10,34:10)
 			less_than_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (35:2,35:12) begin
+			lhs = a (35:2,35:2)
 
 			rhs = less_equal_exp (35:6,35:11) begin
-				lhs = 1
+				lhs = 1 (35:6,35:6)
 
-				rhs = 1
+				rhs = 1 (35:11,35:11)
 			less_equal_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (36:2,36:12) begin
+			lhs = a (36:2,36:2)
 
 			rhs = greater_equal_exp (36:6,36:11) begin
-				lhs = 1
+				lhs = 1 (36:6,36:6)
 
-				rhs = 1
+				rhs = 1 (36:11,36:11)
 			greater_equal_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (37:2,37:12) begin
+			lhs = a (37:2,37:2)
 
 			rhs = equals_exp (37:6,37:11) begin
-				lhs = 1
+				lhs = 1 (37:6,37:6)
 
-				rhs = b
+				rhs = b (37:11,37:11)
 			equals_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (38:2,38:12) begin
+			lhs = a (38:2,38:2)
 
 			rhs = equals_exp (38:6,38:11) begin
-				lhs = b
+				lhs = b (38:6,38:6)
 
-				rhs = 1
+				rhs = 1 (38:11,38:11)
 			equals_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (39:2,39:12) begin
+			lhs = a (39:2,39:2)
 
 			rhs = equals_exp (39:6,39:11) begin
-				lhs = b
+				lhs = b (39:6,39:6)
 
-				rhs = b
+				rhs = b (39:11,39:11)
 			equals_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (41:2,41:18) begin
+			lhs = a (41:2,41:2)
 
 			rhs = and_exp (41:6,41:17) begin
-				lhs = true
+				lhs = true (41:6,41:9)
 
-				rhs = true
+				rhs = true (41:14,41:17)
 			and_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (42:2,42:15) begin
+			lhs = a (42:2,42:2)
 
 			rhs = and_exp (42:6,42:14) begin
-				lhs = b
+				lhs = b (42:6,42:6)
 
-				rhs = true
+				rhs = true (42:11,42:14)
 			and_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (43:2,43:15) begin
+			lhs = a (43:2,43:2)
 
 			rhs = and_exp (43:6,43:14) begin
-				lhs = true
+				lhs = true (43:6,43:9)
 
-				rhs = b
+				rhs = b (43:14,43:14)
 			and_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (45:2,45:18) begin
+			lhs = a (45:2,45:2)
 
 			rhs = or_exp (45:6,45:17) begin
-				lhs = true
+				lhs = true (45:6,45:9)
 
-				rhs = true
+				rhs = true (45:14,45:17)
 			or_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (46:2,46:15) begin
+			lhs = a (46:2,46:2)
 
 			rhs = or_exp (46:6,46:14) begin
-				lhs = b
+				lhs = b (46:6,46:6)
 
-				rhs = true
+				rhs = true (46:11,46:14)
 			or_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (47:2,47:15) begin
+			lhs = a (47:2,47:2)
 
 			rhs = or_exp (47:6,47:14) begin
-				lhs = true
+				lhs = true (47:6,47:9)
 
-				rhs = b
+				rhs = b (47:14,47:14)
 			or_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (50:2,52:23) begin
+			lhs = a (50:2,50:2)
 
 			rhs = or_exp (50:6,52:22) begin
 				lhs = or_exp (50:6,51:22) begin
 					lhs = and_exp (50:6,50:25) begin
 						lhs = and_exp (50:6,50:17) begin
-							lhs = true
+							lhs = true (50:6,50:9)
 
-							rhs = true
+							rhs = true (50:14,50:17)
 						and_exp end
 
-						rhs = true
+						rhs = true (50:22,50:25)
 					and_exp end
 
 					rhs = and_exp (51:3,51:22) begin
 						lhs = and_exp (51:3,51:14) begin
-							lhs = true
+							lhs = true (51:3,51:6)
 
-							rhs = true
+							rhs = true (51:11,51:14)
 						and_exp end
 
-						rhs = true
+						rhs = true (51:19,51:22)
 					and_exp end
 				or_exp end
 
 				rhs = and_exp (52:3,52:22) begin
 					lhs = and_exp (52:3,52:14) begin
-						lhs = true
+						lhs = true (52:3,52:6)
 
-						rhs = true
+						rhs = true (52:11,52:14)
 					and_exp end
 
-					rhs = true
+					rhs = true (52:19,52:22)
 				and_exp end
 			or_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (54:2,56:22) begin
+			lhs = a (54:2,54:2)
 
 			rhs = or_exp (54:6,56:21) begin
 				lhs = or_exp (54:6,55:30) begin
 					lhs = and_exp (54:6,54:22) begin
 						lhs = and_exp (54:6,54:14) begin
-							lhs = true
+							lhs = true (54:6,54:9)
 
-							rhs = b
+							rhs = b (54:14,54:14)
 						and_exp end
 
 						rhs = lookup_exp (54:19,54:22) begin
-							var = c
+							var = c (54:19,54:19)
 
-							idx = 0
+							idx = 0 (54:21,54:21)
 						lookup_exp end
 					and_exp end
 
 					rhs = and_exp (55:3,55:30) begin
 						lhs = and_exp (55:3,55:17) begin
 							lhs = equals_exp (55:3,55:8) begin
-								lhs = 1
+								lhs = 1 (55:3,55:3)
 
-								rhs = 1
+								rhs = 1 (55:8,55:8)
 							equals_exp end
 
 							rhs = less_than_exp (55:13,55:17) begin
-								lhs = b
+								lhs = b (55:13,55:13)
 
-								rhs = 1
+								rhs = 1 (55:17,55:17)
 							less_than_exp end
 						and_exp end
 
 						rhs = greater_equal_exp (55:22,55:30) begin
 							lhs = lookup_exp (55:22,55:25) begin
-								var = c
+								var = c (55:22,55:22)
 
-								idx = 0
+								idx = 0 (55:24,55:24)
 							lookup_exp end
 
-							rhs = 1
+							rhs = 1 (55:30,55:30)
 						greater_equal_exp end
 					and_exp end
 				or_exp end
@@ -889,433 +889,433 @@ func_def begin
 				rhs = and_exp (56:3,56:21) begin
 					lhs = and_exp (56:3,56:12) begin
 						lhs = add_exp (56:3,56:5) begin
-							lhs = 1
+							lhs = 1 (56:3,56:3)
 
-							rhs = 1
+							rhs = 1 (56:5,56:5)
 						add_exp end
 
 						rhs = mul_exp (56:10,56:12) begin
-							lhs = 1
+							lhs = 1 (56:10,56:10)
 
-							rhs = 1
+							rhs = 1 (56:12,56:12)
 						mul_exp end
 					and_exp end
 
 					rhs = unary_not_exp (56:18,56:21) begin
-						exp = true
+						exp = true (56:18,56:21)
 					unary_not_exp end
 				and_exp end
 			or_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (58:2,58:16) begin
+			lhs = a (58:2,58:2)
 
 			rhs = greater_equal_exp (58:6,58:15) begin
 				lhs = add_exp (58:6,58:10) begin
-					lhs = 1
+					lhs = 1 (58:6,58:6)
 
-					rhs = 1
+					rhs = 1 (58:10,58:10)
 				add_exp end
 
-				rhs = 2
+				rhs = 2 (58:15,58:15)
 			greater_equal_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (59:2,59:16) begin
+			lhs = a (59:2,59:2)
 
 			rhs = less_equal_exp (59:6,59:15) begin
-				lhs = 2
+				lhs = 2 (59:6,59:6)
 
 				rhs = add_exp (59:11,59:15) begin
-					lhs = 1
+					lhs = 1 (59:11,59:11)
 
-					rhs = 1
+					rhs = 1 (59:15,59:15)
 				add_exp end
 			less_equal_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (60:2,60:15) begin
+			lhs = a (60:2,60:2)
 
 			rhs = add_exp (60:6,60:14) begin
-				lhs = 1
+				lhs = 1 (60:6,60:6)
 
 				rhs = mul_exp (60:10,60:14) begin
-					lhs = 2
+					lhs = 2 (60:10,60:10)
 
-					rhs = 3
+					rhs = 3 (60:14,60:14)
 				mul_exp end
 			add_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (61:2,61:15) begin
+			lhs = a (61:2,61:2)
 
 			rhs = add_exp (61:6,61:14) begin
 				lhs = mul_exp (61:6,61:10) begin
-					lhs = 3
+					lhs = 3 (61:6,61:6)
 
-					rhs = 2
+					rhs = 2 (61:10,61:10)
 				mul_exp end
 
-				rhs = 1
+				rhs = 1 (61:14,61:14)
 			add_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (62:2,62:39) begin
+			lhs = a (62:2,62:2)
 
 			rhs = greater_equal_exp (62:6,62:38) begin
 				lhs = add_exp (62:6,62:13) begin
-					lhs = 1
+					lhs = 1 (62:6,62:6)
 
 					rhs = lookup_exp (62:10,62:13) begin
-						var = b
+						var = b (62:10,62:10)
 
-						idx = 0
+						idx = 0 (62:12,62:12)
 					lookup_exp end
 				add_exp end
 
 				rhs = add_exp (62:18,62:38) begin
-					lhs = 1
+					lhs = 1 (62:18,62:18)
 
 					rhs = mul_exp (62:22,62:38) begin
 						lhs = mul_exp (62:22,62:28) begin
-							lhs = 2
+							lhs = 2 (62:22,62:22)
 
 							rhs = unary_minus_exp (62:28,62:28) begin
-								exp = c
+								exp = c (62:28,62:28)
 							unary_minus_exp end
 						mul_exp end
 
 						rhs = lookup_exp (62:32,62:38) begin
 							var = lookup_exp (62:32,62:35) begin
-								var = b
+								var = b (62:32,62:32)
 
-								idx = 1
+								idx = 1 (62:34,62:34)
 							lookup_exp end
 
-							idx = 0
+							idx = 0 (62:37,62:37)
 						lookup_exp end
 					mul_exp end
 				add_exp end
 			greater_equal_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (64:3,64:10) begin
+			lhs = a (64:3,64:3)
 
 			rhs = call_exp (64:7,64:9) begin
-				name = f
+				name = f (64:7,64:9)
 
 				parameters = exp_list begin
 					exp_list end
 			call_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (65:3,65:20) begin
+			lhs = a (65:3,65:3)
 
 			rhs = call_exp (65:7,65:19) begin
-				name = f
+				name = f (65:7,65:19)
 
 				parameters = exp_list begin
-					a
+					a (65:9,65:9)
 					;
-					b
+					b (65:12,65:12)
 					;
-					c
+					c (65:15,65:15)
 					;
-					d
+					d (65:18,65:18)
 					exp_list end
 			call_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (66:3,66:29) begin
+			lhs = a (66:3,66:3)
 
 			rhs = call_exp (66:7,66:28) begin
-				name = f
+				name = f (66:7,66:28)
 
 				parameters = exp_list begin
 					add_exp (66:9,66:11) begin
-						lhs = 1
+						lhs = 1 (66:9,66:9)
 
-						rhs = 1
+						rhs = 1 (66:11,66:11)
 					add_exp end
 					;
-					true
+					true (66:14,66:17)
 					;
 					add_exp (66:20,66:24) begin
-						lhs = 1
+						lhs = 1 (66:20,66:20)
 
 						rhs = mul_exp (66:22,66:24) begin
-							lhs = 2
+							lhs = 2 (66:22,66:22)
 
-							rhs = 3
+							rhs = 3 (66:24,66:24)
 						mul_exp end
 					add_exp end
 					;
-					a
+					a (66:27,66:27)
 					exp_list end
 			call_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (67:3,67:13) begin
+			lhs = a (67:3,67:3)
 
 			rhs = lookup_exp (67:7,67:12) begin
 				var = call_exp (67:7,67:9) begin
-					name = f
+					name = f (67:7,67:9)
 
 					parameters = exp_list begin
 						exp_list end
 				call_exp end
 
-				idx = 0
+				idx = 0 (67:11,67:11)
 			lookup_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (68:3,68:17) begin
+			lhs = a (68:3,68:3)
 
 			rhs = mul_exp (68:7,68:16) begin
-				lhs = 1
+				lhs = 1 (68:7,68:7)
 
 				rhs = lookup_exp (68:11,68:16) begin
 					var = call_exp (68:11,68:13) begin
-						name = f
+						name = f (68:11,68:13)
 
 						parameters = exp_list begin
 							exp_list end
 					call_exp end
 
-					idx = 0
+					idx = 0 (68:15,68:15)
 				lookup_exp end
 			mul_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (69:3,69:11) begin
+			lhs = a (69:3,69:3)
 
 			rhs = unary_minus_exp (69:8,69:10) begin
 				exp = call_exp (69:8,69:10) begin
-					name = f
+					name = f (69:8,69:10)
 
 					parameters = exp_list begin
 						exp_list end
 				call_exp end
 			unary_minus_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (70:3,70:51) begin
+			lhs = a (70:3,70:3)
 
 			rhs = call_exp (70:7,70:50) begin
-				name = f
+				name = f (70:7,70:50)
 
 				parameters = exp_list begin
 					mul_exp (70:9,70:34) begin
 						lhs = unary_minus_exp (70:10,70:10) begin
-							exp = 3
+							exp = 3 (70:10,70:10)
 						unary_minus_exp end
 
 						rhs = lookup_exp (70:14,70:34) begin
 							var = call_exp (70:14,70:31) begin
-								name = f
+								name = f (70:14,70:31)
 
 								parameters = exp_list begin
 									equals_exp (70:16,70:30) begin
 										lhs = unary_minus_exp (70:18,70:24) begin
 											exp = greater_than_exp (70:18,70:24) begin
 												lhs = add_exp (70:18,70:22) begin
-													lhs = 1
+													lhs = 1 (70:18,70:18)
 
 													rhs = mul_exp (70:20,70:22) begin
-														lhs = 2
+														lhs = 2 (70:20,70:20)
 
-														rhs = 3
+														rhs = 3 (70:22,70:22)
 													mul_exp end
 												add_exp end
 
-												rhs = 4
+												rhs = 4 (70:24,70:24)
 											greater_than_exp end
 										unary_minus_exp end
 
-										rhs = 5
+										rhs = 5 (70:30,70:30)
 									equals_exp end
 									exp_list end
 							call_exp end
 
-							idx = 0
+							idx = 0 (70:33,70:33)
 						lookup_exp end
 					mul_exp end
 					;
-					b
+					b (70:37,70:37)
 					;
-					true
+					true (70:40,70:43)
 					;
 					lookup_exp (70:46,70:49) begin
-						var = a
+						var = a (70:46,70:46)
 
-						idx = 0
+						idx = 0 (70:48,70:48)
 					lookup_exp end
 					exp_list end
 			call_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (72:3,72:22) begin
+			lhs = a (72:3,72:3)
 
 			rhs = new_exp (72:17,72:20) begin
 				type = char
 
-				size = true
+				size = true (72:17,72:20)
 			new_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (73:3,73:20) begin
+			lhs = a (73:3,73:3)
 
 			rhs = new_exp (73:16,73:18) begin
 				type = int
 
 				size = add_exp (73:16,73:18) begin
-						lhs = 1
+						lhs = 1 (73:16,73:16)
 
-						rhs = 1
+						rhs = 1 (73:18,73:18)
 					add_exp end
 			new_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (74:3,74:25) begin
+			lhs = a (74:3,74:3)
 
 			rhs = new_exp (74:18,74:23) begin
 				type = float
 
 				size = lookup_exp (74:18,74:23) begin
 						var = call_exp (74:18,74:20) begin
-							name = f
+							name = f (74:18,74:20)
 
 							parameters = exp_list begin
 								exp_list end
 						call_exp end
 
-						idx = 0
+						idx = 0 (74:22,74:22)
 					lookup_exp end
 			new_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (75:3,75:30) begin
+			lhs = a (75:3,75:3)
 
 			rhs = new_exp (75:19,75:28) begin
 				type = [bool]
 
 				size = call_exp (75:19,75:28) begin
-						name = f
+						name = f (75:19,75:28)
 
 						parameters = exp_list begin
-							a
+							a (75:21,75:21)
 							;
 							call_exp (75:24,75:27) begin
-								name = f
+								name = f (75:24,75:27)
 
 								parameters = exp_list begin
-									a
+									a (75:26,75:26)
 									exp_list end
 							call_exp end
 							exp_list end
 					call_exp end
 			new_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (76:3,76:27) begin
+			lhs = a (76:3,76:3)
 
 			rhs = lookup_exp (76:7,76:26) begin
 				var = new_exp (76:18,76:21) begin
 					type = char
 
-					size = true
+					size = true (76:18,76:21)
 				new_exp end
 
-				idx = 0
+				idx = 0 (76:25,76:25)
 			lookup_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (78:3,78:16) begin
+			lhs = a (78:3,78:3)
 
 			rhs = cast_exp (78:7,78:7) begin
-				exp = b
+				exp = b (78:7,78:7)
 
 				type = bool
 			lookup_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (79:3,79:18) begin
+			lhs = a (79:3,79:3)
 
 			rhs = cast_exp (79:7,79:9) begin
 				exp = add_exp (79:7,79:9) begin
-						lhs = 1
+						lhs = 1 (79:7,79:7)
 
-						rhs = 1
+						rhs = 1 (79:9,79:9)
 					add_exp end
 
 				type = bool
 			lookup_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (80:3,80:19) begin
+			lhs = a (80:3,80:3)
 
 			rhs = cast_exp (80:7,80:10) begin
-				exp = true
+				exp = true (80:7,80:10)
 
 				type = bool
 			lookup_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (81:3,81:30) begin
+			lhs = a (81:3,81:3)
 
 			rhs = cast_exp (81:7,81:21) begin
-				exp = "Hello, world!"
+				exp = "Hello, world!" (81:7,81:21)
 
 				type = bool
 			lookup_exp end
-		assign_stat end
+		assign_statment end
 
-		assign_stat begin
-			lhs = a
+		assign_statement (82:3,82:28) begin
+			lhs = a (82:3,82:3)
 
 			rhs = lookup_exp (82:7,82:27) begin
 				var = cast_exp (82:8,82:15) begin
 					exp = add_exp (82:8,82:15) begin
 							lhs = add_exp (82:8,82:10) begin
-								lhs = 1
+								lhs = 1 (82:8,82:8)
 
-								rhs = 2
+								rhs = 2 (82:10,82:10)
 							add_exp end
 
 							rhs = lookup_exp (82:12,82:15) begin
-								var = 3
+								var = 3 (82:12,82:12)
 
-								idx = 0
+								idx = 0 (82:14,82:14)
 							lookup_exp end
 						add_exp end
 
 					type = bool
 				lookup_exp end
 
-				idx = 0
+				idx = 0 (82:26,82:26)
 			lookup_exp end
-		assign_stat end
+		assign_statment end
 
 	block end
 func_def end

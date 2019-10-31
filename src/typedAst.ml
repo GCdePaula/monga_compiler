@@ -73,7 +73,7 @@ type type_error =
   | RedeclaredName of id
 
 type error = {
-  loc: (Lexing.position * Lexing.position);
+  loc: location;
   err: type_error
 }
 

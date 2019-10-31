@@ -142,13 +142,15 @@ let rec print_def def =
   in
 
   match def with
-  | VarDef vdef ->
-    printf "var_def begin\n\tid = %s\n\ttype = " vdef.name;
+  | VarDef (loc, vdef) ->
+    print_string ("var_def " ^ (string_of_loc loc) ^ " begin\n");
+    printf "\tid = %s\n\ttype = " vdef.name;
     print_monga_type vdef.t;
     print_string "\nvar_def end\n\n"
 
-  | FuncDef (name, signature, b) ->
-    printf "func_def begin\n\tid = %s\n\tsignature = (" name;
+  | FuncDef (loc, name, signature, b) ->
+    print_string ("func_def " ^ (string_of_loc loc) ^ " begin\n");
+    printf "\tid = %s\n\tsignature = (" name;
     print_sig signature.parameters;
     print_string ")";
     (match signature.ret_type with
@@ -162,8 +164,8 @@ let rec print_def def =
     print_string "func_def end\n\n"
 
 and print_block block depth =
-  let p_var (m_var : monga_variable) =
-    print_depth (depth+1); print_string "var_def begin\n";
+  let p_var ((loc, m_var) : (location * monga_variable)) =
+    print_depth (depth+1); print_string ("var_def " ^ (string_of_loc loc) ^" begin\n");
     print_depth (depth+2); printf "id = %s\n\n" m_var.name;
     print_depth (depth+2); print_string "type = ";
     print_monga_type m_var.t; print_string "\n";
@@ -178,9 +180,9 @@ and print_block block depth =
   print_depth depth; print_string "block end\n"
 
 and print_stat stat depth =
-  match stat with
+  match stat.stat with
   | IfElseStat (exp, then_block, else_block_opt) ->
-    print_depth depth; print_string "if_else_statement begin\n";
+    print_depth depth; print_string ("if_else_statement " ^ (string_of_loc stat.loc) ^ " begin\n");
     print_depth (depth+1); print_string "condition = ";
     print_exp exp (depth+1); print_string "\n";
     print_depth (depth+1); print_string "then_block = ";
@@ -194,7 +196,7 @@ and print_stat stat depth =
     print_depth depth; print_string "if_else_statement end\n\n"
 
   | WhileStat (exp, block) ->
-    print_depth depth; print_string "while_statement begin\n";
+    print_depth depth; print_string ("while_statement " ^ (string_of_loc stat.loc) ^ " begin\n");
     print_depth (depth+1); print_string "condition = ";
     print_exp exp (depth+1); print_string "\n";
     print_depth (depth+1); print_string "block = ";
@@ -202,7 +204,7 @@ and print_stat stat depth =
     print_depth depth; print_string "while_statement end\n\n"
 
   | ReturnStat (opt_exp) ->
-    print_depth depth; print_string "return_statement begin\n";
+    print_depth depth; print_string ("return_statement " ^ (string_of_loc stat.loc) ^ " begin\n");
     (match opt_exp with
      | Some exp ->
        print_depth (depth+1); print_string "return_exp = ";
@@ -211,25 +213,25 @@ and print_stat stat depth =
     print_depth depth; print_string "return_statement end\n\n"
 
   | AssignStat (exp1, exp2) ->
-    print_depth depth; print_string "assign_stat begin\n";
+    print_depth depth; print_string ("assign_statement " ^ (string_of_loc stat.loc) ^ " begin\n");
     print_depth (depth+1); print_string "lhs = ";
     print_exp exp1 (depth+1); print_string "\n";
     print_depth (depth+1); print_string "rhs = ";
     print_exp exp2 (depth+1);
-    print_depth depth; print_string "assign_stat end\n\n"
+    print_depth depth; print_string "assign_statment end\n\n"
 
   | CallStat (fname, lexp) ->
-    print_depth depth; print_string "fcall_stat begin\n";
+    print_depth depth; print_string ("fcall_statement " ^ (string_of_loc stat.loc) ^ " begin\n");
     print_depth (depth+1); printf "name = %s\n" fname;
     print_depth (depth+1); print_string "parameters = ";
     print_exp_list lexp (depth+2);
-    print_depth depth; print_string "fcall_stat end\n\n"
+    print_depth depth; print_string "fcall_statement end\n\n"
 
   | PutStat (exp) ->
-    print_depth depth; print_string "put_stat begin\n";
+    print_depth depth; print_string ("put_statement " ^ (string_of_loc stat.loc) ^ " begin\n");
     print_depth (depth+1); print_string "exp = ";
     print_exp exp (depth+1);
-    print_depth depth; print_string "put_stat end\n\n"
+    print_depth depth; print_string "put_statement end\n\n"
 
   | BlockStat (block) ->
     print_depth (depth); print_block block (depth);
@@ -315,19 +317,20 @@ and print_exp exp depth =
     print_depth depth; print_string "unary_not_exp end\n"
 
   | TrueExp ->
-    print_string "true\n"
+    print_string ("true " ^ (string_of_loc exp.loc) ^ "\n")
 
   | FalseExp ->
-    print_string "false\n"
+    print_string ("false " ^ (string_of_loc exp.loc) ^ "\n")
 
   | FloatExp fnum ->
-    printf "%h\n" fnum
+    printf "%h " fnum; print_string ((string_of_loc exp.loc) ^ "\n")
+
 
   | IntExp inum ->
-    printf "%d\n" inum
+    printf "%d " inum; print_string ((string_of_loc exp.loc) ^ "\n")
 
   | StringExp str ->
-    printf "\"%s\"\n" str
+    printf "\"%s\" " str; print_string ((string_of_loc exp.loc) ^ "\n")
 
   | NewExp (t, exp) ->
     print_string ("new_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
@@ -354,11 +357,11 @@ and print_exp exp depth =
     print_depth depth; print_string "lookup_exp end\n"
 
   | VarExp id ->
-    printf "%s\n" id
+    printf "%s " id; print_string ((string_of_loc exp.loc) ^ "\n")
 
   | CallExp (fname, params) ->
     print_string ("call_exp " ^ (string_of_loc exp.loc) ^ " begin\n");
-    print_depth (depth+1); printf "name = %s\n\n" fname;
+    print_depth (depth+1); printf "name = %s " fname; print_string ((string_of_loc exp.loc) ^ "\n\n");
     print_depth (depth+1); print_string "parameters = ";
     print_exp_list params (depth+2);
     print_depth depth; print_string "call_exp end\n"
@@ -664,8 +667,8 @@ let rec print_typed_program defs =
 
 
 
-let string_of_type_error (err : TypedAst.type_error) =
-  match err with
+let string_of_type_error (err : TypedAst.error) =
+  (match err.err with
   | IncompatibleTypeError (got, want) ->
     "Got type {" ^
     (string_of_monga_type got) ^
@@ -707,11 +710,13 @@ let string_of_type_error (err : TypedAst.type_error) =
     "Name '" ^ name ^ "' is not a function"
 
   | RedeclaredName name ->
-    "Name '" ^ name ^ "' redeclaration"
+    "Name '" ^ name ^ "' redeclaration") ^
+  ", at location " ^ (string_of_loc err.loc)
 
-let print_type_error (err : TypedAst.type_error) =
+
+let print_type_error (err : TypedAst.error) =
   print_endline (string_of_type_error err)
 
-let print_type_error_list (errs : TypedAst.type_error list) =
+let print_type_error_list (errs : TypedAst.error list) =
   List.iter print_type_error errs
 

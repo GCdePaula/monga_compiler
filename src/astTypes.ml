@@ -18,3 +18,4 @@ type monga_function_type = {
   ret_type: monga_type option;
 }
 
+type location = Lexing.position * Lexing.position

@@ -1639,41 +1639,40 @@ func_def end
 DONE inputs/test3.in
 
 PARSING FILE inputs/test4.in
-Name 'bananas' redeclaration
-Name 'bananas' redeclaration
-Incompatible return type
-Incompatible return type
-Got type {int}, which is incompatible with expected type {bool}
-Got 1 arguments, but expected 0
-Got 0 arguments, but expected 1
-Name 'f5' redeclaration
-Incompatible return type
-Name 'a' is not a function
-Name 'f6' is not a variable
-Name 'f6' is not a variable
-Type {bool} is not an integer
-Type {int} is not an array
-Type {int} is not an array, type {bool} is not an integer
-Type {bool} is not an arithmetic type
-Type {bool} is not an arithmetic type
-Type {bool} is not an arithmetic type
-Type {bool} is not an arithmetic type
-Type {bool} is not an arithmetic type
-Type {bool} is not an arithmetic type
-Type {[int]} is not an arithmetic type
-Type {[int]} is not an arithmetic type
-Type {[int]} is not an arithmetic type
-Type {[int]} is not an arithmetic type
-Type {[int]} is not an arithmetic type
-Type {[int]} is not an arithmetic type
-Name not bound bananas2
-Name not bound bananas3
-Got type {float}, which is incompatible with expected type {int}
-Type {bool} is not an arithmetic type
-Type {[int]} is not an arithmetic type
-Got type {int}, which is incompatible with expected type {bool}
-Got type {[bool]}, which is incompatible with expected type {bool}
-Got type {int}, which is incompatible with expected type {bool}
-Got type {int}, which is incompatible with expected type {bool}
+Name 'bananas' redeclaration, at location (3:1,3:15)
+Name 'bananas' redeclaration, at location (4:1,4:15)
+Incompatible return type, at location (7:2,7:10)
+Incompatible return type, at location (11:2,11:8)
+Got type {int}, which is incompatible with expected type {bool}, at location (15:9,15:9)
+Got 1 arguments, but expected 0, at location (21:2,21:7)
+Got 0 arguments, but expected 1, at location (25:2,25:6)
+Name 'f5' redeclaration, at location (28:1,28:14)
+Incompatible return type, at location (39:6,39:9)
+Name 'a' is not a function, at location (41:6,41:8)
+Name 'f6' is not a variable, at location (42:6,42:7)
+Name 'f6' is not a variable, at location (43:2,43:3)
+Type {bool} is not an integer, at location (45:6,45:12)
+Type {int} is not an array, at location (46:7,46:10)
+Type {int} is not an array, type {bool} is not an integer, at location (47:7,47:13)
+Type {bool} is not an arithmetic type, at location (49:6,49:9)
+Type {bool} is not an arithmetic type, at location (50:10,50:13)
+Type {bool} is not an arithmetic type, at location (51:6,51:9)
+Type {bool} is not an arithmetic type, at location (52:10,52:13)
+Type {bool} is not an arithmetic type, at location (53:6,53:9)
+Type {bool} is not an arithmetic type, at location (53:13,53:16)
+Type {[int]} is not an arithmetic type, at location (55:6,55:7)
+Type {[int]} is not an arithmetic type, at location (56:10,56:11)
+Type {[int]} is not an arithmetic type, at location (57:6,57:7)
+Type {[int]} is not an arithmetic type, at location (58:10,58:11)
+Type {[int]} is not an arithmetic type, at location (59:6,59:7)
+Type {[int]} is not an arithmetic type, at location (59:11,59:12)
+Name not bound bananas2, at location (61:2,61:9)
+Name not bound bananas3, at location (62:6,62:15)
+Type {bool} is not an arithmetic type, at location (65:10,65:13)
+Type {[int]} is not an arithmetic type, at location (66:11,66:12)
+Got type {int}, which is incompatible with expected type {bool}, at location (68:8,68:8)
+Got type {[bool]}, which is incompatible with expected type {bool}, at location (69:8,69:9)
+Got type {int}, which is incompatible with expected type {bool}, at location (70:5,70:5)
+Got type {int}, which is incompatible with expected type {bool}, at location (71:5,71:5)
 DONE inputs/test4.in
 

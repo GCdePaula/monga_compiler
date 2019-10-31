@@ -3,7 +3,7 @@ open AstTypes
 
 (* Expressions *)
 type exp_node = {
-  loc : Lexing.position * Lexing.position;
+  loc : location;
   exp : exp
 }
 
@@ -35,15 +35,19 @@ and exp =
 
 (* Block, Statements and Definitions *)
 type def_node =
-  | VarDef of monga_variable
-  | FuncDef of id * monga_function_type * block_node
+  | VarDef of location * monga_variable
+  | FuncDef of location * id * monga_function_type * block_node
 
 and block_node = {
-  var_decs : monga_variable list;
+  var_decs : (location * monga_variable) list;
   statements : stat_node list
 }
 
-and stat_node =
+and stat_node = {
+  loc : location;
+  stat: stat
+}
+and stat =
   | IfElseStat of exp_node * block_node * block_node option
   | WhileStat of exp_node * block_node
   | ReturnStat of exp_node option
