@@ -1669,8 +1669,8 @@ Type {[int]} is not an arithmetic type
 Name not bound bananas2
 Name not bound bananas3
 Got type {float}, which is incompatible with expected type {int}
-Got type {bool}, which is incompatible with expected type {int}
-Got type {[int]}, which is incompatible with expected type {int}
+Type {bool} is not an arithmetic type
+Type {[int]} is not an arithmetic type
 Got type {int}, which is incompatible with expected type {bool}
 Got type {[bool]}, which is incompatible with expected type {bool}
 Got type {int}, which is incompatible with expected type {bool}

@@ -14,47 +14,97 @@ let combine_res x_res y_res f_ok =
 
 (* Type expresions and function *)
 let rec type_exp env (exp_node: UntypedAst.exp_node) =
+  let exception ArthmError of monga_type list in
+  let exception PromoteError of string in
+
+  let is_arthm = function Float | Int -> true | _ -> false in
+
+  let promote_to_float exp_t =
+    match exp_t.t with
+    | Float -> exp_t
+    | Int -> {exp = CastExp (exp_t, Float); t = Float}
+    | Char -> {exp = CastExp (exp_t, Float); t = Float}
+    | x -> raise (ArthmError [x])
+  in
+
+  let promote_to_int exp_t =
+    match exp_t.t with
+    | Float -> raise (PromoteError "Cannot promote float to int")
+    | Int -> exp_t
+    | Char -> {exp = CastExp (exp_t, Int); t = Int}
+    | x -> raise (ArthmError [x])
+  in
+
   let arthm lhs rhs =
-    let is_arthm x = (match x with Float | Int -> true | _ -> false) in
     let t_lhs_res = type_exp env lhs in
     let t_rhs_res = type_exp env rhs in
-    let exception ArthmError of monga_type list in
 
     try
       combine_res t_lhs_res t_rhs_res (
         fun t_lhs t_rhs ->
           match t_lhs.t, t_rhs.t with
-          | Int, Int ->
-            (t_lhs, t_rhs, Int)
+          | Float, _ ->
+            (t_lhs, promote_to_float t_rhs, Float)
 
-          | Float, Float ->
-            (t_lhs, t_rhs, Float)
+          | _, Float ->
+            (promote_to_float t_lhs, t_rhs, Float)
 
-          | Int, Float ->
-            let cast_lhs = {
-              exp = CastExp (t_lhs, Float);
-              t = Float
-            } in
-            (cast_lhs, t_rhs, Float)
+          | Int, _ ->
+            (t_lhs, promote_to_int t_rhs, Int)
 
-          | Float, Int ->
-            let cast_rhs = {
-              exp = CastExp (t_rhs, Float);
-              t = Float
-            } in
-            (t_lhs, cast_rhs, Float)
+          | _, Int ->
+            (promote_to_int t_lhs, t_rhs, Int)
+
+          | Char, Char ->
+            (t_lhs, t_rhs, Char)
 
           | x, y ->
-            let x_err = if is_arthm x then [] else [x] in
-            let y_err = if is_arthm y then [] else [y] in
-            raise (ArthmError (x_err @ y_err))
+            let err = ref [] in
+            err := if is_arthm x then !err else x :: !err;
+            err := if is_arthm y then !err else y :: !err;
+            raise (ArthmError !err)
       )
     with
     | ArthmError xs -> Error (List.map xs ~f:(fun x -> NotArithmeticTypeError x))
   in
 
-  (* Relational doesn't promote int to float *)
+  (* Relational only works on arthm types, promoting expressions if necessary *)
   let relational_exp lhs rhs =
+    let is_arthm = function Float | Int -> true | _ -> false in
+    let t_lhs_res = type_exp env lhs in
+    let t_rhs_res = type_exp env rhs in
+
+    try
+      combine_res t_lhs_res t_rhs_res (
+        fun t_lhs t_rhs ->
+          match t_lhs.t, t_rhs.t with
+          | Float, _ ->
+            (t_lhs, promote_to_float t_rhs, Bool)
+
+          | _, Float ->
+            (promote_to_float t_lhs, t_rhs, Bool)
+
+          | Int, _ ->
+            (t_lhs, promote_to_int t_rhs, Bool)
+
+          | _, Int ->
+            (promote_to_int t_lhs, t_rhs, Bool)
+
+          | Char, Char ->
+            (t_lhs, t_rhs, Bool)
+
+          | x, y ->
+            let err = ref [] in
+            err := if is_arthm x then !err else x :: !err;
+            err := if is_arthm y then !err else y :: !err;
+            raise (ArthmError !err)
+      )
+    with
+    | ArthmError xs -> Error (List.map xs ~f:(fun x -> NotArithmeticTypeError x))
+  in
+
+  (* Equality operators only work on same type *)
+  let equality_exp lhs rhs =
     let t_lhs_res = type_exp env lhs in
     let t_rhs_res = type_exp env rhs in
     let exception EqError of monga_type * monga_type in
@@ -132,12 +182,12 @@ let rec type_exp env (exp_node: UntypedAst.exp_node) =
 
   (* Relational Exp *)
   | UntypedAst.EqExp (lhs, rhs) ->
-    relational_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    equality_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
     let exp = EqExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
   | UntypedAst.NeExp (lhs, rhs) ->
-    relational_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
+    equality_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
     let exp = NeExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
