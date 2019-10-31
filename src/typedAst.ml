@@ -61,10 +61,10 @@ type typed_tree = t_def_node list
 
 (* Type Errors *)
 type type_error =
-  | IncompatibleTypeError of monga_type * monga_type
+  | IncompatibleTypeError of monga_type * monga_type (*got, want*)
   | IncompatibleRetType
   | NotArithmeticTypeError of monga_type
-  | IndexTypeError of monga_type * monga_type
+  | IndexTypeError of monga_type * monga_type (*var, idx*)
   | WrongNumberOfArgs of int * int
   | UnboundName of id
   | NotAssignable
@@ -73,7 +73,7 @@ type type_error =
   | RedeclaredName of id
 
 type error = {
-  loc: int;
+  loc: (Lexing.position * Lexing.position);
   err: type_error
 }
 

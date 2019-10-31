@@ -65,4 +65,9 @@ main() {
 	a = 0 == 0.0;
 	a = 0 > true;
 	a = b <= b2;
+
+	while 0 {}
+	while a2 {}
+	if 0 {}
+	if 0 {} else {}
 }

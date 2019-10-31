@@ -311,7 +311,12 @@ and build_statement env curr_func stat =
 
   match stat with
   | UntypedAst.IfElseStat (condition, then_block, Some else_block) ->
-    let t_cond_res = type_exp env condition in
+    let t_cond_res = type_exp env condition >>=  fun t_exp ->
+      if Poly.equal t_exp.t Bool then
+        Ok t_exp
+      else
+        Error [IncompatibleTypeError (t_exp.t, Bool)]
+    in
     let t_then_res = build_block env curr_func then_block in
     let t_else_res = build_block env curr_func else_block in
 
@@ -326,7 +331,12 @@ and build_statement env curr_func stat =
     )
 
   | UntypedAst.IfElseStat (condition, then_block, None) ->
-    let t_cond_res = type_exp env condition in
+    let t_cond_res = type_exp env condition >>=  fun t_exp ->
+      if Poly.equal t_exp.t Bool then
+        Ok t_exp
+      else
+        Error [IncompatibleTypeError (t_exp.t, Bool)]
+    in
     let t_then_res = build_block env curr_func then_block in
     combine_res t_cond_res t_then_res (
       fun t_cond t_then ->
@@ -334,7 +344,12 @@ and build_statement env curr_func stat =
     )
 
   | UntypedAst.WhileStat (condition, block) ->
-    let t_cond_res = type_exp env condition in
+    let t_cond_res = type_exp env condition >>=  fun t_exp ->
+      if Poly.equal t_exp.t Bool then
+        Ok t_exp
+      else
+        Error [IncompatibleTypeError (t_exp.t, Bool)]
+    in
     let t_block_res = build_block env curr_func block in
     combine_res t_cond_res t_block_res (
       fun t_cond t_block ->

@@ -1671,5 +1671,9 @@ Name not bound bananas3
 Got type {float}, which is incompatible with expected type {int}
 Got type {bool}, which is incompatible with expected type {int}
 Got type {[int]}, which is incompatible with expected type {int}
+Got type {int}, which is incompatible with expected type {bool}
+Got type {[bool]}, which is incompatible with expected type {bool}
+Got type {int}, which is incompatible with expected type {bool}
+Got type {int}, which is incompatible with expected type {bool}
 DONE inputs/test4.in
 
