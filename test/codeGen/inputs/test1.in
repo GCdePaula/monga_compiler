@@ -1,0 +1,38 @@
+
+bananas: int;
+bananas1: [int];
+bananas2: [[int]];
+bananas3: [[[int]]];
+bananas4: [[[[int]]]];
+bananas5: [[[[[int]]]]];
+bananas6: [[[[[[int]]]]]];
+bananas7: [[[[[[[int]]]]]]];
+bananas8: [[[[[[[[int]]]]]]]];
+bananas9: [[[[[[[[[int]]]]]]]]];
+
+a: char;
+b: float;
+c: bool;
+
+f0() {}
+
+f1() : int {}
+f2() : char {}
+f3() : float {}
+f4() : bool {}
+f5() : [int] {}
+f6() : [[int]] {}
+
+g1(a: int) {}
+g2(a: int, b: float) {}
+g3(a: int, b: float, c: bool) {}
+g4(a: int, b: float, c: bool, d: char) {}
+
+h() {{} {} {} {}}
+
+
+h1() {{}}
+h2() {{{}}}
+h3() {{{{}}}}
+h4() {{{{{}}}}}
+
