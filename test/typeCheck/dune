@@ -1,7 +1,7 @@
 
 (tests
   (names typeTest)
-  (libraries Src)
+  (libraries Src base)
   (deps (glob_files inputs/*.in))
   (action (run %{test}))
 )

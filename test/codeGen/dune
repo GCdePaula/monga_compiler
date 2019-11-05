@@ -1,10 +1,7 @@
-(env
-  (dev
-    (flags (:standard -warn-error -A))))
 
 (tests
   (names codeGen)
-  (libraries Src llvm.executionengine)
+  (libraries Src llvm.executionengine base)
   (deps (glob_files inputs/*.in))
   (action (run %{test}))
 )

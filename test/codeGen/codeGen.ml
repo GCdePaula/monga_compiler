@@ -1,8 +1,10 @@
-
+(* open Printf *)
+open Src
 open Llvm
-open Llvm_executionengine
+open Base
+open Stdio
 
-let main () =
+let gen_hello () =
 (*
   let context = global_context () in
   let the_module = create_module context "my_mod" in
@@ -46,23 +48,53 @@ let main () =
   let printf = declare_function "printf" printf_ty llm in
 
   let s = build_global_stringptr "Hello, world!\n" "" llbuilder in
+
   (* try commenting these two lines and compare the result *)
   let zero = const_int i32_t 0 in
   let s = build_in_bounds_gep s [| zero |] "" llbuilder in
 
   let _ = build_call printf [| s |] "" llbuilder in
-
   let _ = build_ret (const_int i32_t 0) llbuilder in
+
+  llm
+
+
+let build_typed_tree file_name =
+  let cin = open_in file_name in
+  let lexbuf = Lexing.from_channel cin in
+
+  let untyped_ast = Parser.program Lexer.monga_lexer lexbuf in
+  TypeCheck.build_typed_tree untyped_ast
+
+
+let build_llvm_module file_name =
+  match build_typed_tree file_name with
+  | Ok typed_tree ->
+    CodeGen.gen_code typed_tree
+  | Error _ ->
+    raise (Failure "Failed to build typed tree")
+
+let test file_name =
+  printf "BUILDING FILE %s\n" file_name;
+
+  let llm = build_llvm_module file_name in
   print_string (string_of_llmodule llm);
-  let _ = initialize () in
-  let the_execution_engine = Llvm_executionengine.create llm in
+
   let open Ctypes in
   let open Foreign in
-  let c_t = funptr (void @-> returning int32_t) in
-  let mf = get_function_address "main" c_t the_execution_engine in
-  let _ = mf () in
-  ()
-  (* let _ = ExecutionEngine.run_function f [||] the_execution_engine in *)
 
+  let exe_engine = Llvm_executionengine.create llm in
+  let c_t = funptr (void @-> returning int32_t) in
+  (* let main_func = Llvm_executionengine.get_function_address "main" c_t exe_engine in *)
+  (* let _ = main_func () in *)
+
+  printf "DONE %s\n\n" file_name
+
+
+let main () =
+  let _ = print_string "bananas\n" in
+  let _ = Llvm_executionengine.initialize () in
+  test "inputs/test1.in"
 
 let _ = Printexc.print main ()
+    (* Backtrace.Exn.with_recording true ~f:main *)
