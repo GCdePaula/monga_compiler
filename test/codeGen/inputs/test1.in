@@ -1,2 +1,22 @@
 
-main () : int {}
+a : int;
+a2 : int;
+fl : float;
+
+
+foo () : int {}
+
+main () : int {
+  @ 11;
+  @ 11.5;
+
+  a = 42;
+  a2 = a;
+  a = 23;
+
+  @ a;
+  @ a2;
+
+  fl = 1.5;
+  @ fl;
+}

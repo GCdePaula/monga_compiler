@@ -1,7 +1,7 @@
 
 (tests
   (names codeGen)
-  (libraries Src llvm.executionengine base)
+  (libraries Src llvm.executionengine base stdio)
   (deps (glob_files inputs/*.in))
   (action (run %{test}))
 )

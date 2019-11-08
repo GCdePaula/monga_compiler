@@ -4,6 +4,7 @@ open Llvm
 open Base
 open Stdio
 
+(*
 let gen_hello () =
 (*
   let context = global_context () in
@@ -58,6 +59,7 @@ let gen_hello () =
 
   llm
 
+*)
 
 let build_typed_tree file_name =
   let cin = open_in file_name in
@@ -83,18 +85,19 @@ let test file_name =
   let open Ctypes in
   let open Foreign in
 
-  let exe_engine = Llvm_executionengine.create llm in
-  let c_t = funptr (void @-> returning int32_t) in
-  (* let main_func = Llvm_executionengine.get_function_address "main" c_t exe_engine in *)
-  (* let _ = main_func () in *)
+  try
+    let exe_engine = Llvm_executionengine.create llm in
+    let c_t = funptr (void @-> returning int32_t) in
+    let main_func = Llvm_executionengine.get_function_address "main" c_t exe_engine in
+    let _ = main_func () in
+    ()
+  with _ -> print_string "ERROR EXECUTING CODE\n";
 
   printf "DONE %s\n\n" file_name
 
 
 let main () =
-  let _ = print_string "bananas\n" in
   let _ = Llvm_executionengine.initialize () in
   test "inputs/test1.in"
 
-let _ = Printexc.print main ()
-    (* Backtrace.Exn.with_recording true ~f:main *)
+let _ = Backtrace.Exn.with_recording true ~f:main
