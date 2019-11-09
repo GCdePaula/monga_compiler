@@ -80,7 +80,6 @@ let gen_code typed_tree =
 
     | PutStat exp ->
       let llval = gen_exp llbuilder env exp in
-
       let _ = (
         match exp.t with
         | Int ->
@@ -91,8 +90,17 @@ let gen_code typed_tree =
 
         | _ -> raise (SurprisedPikachu "Put stat case not implemented yet")
       ) in
-
       llbuilder
+
+    | ReturnStat (Some exp) ->
+      let llexp = gen_exp llbuilder env exp in
+      let _ = build_ret llexp llbuilder in
+      llbuilder
+
+    | ReturnStat None ->
+      let _ = build_ret_void llbuilder in
+      llbuilder
+
     | _ -> raise (SurprisedPikachu "Stat case not implemented yet")
 
   and gen_block llbuilder env block_node =
@@ -114,15 +122,26 @@ let gen_code typed_tree =
       NameEnv.add var.name llval env
 
     | FuncDef (name, ft, block) ->
+      (* create function at module and add its name to env *)
       let llft = lltype_from_functype ft in
       let f = define_function name llft llmodule in
       let new_env = NameEnv.add name f env in
-
       let llbuilder = builder_at_end llctx (entry_block f) in
-      let _ = gen_block llbuilder new_env block in  (* TODO: need to add params to env!! *)
 
-      (* TODO: This shouldn't be here*)
-      let _ = build_ret (const_int (lltype_from_mongatype Int) 0) llbuilder in
+      (* add parameters to env *)
+      let (new_new_env, _) =
+        List.fold_left ft.parameters ~init:(env, 0)  ~f:(
+          fun (env, ll_ppos) m_param ->
+            let llparam = param f ll_ppos in
+            let v = build_alloca (lltype_from_mongatype m_param.t) "" llbuilder in
+            let _ = build_store llparam v llbuilder in
+            (NameEnv.add m_param.name v env, ll_ppos + 1)
+        )
+      in
+
+      (* build function *)
+      let _ = gen_block llbuilder new_new_env block in
+
 
       new_env
   in
