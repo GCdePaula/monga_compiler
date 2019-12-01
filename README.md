@@ -1,22 +1,31 @@
 
 # Issues
 
-### Char as index is not being promoted
+### Format string copies
+Multiple print statements create multiple global format strings.
 
+### Char as index is not being promoted
 Expressions of type 'char' are not promoted in indexing.
 
 ### Functions without return
-
-Functions that have a return type can currently return nothing. Type checking correctly disallows wrong returns.
+Functions that have a return type can currently return nothing. Type checking correctly disallows wrong returns, but does not check if there actually is a return statement
+Also, functions without a return type must explicitly have an empty return statement.
 
 ### Integer numeral minimum value
-
 Monga's integer numerals are being stored as OCaml's integer after lexing. OCaml's `max_int` and `min_int` are `4611686018427387903` and `-4611686018427387904`, respectively. As the lexer cannot decide whether the token `-` is a unary or binary expression, it sees negative numerals as two separate tokens. The issue is that `min_int`, without the sign, doesn't fit in OCaml's integer. In other words, `-4611686018427387904` is lexed first as the token `-` and then as a numeral, which fails because it exceeds `max_int`. Therefore the smallest integer in Monga cannot be represented by an integer numeral.
 
 
 # Installing
 
-This project has Ocaml, [Dune](https://github.com/ocaml/dune) and [Menhir](http://gallium.inria.fr/~fpottier/menhir/) as dependencies. The easiest way to install those is through opam.
+This project has the following dependencies:
+
+1. Ocaml
+2. [Dune](https://github.com/ocaml/dune)
+3. [Menhir](http://gallium.inria.fr/~fpottier/menhir/)
+4. Jane Street's [base](https://github.com/janestreet/base) and [stdio](https://github.com/janestreet/stdio)
+5. The Llvm bindings for OCaml
+
+The easiest way to install those is through opam. Also, you must already have Llvm installed on your computer.
 
 
 ### Installing opam
@@ -36,9 +45,9 @@ $ opam --version
 
 ### Dependencies
 
-First install `m4` with `$ sudo apt-get install m4`.
+First install `m4` with `$ sudo apt-get install m4`, or similar.
 
-At the project's root, run the following to install OCaml's base compiler and all other dependencies for this project only. It may take a while.
+At the project's root, run the following to install OCaml's base compiler and all other dependencies for this project only. It will take a while.
 ```
 $ opam switch create .
 ```

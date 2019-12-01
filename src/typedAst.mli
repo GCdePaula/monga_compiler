@@ -32,6 +32,9 @@ and t_exp =
   | VarExp of id
   | CallExp of id * t_exp_node list
 
+type t_var_node =
+  | SimpleVar of monga_variable
+  | LookupVar of t_exp_node * t_exp_node
 
 (* Typed Block and Statements *)
 type t_block_node = {
@@ -43,7 +46,7 @@ and t_stat_node =
   | IfElseStat of t_exp_node * t_block_node * t_block_node option
   | WhileStat of t_exp_node * t_block_node
   | ReturnStat of t_exp_node option
-  | AssignStat of t_exp_node * t_exp_node
+  | AssignStat of t_var_node * t_exp_node
   | CallStat of id * t_exp_node list
   | PutStat of t_exp_node
   | BlockStat of t_block_node

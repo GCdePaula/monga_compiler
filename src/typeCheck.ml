@@ -439,17 +439,27 @@ and build_statement env curr_func stat : (TypedAst.t_stat_node, TypedAst.error l
     | _, _ -> Error [{loc=stat.loc; err=IncompatibleRetType}])
 
   | UntypedAst.AssignStat (var, exp) ->
-    (match var.exp with
-    | LookupExp _ | VarExp _ ->
-      type_exp env var >>= fun t_var ->
-      type_exp env exp >>= fun t_exp ->
+    type_exp env var >>= fun t_var ->
+    type_exp env exp >>= fun t_exp ->
 
-      if Poly.equal t_var.t t_exp.t then
-        Ok (AssignStat (t_var, t_exp))
-      else
-        Error [{loc=exp.loc; err=IncompatibleTypeError (t_exp.t, t_var.t)}]
+    (
+      match t_var.exp with
+      | VarExp name ->
+        if Poly.equal t_var.t t_exp.t then
+          let var_node = SimpleVar ({name=name; t=t_var.t}) in
+          Ok (AssignStat (var_node, t_exp))
+        else
+          Error [{loc=exp.loc; err=IncompatibleTypeError (t_exp.t, t_var.t)}]
 
-    | _ -> Error [{loc=var.loc; err=NotAssignable}])
+      | LookupExp (arr, idx) ->
+        if Poly.equal t_var.t t_exp.t then
+          let var_node = LookupVar (arr, idx) in
+          Ok (AssignStat (var_node, t_exp))
+        else
+          Error [{loc=exp.loc; err=IncompatibleTypeError (t_exp.t, t_var.t)}]
+
+      | _ -> Error [{loc=var.loc; err=NotAssignable}]
+    )
 
   | UntypedAst.CallStat (f_name, args) ->
     (try

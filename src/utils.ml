@@ -449,6 +449,26 @@ and print_typed_block (block : TypedAst.t_block_node) depth =
   print_depth depth; print_string "block end\n"
 
 and print_typed_stat (stat : TypedAst.t_stat_node) depth =
+
+  let print_typed_var (var_node : TypedAst.t_var_node) depth =
+    let print_type e =
+      print_string " {"; print_monga_type e; print_string "}\n"
+    in
+
+    match var_node with
+    | TypedAst.SimpleVar var ->
+      printf "%s" var.name; print_type var.t
+
+    | TypedAst.LookupVar (arr, idx) ->
+      print_string "lookup_var begin"; print_type arr.t;
+      print_depth (depth+1); print_string "var = ";
+      print_typed_exp arr (depth+1); print_string "\n";
+      print_depth (depth+1); print_string "idx = ";
+      print_typed_exp idx (depth+1);
+      print_depth depth; print_string "lookup_exp end\n"
+  in
+
+
   match stat with
   | IfElseStat (exp, then_block, else_block_opt) ->
     print_depth depth; print_string "if_else_statement begin\n";
@@ -484,7 +504,7 @@ and print_typed_stat (stat : TypedAst.t_stat_node) depth =
   | AssignStat (exp1, exp2) ->
     print_depth depth; print_string "assign_stat begin\n";
     print_depth (depth+1); print_string "lhs = ";
-    print_typed_exp exp1 (depth+1); print_string "\n";
+    print_typed_var exp1 (depth+1); print_string "\n";
     print_depth (depth+1); print_string "rhs = ";
     print_typed_exp exp2 (depth+1);
     print_depth depth; print_string "assign_stat end\n\n"
@@ -636,6 +656,7 @@ and print_typed_exp (exp : TypedAst.t_exp_node) depth =
     print_depth (depth+1); print_string "parameters = ";
     print_typed_exp_list params (depth+2);
     print_depth depth; print_string "call_exp end\n"
+
 
 and print_typed_exp_list exp_list depth =
   let p_single_exp exp =

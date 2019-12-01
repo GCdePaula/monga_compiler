@@ -4,6 +4,7 @@ open AstTypes
 open Llvm
 
 exception SurprisedPikachu of string
+exception FatalGenError of string
 
 module NameEnv = Stdlib.Map.Make(String)
 
@@ -12,26 +13,37 @@ let gen_code typed_tree =
   let llctx = global_context () in
   let llmodule = create_module llctx "program" in
 
+  (* Helper*)
+
   (* "Runtime" constants *)
-  let printf =
+  let llprintf =
     let i8_t = i8_type llctx in
     let i32_t = i32_type llctx in
     let print_type = var_arg_function_type i32_t [| pointer_type i8_t |] in
     declare_function "printf" print_type llmodule
   in
 
-  (* let int_format_str = define_global "" (const_stringz llctx "%ld\n") llmodule in *)
-  (* let float_format_str = define_global "" (const_stringz llctx "%lf\n") llmodule in *)
+  let llmalloc =
+    let i8p_t = pointer_type (i8_type llctx) in
+    let i64_t = i64_type llctx in
+    let malloc_type = function_type i8p_t [| i64_t |] in
+    declare_function "malloc" malloc_type llmodule
+  in
+
   (* *)
 
   (* Helper functions *)
-  let lltype_from_mongatype m_type = (* TODO complete this function. Ask what type is array*)
+  let rec lltype_from_mongatype m_type = (* TODO complete this function. Ask what type is array*)
     match m_type with
     | Int -> i64_type llctx
     | Float -> double_type llctx
     | Bool -> i1_type llctx
-    | _ -> raise (SurprisedPikachu "lltype_from_mongatype case not implemented")
+    | Char -> i8_type llctx
+    | Array x -> pointer_type (lltype_from_mongatype x)
   in
+
+  let get_builder bb = builder_at_end llctx bb in
+  (* *)
 
   let lltype_from_functype f_type =
     let params = Array.of_list
@@ -49,15 +61,24 @@ let gen_code typed_tree =
   (* *)
 
   (* Actual code generation *)
-  let rec gen_stat curr_func curr_basic_block env stat_node =
+  let rec gen_stat curr_func start_basic_block env stat_node =
+
+    (* Generates the value of given expressions, returning list of llvalue and llbasicblock *)
+    let rec gen_args bb exp_list =
+      match exp_list with
+      | [] -> ([], bb)
+      | exp :: exps ->
+        let (llexp, new_bb) = gen_exp bb exp in
+        let (llexps, last_bb) = (gen_args new_bb exps) in
+        (llexp :: llexps, last_bb)
 
     (* Generates the value of fiven expression, returning llvalue and llbasicblock *)
-    let rec gen_exp curr_bb exp_node =
+    and gen_exp curr_bb exp_node =
       let build_bin_exp (exp1: t_exp_node) exp2 build_iop build_fop =
         let (llexp1, new_bb1) = gen_exp curr_bb exp1 in
         let (llexp2, new_bb2) = gen_exp new_bb1 exp2 in
 
-        let builder = builder_at_end llctx new_bb2 in
+        let builder = get_builder new_bb2 in
         let result =
           match exp1.t, exp2.t with
           | Float, Float ->
@@ -87,23 +108,22 @@ let gen_code typed_tree =
 
       | VarExp name ->
         let llvar = NameEnv.find name env in
-        let builder = builder_at_end llctx curr_bb in
+        let builder = get_builder curr_bb in
         let llvarexp = build_load llvar "" builder in
         (llvarexp, curr_bb)
 
+      | LookupExp (arr, idx)->
+        let (llarr, new_bb1) = gen_exp curr_bb arr in
+        let (llidx, new_bb2) = gen_exp new_bb1 idx in
+
+        let builder = get_builder new_bb2 in
+        let lladd = build_gep llarr [|llidx|] "" builder in
+        let llres = build_load lladd "" builder in
+        (llres, new_bb2)
+
       | CallExp (name, args) ->
-        let (llargs, new_bb) =
-          let rec build_args bb exp_list =
-            match exp_list with
-            | [] -> ([], bb)
-            | exp :: exps ->
-              let (llexp, new_bb) = gen_exp bb exp in
-              let (llexps, last_bb) = (build_args new_bb exps) in
-              (llexp :: llexps, last_bb)
-          in
-          build_args curr_bb args
-        in
-        let builder = builder_at_end llctx new_bb in
+        let (llargs, new_bb) = gen_args curr_bb args in
+        let builder = get_builder new_bb in
         let llf = NameEnv.find name env in
         let res = build_call llf (Array.of_list llargs) "" builder in
         (res, new_bb)
@@ -116,26 +136,26 @@ let gen_code typed_tree =
 
         (* Adds branch instruction from then/else last block to continue block *)
         let continue_bb = append_block llctx "" curr_func in
-        let _ = build_br continue_bb (builder_at_end llctx true_bb) in
-        let _ = build_br continue_bb (builder_at_end llctx false_bb) in
+        let _ = build_br continue_bb (get_builder true_bb) in
+        let _ = build_br continue_bb (get_builder false_bb) in
 
         (* The value of the expression is given by where it came from *)
         let lltrue = const_int (lltype_from_mongatype Bool) 1 in
         let llfalse = const_int (lltype_from_mongatype Bool) 0 in
-        let builder = builder_at_end llctx continue_bb in
+        let builder = get_builder continue_bb in
         let incoming = [(lltrue, true_bb); (llfalse, false_bb)] in
         let result = build_phi incoming "" builder in
         (result, continue_bb)
 
       | UnaryNotExp exp ->
         let (llval, new_bb) = gen_exp curr_bb exp in
-        let builder = builder_at_end llctx new_bb in
+        let builder = get_builder new_bb in
         let result = build_not llval "" builder in
         (result, new_bb)
 
       | UnaryMinusExp exp ->
         let (llval, new_bb) = gen_exp curr_bb exp in
-        let builder = builder_at_end llctx new_bb in
+        let builder = get_builder new_bb in
         let result = build_neg llval "" builder in
         (result, new_bb)
 
@@ -161,15 +181,22 @@ let gen_code typed_tree =
       | DivExp (exp1, exp2) ->
         build_bin_exp exp1 exp2 build_sdiv build_fdiv
 
+      | NewExp (t, size) ->
+        let (llsize, new_bb) = gen_exp curr_bb size in
+        let lltype = pointer_type (lltype_from_mongatype t) in
+        let builder = get_builder new_bb in
+        let lladdr = build_call llmalloc [|llsize|] "" builder in
+        let res = build_pointercast lladdr lltype "" builder in
+        (res, new_bb)
 
-      | _ -> raise (SurprisedPikachu "Exp case not implemented yet")
+      | CastExp _ -> raise (SurprisedPikachu "Exp case Cast not implemented yet")
+      | StringExp _ -> raise (SurprisedPikachu "Exp case String not implemented yet")
 
     and gen_cond curr_bb true_bb false_bb cond_node =
       let build_cmp exp1 exp2 icmp fcmp =
         let (llexp1, new_bb1) = gen_exp curr_bb exp1 in
         let (llexp2, new_bb2) = gen_exp new_bb1 exp2 in
-
-        let builder = builder_at_end llctx new_bb2 in
+        let builder = get_builder new_bb2 in
         let llcond =
           match exp1.t, exp2.t with
           | Float, Float ->
@@ -177,7 +204,6 @@ let gen_code typed_tree =
           | _, _ ->
             build_icmp icmp llexp1 llexp2 "" builder
         in
-
         let _ = build_cond_br llcond true_bb false_bb builder in
         ()
       in
@@ -205,23 +231,43 @@ let gen_code typed_tree =
       | _ ->
         let (llval, new_bb) = gen_exp curr_bb cond_node in
 
-        let builder = builder_at_end llctx new_bb in
+        let builder = get_builder new_bb in
         let _ = build_cond_br llval true_bb false_bb builder in
         ()
     in
 
     (* Gets the address of given variable *)
-    let gen_addr bb exp_node =
-      (* let llbuilder = builder_at_end llctx bb in *)
+    let gen_addr bb var_node =
+      match var_node with
+      | SimpleVar var ->
+        (NameEnv.find var.name env, bb)
 
-      match exp_node.exp with
-      | VarExp name ->
-        NameEnv.find name env
-      | _ -> raise (SurprisedPikachu "gen_addr case not implemented yet")
+      | LookupVar (arr, idx) ->
+        let (llarr, new_bb1) = gen_exp bb arr in
+        let (llidx, new_bb2) = gen_exp new_bb1 idx in
+
+        let builder = get_builder new_bb2 in
+        let llres = build_gep llarr [|llidx|] "" builder in
+        (llres, new_bb2)
     in
 
 
     match stat_node with
+    | AssignStat (var, exp) ->
+      let (llexp, new_bb1) = gen_exp start_basic_block exp in
+      let (llvar, new_bb2) = gen_addr new_bb1 var in
+
+      let builder = get_builder new_bb2 in
+      let _ = build_store llexp llvar builder in
+      new_bb2
+
+    | CallStat (name, args) ->
+      let (llargs, new_bb) = gen_args start_basic_block args in
+      let builder = get_builder new_bb in
+      let llf = NameEnv.find name env in
+      let _ = build_call llf (Array.of_list llargs) "" builder in
+      new_bb
+
     | IfElseStat (cond, then_block, Some else_block) ->
       (* Creates basic blocks for then, else, and the following block *)
       let true_bb = append_block llctx "" curr_func in
@@ -233,11 +279,11 @@ let gen_code typed_tree =
       let (else_end, _) = gen_block curr_func false_bb env else_block in
 
       (* Adds branch instruction from then/else last block to continue block *)
-      let _ = build_br continue_bb (builder_at_end llctx then_end) in
-      let _ = build_br continue_bb (builder_at_end llctx else_end) in
+      let _ = build_br continue_bb (get_builder then_end) in
+      let _ = build_br continue_bb (get_builder else_end) in
 
       (* In current basic block, generate code for conditional jump *)
-      gen_cond curr_basic_block true_bb false_bb cond;
+      gen_cond start_basic_block true_bb false_bb cond;
       continue_bb
 
     | IfElseStat (cond, then_block, None) ->
@@ -249,23 +295,30 @@ let gen_code typed_tree =
       let (then_end, _) = gen_block curr_func true_bb env then_block in
 
       (* Adds branch instruction from then/else last block to continue block *)
-      let _ = build_br continue_bb (builder_at_end llctx then_end) in
+      let _ = build_br continue_bb (get_builder then_end) in
 
       (* In current basic block, generate code for conditional jump *)
-      gen_cond curr_basic_block true_bb continue_bb cond;
+      gen_cond start_basic_block true_bb continue_bb cond;
       continue_bb
 
-    | AssignStat (var, exp) ->
-      let (llexp, new_bb) = gen_exp curr_basic_block exp in
-      let llvar = gen_addr curr_basic_block var in
+    | WhileStat (cond, while_block) ->
+      (* Create condition basic block, and add branch from start bb to it *)
+      let cond_bb = append_block llctx "" curr_func in
+      let _ = build_br cond_bb (get_builder start_basic_block) in
 
-      let builder = builder_at_end llctx new_bb in
-      let _ = build_store llexp llvar builder in
-      new_bb
+      (* Create loop basic block, generate code, and loop *)
+      let while_start_bb = append_block llctx "" curr_func in
+      let (while_end_bb, _) = gen_block curr_func while_start_bb env while_block in
+      let _ = build_br cond_bb (get_builder while_end_bb) in
+
+      (* Create continuation basic block, and add conditional branch *)
+      let continue_bb = append_block llctx "" curr_func in
+      gen_cond cond_bb while_start_bb continue_bb cond;
+      continue_bb
 
     | PutStat exp ->
-      let (llval, new_bb) = gen_exp curr_basic_block exp in
-      let builder = builder_at_end llctx new_bb in
+      let (llval, new_bb) = gen_exp start_basic_block exp in
+      let builder = get_builder new_bb in
       let zero = const_int (i32_type llctx) 0 in
 
       let _ = (
@@ -273,38 +326,38 @@ let gen_code typed_tree =
         | Int ->
           let int_format_str = build_global_stringptr "%ld\n" "" builder in
           let fs = build_in_bounds_gep int_format_str [| zero |] "" builder in
-          build_call printf [| fs; llval |] "" builder
+          build_call llprintf [| fs; llval |] "" builder
 
         | Float ->
           let float_format_str = build_global_stringptr "%lf\n" "" builder in
           let fs = build_in_bounds_gep float_format_str [| zero |] "" builder in
-          build_call printf [| fs; llval |] "" builder
+          build_call llprintf [| fs; llval |] "" builder
 
         | _ -> raise (SurprisedPikachu "Put stat case not implemented yet")
       ) in
       new_bb
 
     | ReturnStat (Some exp) ->
-      let (llexp, new_bb) = gen_exp curr_basic_block exp in
-      let builder = builder_at_end llctx new_bb in
+      let (llexp, new_bb) = gen_exp start_basic_block exp in
+      let builder = get_builder new_bb in
       let _ = build_ret llexp builder in
       new_bb
 
     | ReturnStat None ->
-      let builder = builder_at_end llctx curr_basic_block in
+      let builder = get_builder start_basic_block in
       let _ = build_ret_void builder in
-      curr_basic_block
+      start_basic_block
 
-    | _ -> raise (SurprisedPikachu "Stat case not implemented yet")
+    | BlockStat _ -> raise (SurprisedPikachu "Stat case Block not implemented yet")
 
-  and gen_block curr_func curr_basic_block env block_node =
+  and gen_block curr_func start_basic_block env block_node =
     (* TODO: variable declarations *)
 
     let stat_acc (bb, env) stat =
       (gen_stat curr_func bb env stat, env)
     in
 
-    List.fold_left block_node.statements ~init:(curr_basic_block, env) ~f:stat_acc
+    List.fold_left block_node.statements ~init:(start_basic_block, env) ~f:stat_acc
   in
   (* *)
 
@@ -317,14 +370,14 @@ let gen_code typed_tree =
       NameEnv.add var.name llval env
 
     | FuncDef (name, ft, block) ->
-      (* create function at module and add its name to env *)
+      (* Create function at module and add its name to env *)
       let llft = lltype_from_functype ft in
       let f = define_function name llft llmodule in
       let new_env = NameEnv.add name f env in
       let llblock = entry_block f in
-      let llbuilder = builder_at_end llctx llblock in
+      let llbuilder = get_builder llblock in
 
-      (* add parameters to env *)
+      (* Add parameters to env *)
       let (new_new_env, _) =
         List.fold_left ft.parameters ~init:(env, 0)  ~f:(
           fun (env, ll_ppos) m_param ->
@@ -337,8 +390,6 @@ let gen_code typed_tree =
 
       (* build function *)
       let _ = gen_block f llblock new_new_env block in
-
-
       new_env
   in
 
