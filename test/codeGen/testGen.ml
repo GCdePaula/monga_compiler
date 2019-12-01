@@ -80,24 +80,42 @@ let test file_name =
   printf "BUILDING FILE %s\n" file_name;
 
   let llm = build_llvm_module file_name in
-  print_string (string_of_llmodule llm);
+  printf "%s\n" (string_of_llmodule llm);
 
-  let open Ctypes in
-  let open Foreign in
+  (
+    match Llvm_analysis.verify_module llm with
+    | None ->
+      let open Ctypes in
+      let open Foreign in
 
-  try
-    let exe_engine = Llvm_executionengine.create llm in
-    let c_t = funptr (void @-> returning int32_t) in
-    let main_func = Llvm_executionengine.get_function_address "main" c_t exe_engine in
-    let _ = main_func () in
-    ()
-  with _ -> print_string "ERROR EXECUTING CODE\n";
+      let _ = Llvm_executionengine.initialize () in
+      let exe_engine = Llvm_executionengine.create llm in
+      let c_t = funptr (void @-> returning int32_t) in
+      let main_func = Llvm_executionengine.get_function_address "main" c_t exe_engine in
+
+      printf "MONGA IO OUTPUT\n";
+
+      let _ = main_func () in
+
+      let _ = Llvm_executionengine.remove_module llm exe_engine in
+      Llvm_executionengine.dispose exe_engine
+
+    | Some reason ->
+      printf "BAD LLVM CODE. REASON:\n%s\n" reason;
+  );
 
   printf "DONE %s\n\n" file_name
 
 
 let main () =
-  let _ = Llvm_executionengine.initialize () in
-  test "inputs/test1.in"
+  let d = "inputs/" in
+  let fnames = [
+    (* d^"test1.in"; *)
+    d^"test2.in";
+    (* d^"test3.in"; *)
+    (* d^"test4.in"; *)
+  ] in
+
+  List.iter fnames ~f:test
 
 let _ = Backtrace.Exn.with_recording true ~f:main

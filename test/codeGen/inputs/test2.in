@@ -1,61 +1,26 @@
 
+a : bool;
+b : bool;
+c : int;
 
-g0() {}
-g1(a: bool) {}
-g2(a: bool, b: int) {}
-g3(a: bool, b: int, c: float) {}
-g4(a: bool, b: int, c: float, d: [int]) {}
-
-
-
-f0() {
-  a : bool;
-  b : int;
-  c : float;
-  d : [int];
-
-  if true {}
-
-  if true {}
-  else {}
-
-  if true {} else {if true {} else {if true {} else {}}}
-
-  while true {}
-
-  a = true; b = 0; c = 0.0;
-
-  g0();
-  g1(a);
-  g2(a, b);
-  g3(a, b, c);
-  g4(true, b + b, c + b, d);
-
-  @ a;
-  @ "Hello, World!";
-
-  {}
-  return;
+foo (a : int) : int {
+  return a;
 }
 
-f1() : bool {
-  a : bool;
-  b : bool;
-  if true {
-    while true {
-      if false {}
-      @ a;
-      a = b;
-      return a;
-    }
-  } else {
-    while true {
-      if false {} else {}
-      @ a;
-      a = b;
-      return b;
-    }
+main () : int {
+
+  @ foo(42);
+
+  a = true;
+
+  if true && true {
+    c = 11;
+    @ c;
   }
+  else {
+    c = 20;
+    @ c;
+  }
+
+  return 0;
 }
-
-

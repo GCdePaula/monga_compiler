@@ -1,7 +1,7 @@
 
 (tests
   (names testGen)
-  (libraries Src llvm.executionengine base stdio)
+  (libraries Src llvm.executionengine llvm.analysis base stdio)
   (deps (glob_files inputs/*.in))
   (action (run %{test}))
 )
