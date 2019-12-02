@@ -40,7 +40,7 @@ let gen_code typed_tree =
   (* *)
 
   (* Helper functions *)
-  let rec lltype_from_mongatype m_type = (* TODO complete this function. Ask what type is array*)
+  let rec lltype_from_mongatype m_type =
     match m_type with
     | Int -> i64_type llctx
     | Float -> double_type llctx
@@ -307,8 +307,8 @@ let gen_code typed_tree =
       let continue_bb = append_block llctx "" curr_func in
 
       (* Generates code for then block and else block*)
-      let (then_end, _) = gen_block curr_func true_bb env then_block in
-      let (else_end, _) = gen_block curr_func false_bb env else_block in
+      let then_end = gen_block curr_func true_bb env then_block in
+      let else_end = gen_block curr_func false_bb env else_block in
 
       (* Adds branch instruction from then/else last block to continue block *)
       let _ = build_br continue_bb (get_builder then_end) in
@@ -324,7 +324,7 @@ let gen_code typed_tree =
       let continue_bb = append_block llctx "" curr_func in
 
       (* Generates code for then block and else block*)
-      let (then_end, _) = gen_block curr_func true_bb env then_block in
+      let then_end = gen_block curr_func true_bb env then_block in
 
       (* Adds branch instruction from then/else last block to continue block *)
       let _ = build_br continue_bb (get_builder then_end) in
@@ -340,7 +340,7 @@ let gen_code typed_tree =
 
       (* Create loop basic block, generate code, and loop *)
       let while_start_bb = append_block llctx "" curr_func in
-      let (while_end_bb, _) = gen_block curr_func while_start_bb env while_block in
+      let while_end_bb = gen_block curr_func while_start_bb env while_block in
       let _ = build_br cond_bb (get_builder while_end_bb) in
 
       (* Create continuation basic block, and add conditional branch *)
@@ -349,7 +349,7 @@ let gen_code typed_tree =
       continue_bb
 
     | BlockStat block ->
-      let (new_bb, _) = gen_block curr_func start_basic_block env block in
+      let new_bb = gen_block curr_func start_basic_block env block in
       new_bb
 
     | PutStat exp ->
@@ -387,15 +387,33 @@ let gen_code typed_tree =
       let _ = build_ret_void builder in
       start_basic_block
 
-
   and gen_block curr_func start_basic_block env block_node =
-    (* TODO: variable declarations *)
-
-    let stat_acc (bb, env) stat =
-      (gen_stat curr_func bb env stat, env)
+    let new_env =
+      let builder = get_builder start_basic_block in
+      let rec build_var_decs env var_list =
+        match var_list with
+        | [] -> env
+        | var :: vars ->
+          let llt = (lltype_from_mongatype var.t) in
+          let llv = build_alloca (lltype_from_mongatype var.t) "" builder in
+          let _ = build_store (const_null llt) llv builder in
+          let new_env = NameEnv.add var.name llv env in
+          build_var_decs new_env vars
+      in
+      build_var_decs env block_node.var_decs
     in
 
-    List.fold_left block_node.statements ~init:(start_basic_block, env) ~f:stat_acc
+    let new_bb =
+      let rec build_stats bb stat_list =
+        match stat_list with
+        | [] -> bb
+        | stat :: stats ->
+          let new_bb = gen_stat curr_func bb new_env stat in
+          build_stats new_bb stats
+      in
+      build_stats start_basic_block block_node.statements
+    in
+    new_bb
   in
   (* *)
 
