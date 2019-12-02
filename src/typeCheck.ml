@@ -287,6 +287,7 @@ let rec type_exp env (exp_node: UntypedAst.exp_node) =
     type_exp env idx >>= fun t_idx ->
     (match t_exp.t, t_idx.t with
      | Array t, Int -> Ok {exp = LookupExp (t_exp, t_idx); t}
+     | Array t, Char -> Ok {exp = LookupExp (t_exp, promote_to_int e.loc t_idx); t}
      | _, _ -> Error [{loc=((fst e.loc), (snd idx.loc)); err=IndexTypeError (t_exp.t, t_idx.t)}])
 
   | UntypedAst.CallExp (name, args) ->

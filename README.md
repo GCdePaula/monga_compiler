@@ -1,12 +1,6 @@
 
 # Issues
 
-### Format string copies
-Multiple print statements create multiple global format strings.
-
-### Char as index is not being promoted
-Expressions of type 'char' are not promoted in indexing.
-
 ### Functions without return
 Functions that have a return type can currently return nothing. Type checking correctly disallows wrong returns, but does not check if there actually is a return statement
 Also, functions without a return type must explicitly have an empty return statement.

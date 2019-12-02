@@ -1,21 +1,5 @@
 
-a : bool;
-b : bool;
-c : int;
-str : [char];
-ch : char;
-f : float;
-
 main () : int {
-
-  c = 10;
-
-  while c > 0 {
-    @ c;
-    c = c - 1;
-  }
-
-  @ true as char;
-
+  @ "Hello, World!";
   return 0;
 }

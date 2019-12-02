@@ -3,7 +3,6 @@ open TypedAst
 open AstTypes
 open Llvm
 
-exception SurprisedPikachu of string
 exception FatalGenError of string
 
 module NameEnv = Stdlib.Map.Make(String)
@@ -29,6 +28,14 @@ let gen_code typed_tree =
     let malloc_type = function_type i8p_t [| i64_t |] in
     declare_function "malloc" malloc_type llmodule
   in
+
+  (*
+  let llstdout_type = pointer_type (named_struct_type llctx "struct._IO_FILE") in
+  let llfflush =
+    let fflush_type = function_type (i32_type llctx) [| llstdout_type |] in
+    declare_function "fflush" fflush_type llmodule
+  in
+  *)
 
   (* *)
 
@@ -353,7 +360,9 @@ let gen_code typed_tree =
         let zero = const_int (i32_type llctx) 0 in
         let llformat_str = get_llstr format_str builder in
         let fs = build_in_bounds_gep llformat_str [| zero |] "" builder in
-        build_call llprintf [| fs; llval |] "" builder
+        let _ = build_call llprintf [| fs; llval |] "" builder in
+        (* let _ = build_call llfflush [|const_null llstdout_type |] "" builder in *)
+        ()
       in
 
       let _ = (
