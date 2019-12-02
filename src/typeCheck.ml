@@ -17,7 +17,7 @@ let rec type_exp env (exp_node: UntypedAst.exp_node) =
   let exception ArthmError of (location * monga_type) list in
   let exception PromoteError of string in (* Internal error, should not happen *)
 
-  let is_arthm = function Float | Int -> true | _ -> false in
+  let is_arthm = function Float | Int | Char -> true | _ -> false in
 
   let promote_to_float loc exp_t =
     match exp_t.t with
@@ -263,8 +263,15 @@ let rec type_exp env (exp_node: UntypedAst.exp_node) =
     | _ -> Error [{loc=e.loc; err=IncompatibleTypeError (t_exp.t, Int)}])
 
   (* Cast *)
-  | UntypedAst.CastExp (_, _) ->
-    Error []
+  | UntypedAst.CastExp (e, mt) ->
+    type_exp env e >>= fun t_exp ->
+    (match t_exp.t, mt with
+     | x, y when (is_arthm x) && (is_arthm y) ->
+       Ok {exp = CastExp (t_exp, mt); t = mt}
+     | Bool, x when (is_arthm x) ->
+       Ok {exp = CastExp (t_exp, mt); t = mt}
+     | _ ->
+       Error [{loc=e.loc; err=InvalidCast (t_exp.t, mt)}])
 
   (* Named expressions *)
   | UntypedAst.VarExp name ->

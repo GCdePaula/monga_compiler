@@ -42,9 +42,6 @@ let gen_code typed_tree =
     | Array x -> pointer_type (lltype_from_mongatype x)
   in
 
-  let get_builder bb = builder_at_end llctx bb in
-  (* *)
-
   let lltype_from_functype f_type =
     let params = Array.of_list
         (List.map ~f:(fun var -> lltype_from_mongatype var.t) f_type.parameters)
@@ -58,6 +55,16 @@ let gen_code typed_tree =
        function_type ret_type params
     )
   in
+
+  let get_builder bb = builder_at_end llctx bb in
+
+  let str_constant_table = Hashtbl.create ~growth_allowed:true ~size:8 (module String) in
+  let get_llstr str builder =
+    Hashtbl.find_or_add str_constant_table str ~default: (
+        fun () -> build_global_stringptr str "" builder
+      )
+  in
+
   (* *)
 
   (* Actual code generation *)
@@ -105,6 +112,11 @@ let gen_code typed_tree =
       | FalseExp ->
         let llval = const_int (lltype_from_mongatype Bool) 0 in
         (llval, curr_bb)
+
+      | StringExp str ->
+        let builder = get_builder curr_bb in
+        let llstr = build_global_stringptr str "" builder in
+        (llstr, curr_bb)
 
       | VarExp name ->
         let llvar = NameEnv.find name env in
@@ -189,8 +201,21 @@ let gen_code typed_tree =
         let res = build_pointercast lladdr lltype "" builder in
         (res, new_bb)
 
-      | CastExp _ -> raise (SurprisedPikachu "Exp case Cast not implemented yet")
-      | StringExp _ -> raise (SurprisedPikachu "Exp case String not implemented yet")
+      | CastExp (exp, mt) ->
+        let (llval, new_bb) = gen_exp curr_bb exp in
+        let builder = get_builder new_bb in
+        let llres =
+          match exp.t, mt with
+          | Char, Int | Int, Char | Bool, Int | Bool, Char ->
+            build_intcast llval (lltype_from_mongatype mt) "" builder
+          | Int, Float | Char, Float | Bool, Float ->
+            build_sitofp llval (lltype_from_mongatype mt) "" builder
+          | Float, Int | Float, Char ->
+            build_fptosi llval (lltype_from_mongatype mt) "" builder
+          | _ ->
+            raise (FatalGenError "Unreachable Case: exp cast case not allowed")
+        in
+        (llres, new_bb)
 
     and gen_cond curr_bb true_bb false_bb cond_node =
       let build_cmp exp1 exp2 icmp fcmp =
@@ -316,24 +341,29 @@ let gen_code typed_tree =
       gen_cond cond_bb while_start_bb continue_bb cond;
       continue_bb
 
+    | BlockStat block ->
+      let (new_bb, _) = gen_block curr_func start_basic_block env block in
+      new_bb
+
     | PutStat exp ->
       let (llval, new_bb) = gen_exp start_basic_block exp in
       let builder = get_builder new_bb in
-      let zero = const_int (i32_type llctx) 0 in
+
+      let print_format format_str =
+        let zero = const_int (i32_type llctx) 0 in
+        let llformat_str = get_llstr format_str builder in
+        let fs = build_in_bounds_gep llformat_str [| zero |] "" builder in
+        build_call llprintf [| fs; llval |] "" builder
+      in
 
       let _ = (
         match exp.t with
-        | Int ->
-          let int_format_str = build_global_stringptr "%ld\n" "" builder in
-          let fs = build_in_bounds_gep int_format_str [| zero |] "" builder in
-          build_call llprintf [| fs; llval |] "" builder
-
-        | Float ->
-          let float_format_str = build_global_stringptr "%lf\n" "" builder in
-          let fs = build_in_bounds_gep float_format_str [| zero |] "" builder in
-          build_call llprintf [| fs; llval |] "" builder
-
-        | _ -> raise (SurprisedPikachu "Put stat case not implemented yet")
+        | Int -> print_format "%ld\n"
+        | Float -> print_format "%lf\n"
+        | Char -> print_format "'%c'\n"
+        | Array (Char) -> print_format "\"%s\"\n"
+        | Bool -> print_format "Bool: %d\n"
+        | _ -> raise (FatalGenError "Unreachable Case: Put stat expression type not allowed")
       ) in
       new_bb
 
@@ -348,7 +378,6 @@ let gen_code typed_tree =
       let _ = build_ret_void builder in
       start_basic_block
 
-    | BlockStat _ -> raise (SurprisedPikachu "Stat case Block not implemented yet")
 
   and gen_block curr_func start_basic_block env block_node =
     (* TODO: variable declarations *)

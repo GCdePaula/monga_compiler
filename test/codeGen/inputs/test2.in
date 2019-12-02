@@ -2,7 +2,9 @@
 a : bool;
 b : bool;
 c : int;
-
+str : [char];
+ch : char;
+f : float;
 
 main () : int {
 
@@ -12,6 +14,8 @@ main () : int {
     @ c;
     c = c - 1;
   }
+
+  @ true as char;
 
   return 0;
 }

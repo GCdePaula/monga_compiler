@@ -74,6 +74,7 @@ type type_error =
   | NotAVar of id
   | NotAFunc of id
   | RedeclaredName of id
+  | InvalidCast of monga_type * monga_type
 
 type error = {
   loc: location;
