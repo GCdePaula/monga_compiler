@@ -1,0 +1,22 @@
+
+arr : [int];
+
+main () : int {
+  i : int;
+
+  arr = new int [10];
+  i = 0;
+  while i < 10 {
+    arr[i] = i;
+    i = i + 1;
+  }
+
+  @ "Printing array";
+  i = 0;
+  while i < 10 {
+    @ arr[i];
+    i = i + 1;
+  }
+
+  return 0;
+}

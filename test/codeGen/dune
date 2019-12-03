@@ -1,8 +1,8 @@
 
 (tests
-  (names testGen)
+  (names hello_test array_test array2_test arthm_test cast_test condition_exp_test function_call_test global_assign_test if_test)
   (libraries Src llvm.executionengine llvm.analysis base stdio)
-  (deps (glob_files inputs/*.in))
+  (deps (glob_files *.in))
   (action (run %{test}))
 )
 

@@ -1,5 +1,9 @@
 
 main () : int {
   @ "Hello, World!";
+  @ 10;
+  @ 10.5;
+  @ true;
+  @ false;
   return 0;
 }

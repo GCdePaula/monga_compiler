@@ -1,0 +1,107 @@
+FILE arthm_test.in LLVM CODE
+; ModuleID = 'program'
+source_filename = "program"
+
+@0 = private unnamed_addr constant [5 x i8] c"%ld\0A\00", align 1
+@1 = private unnamed_addr constant [5 x i8] c"%lf\0A\00", align 1
+
+declare i32 @printf(i8*, ...)
+
+declare i8* @malloc(i64)
+
+define i64 @main() {
+entry:
+  %0 = alloca i64
+  store i64 0, i64* %0
+  %1 = alloca i64
+  store i64 0, i64* %1
+  %2 = alloca double
+  store double 0.000000e+00, double* %2
+  %3 = alloca double
+  store double 0.000000e+00, double* %3
+  store i64 0, i64* %0
+  %4 = load i64, i64* %0
+  %5 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @0, i32 0, i32 0), i64 %4)
+  store i64 3, i64* %0
+  %6 = load i64, i64* %0
+  %7 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @0, i32 0, i32 0), i64 %6)
+  %8 = load i64, i64* %0
+  %9 = add i64 %8, 1
+  store i64 %9, i64* %0
+  %10 = load i64, i64* %0
+  %11 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @0, i32 0, i32 0), i64 %10)
+  %12 = load i64, i64* %0
+  %13 = load i64, i64* %0
+  %14 = add i64 %12, %13
+  store i64 %14, i64* %0
+  %15 = load i64, i64* %0
+  %16 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @0, i32 0, i32 0), i64 %15)
+  %17 = load i64, i64* %0
+  %18 = load i64, i64* %0
+  %19 = sub i64 %17, %18
+  store i64 %19, i64* %1
+  %20 = load i64, i64* %1
+  %21 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @0, i32 0, i32 0), i64 %20)
+  store i64 0, i64* %1
+  %22 = load i64, i64* %1
+  %23 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @0, i32 0, i32 0), i64 %22)
+  store i64 9, i64* %1
+  %24 = load i64, i64* %1
+  %25 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @0, i32 0, i32 0), i64 %24)
+  store i64 1, i64* %1
+  %26 = load i64, i64* %1
+  %27 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @0, i32 0, i32 0), i64 %26)
+  store double 0.000000e+00, double* %2
+  %28 = load double, double* %2
+  %29 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @1, i32 0, i32 0), double %28)
+  store double 3.000000e+00, double* %2
+  %30 = load double, double* %2
+  %31 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @1, i32 0, i32 0), double %30)
+  %32 = load double, double* %2
+  %33 = fadd double %32, 1.000000e+00
+  store double %33, double* %2
+  %34 = load double, double* %2
+  %35 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @1, i32 0, i32 0), double %34)
+  %36 = load double, double* %2
+  %37 = load double, double* %2
+  %38 = fadd double %36, %37
+  store double %38, double* %2
+  %39 = load double, double* %2
+  %40 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @1, i32 0, i32 0), double %39)
+  %41 = load double, double* %2
+  %42 = load double, double* %2
+  %43 = fsub double %41, %42
+  store double %43, double* %3
+  %44 = load double, double* %3
+  %45 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @1, i32 0, i32 0), double %44)
+  store double 0.000000e+00, double* %3
+  %46 = load double, double* %3
+  %47 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @1, i32 0, i32 0), double %46)
+  store double 9.000000e+00, double* %3
+  %48 = load double, double* %3
+  %49 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @1, i32 0, i32 0), double %48)
+  store double 1.000000e+00, double* %3
+  %50 = load double, double* %3
+  %51 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @1, i32 0, i32 0), double %50)
+  ret i64 0
+}
+
+RETURN 0
+
+OUTPUT
+0
+3
+4
+8
+0
+0
+9
+1
+0.000000
+3.000000
+4.000000
+8.000000
+0.000000
+0.000000
+9.000000
+1.000000

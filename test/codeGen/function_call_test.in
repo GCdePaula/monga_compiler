@@ -1,0 +1,21 @@
+
+k : int;
+
+foo () {
+  @ "Hello, World!";
+  return;
+}
+
+bar (x : int) : int {
+  i : int;
+  k = x;
+  i = k;
+  return i;
+}
+
+main () : int {
+  foo();
+  @ bar(10);
+
+  return 0;
+}

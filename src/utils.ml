@@ -735,7 +735,7 @@ let string_of_type_error (err : TypedAst.error) =
 
   | InvalidCast (from_type, to_type) ->
     "Cannot cast type {" ^ (string_of_monga_type from_type) ^
-    "} to type {" ^ (string_of_monga_type to_type)
+    "} to type {" ^ (string_of_monga_type to_type) ^ "}"
 
   ) ^ ", at location " ^ (string_of_loc err.loc)
 

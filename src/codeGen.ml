@@ -122,7 +122,7 @@ let gen_code typed_tree =
 
       | StringExp str ->
         let builder = get_builder curr_bb in
-        let llstr = build_global_stringptr str "" builder in
+        let llstr = get_llstr str builder in
         (llstr, curr_bb)
 
       | VarExp name ->
@@ -201,11 +201,13 @@ let gen_code typed_tree =
         build_bin_exp exp1 exp2 build_sdiv build_fdiv
 
       | NewExp (t, size) ->
-        let (llsize, new_bb) = gen_exp curr_bb size in
-        let lltype = pointer_type (lltype_from_mongatype t) in
+        let (lllength, new_bb) = gen_exp curr_bb size in
         let builder = get_builder new_bb in
+        let lltype = lltype_from_mongatype t in
+        let llptrtype = pointer_type lltype in
+        let llsize = build_mul lllength (size_of lltype) "" builder in
         let lladdr = build_call llmalloc [|llsize|] "" builder in
-        let res = build_pointercast lladdr lltype "" builder in
+        let res = build_pointercast lladdr llptrtype "" builder in
         (res, new_bb)
 
       | CastExp (exp, mt) ->
@@ -213,9 +215,13 @@ let gen_code typed_tree =
         let builder = get_builder new_bb in
         let llres =
           match exp.t, mt with
-          | Char, Int | Int, Char | Bool, Int | Bool, Char ->
+          | Bool, Int | Bool, Char ->
+            build_zext llval (lltype_from_mongatype mt) "" builder
+          | Bool, Float ->
+            build_uitofp llval (lltype_from_mongatype mt) "" builder
+          | Char, Int | Int, Char ->
             build_intcast llval (lltype_from_mongatype mt) "" builder
-          | Int, Float | Char, Float | Bool, Float ->
+          | Int, Float | Char, Float ->
             build_sitofp llval (lltype_from_mongatype mt) "" builder
           | Float, Int | Float, Char ->
             build_fptosi llval (lltype_from_mongatype mt) "" builder

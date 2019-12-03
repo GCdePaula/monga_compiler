@@ -123,12 +123,6 @@ func_def begin
 	id = g1
 	signature = (a : int)
 	block = block begin
-		var_def begin
-			id = a
-
-			type = int
-var_def end
-
 	block end
 func_def end
 
@@ -136,18 +130,6 @@ func_def begin
 	id = g2
 	signature = (a : int, b : float)
 	block = block begin
-		var_def begin
-			id = a
-
-			type = int
-var_def end
-
-		var_def begin
-			id = b
-
-			type = float
-var_def end
-
 	block end
 func_def end
 
@@ -155,24 +137,6 @@ func_def begin
 	id = g3
 	signature = (a : int, b : float, c : bool)
 	block = block begin
-		var_def begin
-			id = a
-
-			type = int
-var_def end
-
-		var_def begin
-			id = b
-
-			type = float
-var_def end
-
-		var_def begin
-			id = c
-
-			type = bool
-var_def end
-
 	block end
 func_def end
 
@@ -180,30 +144,6 @@ func_def begin
 	id = g4
 	signature = (a : int, b : float, c : bool, d : char)
 	block = block begin
-		var_def begin
-			id = a
-
-			type = int
-var_def end
-
-		var_def begin
-			id = b
-
-			type = float
-var_def end
-
-		var_def begin
-			id = c
-
-			type = bool
-var_def end
-
-		var_def begin
-			id = d
-
-			type = char
-var_def end
-
 	block end
 func_def end
 
@@ -284,12 +224,6 @@ func_def begin
 	id = g1
 	signature = (a : bool)
 	block = block begin
-		var_def begin
-			id = a
-
-			type = bool
-var_def end
-
 	block end
 func_def end
 
@@ -297,18 +231,6 @@ func_def begin
 	id = g2
 	signature = (a : bool, b : int)
 	block = block begin
-		var_def begin
-			id = a
-
-			type = bool
-var_def end
-
-		var_def begin
-			id = b
-
-			type = int
-var_def end
-
 	block end
 func_def end
 
@@ -316,24 +238,6 @@ func_def begin
 	id = g3
 	signature = (a : bool, b : int, c : float)
 	block = block begin
-		var_def begin
-			id = a
-
-			type = bool
-var_def end
-
-		var_def begin
-			id = b
-
-			type = int
-var_def end
-
-		var_def begin
-			id = c
-
-			type = float
-var_def end
-
 	block end
 func_def end
 
@@ -341,30 +245,6 @@ func_def begin
 	id = g4
 	signature = (a : bool, b : int, c : float, d : [int])
 	block = block begin
-		var_def begin
-			id = a
-
-			type = bool
-var_def end
-
-		var_def begin
-			id = b
-
-			type = int
-var_def end
-
-		var_def begin
-			id = c
-
-			type = float
-var_def end
-
-		var_def begin
-			id = d
-
-			type = [int]
-var_def end
-
 	block end
 func_def end
 
@@ -697,12 +577,6 @@ func_def begin
 	return_type = [float]
 	block = block begin
 		var_def begin
-			id = b
-
-			type = bool
-var_def end
-
-		var_def begin
 			id = x
 
 			type = [float]
@@ -720,30 +594,6 @@ func_def begin
 	signature = (a : float, b : int, c : bool, d : bool)
 	return_type = bool
 	block = block begin
-		var_def begin
-			id = a
-
-			type = float
-var_def end
-
-		var_def begin
-			id = b
-
-			type = int
-var_def end
-
-		var_def begin
-			id = c
-
-			type = bool
-var_def end
-
-		var_def begin
-			id = d
-
-			type = bool
-var_def end
-
 		return_statement begin
 			return_exp = true {bool}
 		return_statement end
@@ -1220,38 +1070,38 @@ var_def end
 		assign_stat begin
 			lhs = a {bool}
 
-			rhs = and_exp begin {bool}
+			rhs = or_exp begin {bool}
 				lhs = true {bool}
 
 				rhs = true {bool}
-			and_exp end
+			or_exp end
 		assign_stat end
 
 		assign_stat begin
 			lhs = a {bool}
 
-			rhs = and_exp begin {bool}
+			rhs = or_exp begin {bool}
 				lhs = a2 {bool}
 
 				rhs = true {bool}
-			and_exp end
+			or_exp end
 		assign_stat end
 
 		assign_stat begin
 			lhs = a {bool}
 
-			rhs = and_exp begin {bool}
+			rhs = or_exp begin {bool}
 				lhs = true {bool}
 
 				rhs = a2 {bool}
-			and_exp end
+			or_exp end
 		assign_stat end
 
 		assign_stat begin
 			lhs = a {bool}
 
-			rhs = and_exp begin {bool}
-				lhs = and_exp begin {bool}
+			rhs = or_exp begin {bool}
+				lhs = or_exp begin {bool}
 					lhs = and_exp begin {bool}
 						lhs = and_exp begin {bool}
 							lhs = true {bool}
@@ -1271,7 +1121,7 @@ var_def end
 
 						rhs = true {bool}
 					and_exp end
-				and_exp end
+				or_exp end
 
 				rhs = and_exp begin {bool}
 					lhs = and_exp begin {bool}
@@ -1282,14 +1132,14 @@ var_def end
 
 					rhs = true {bool}
 				and_exp end
-			and_exp end
+			or_exp end
 		assign_stat end
 
 		assign_stat begin
 			lhs = a {bool}
 
-			rhs = and_exp begin {bool}
-				lhs = and_exp begin {bool}
+			rhs = or_exp begin {bool}
+				lhs = or_exp begin {bool}
 					lhs = and_exp begin {bool}
 						lhs = and_exp begin {bool}
 							lhs = true {bool}
@@ -1329,7 +1179,7 @@ var_def end
 							rhs = 1 {int}
 						greater_equal_exp end
 					and_exp end
-				and_exp end
+				or_exp end
 
 				rhs = and_exp begin {bool}
 					lhs = and_exp begin {bool}
@@ -1358,7 +1208,7 @@ var_def end
 						exp = true {bool}
 					unary_not_exp end
 				and_exp end
-			and_exp end
+			or_exp end
 		assign_stat end
 
 		assign_stat begin

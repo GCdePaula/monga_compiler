@@ -1,0 +1,88 @@
+
+main () : int {
+
+  if true {@"Ok";} else {}
+  if false {} {@"Ok";}
+
+
+  @ "Gt e Ge";
+  if 10 > 9 { @"Then"; } else { @"Else"; }
+  if 9 > 10 { @"Then"; } else { @"Else"; }
+  if 10 >= 10 { @"Then"; } else { @"Else"; }
+  if 10 > 10 { @"Then"; } else { @"Else"; }
+
+  if 10. > 9 { @"Then"; } else { @"Else"; }
+  if 9. > 10 { @"Then"; } else { @"Else"; }
+  if 10. >= 10 { @"Then"; } else { @"Else"; }
+  if 10. > 10 { @"Then"; } else { @"Else"; }
+
+  if 10. > 9. { @"Then"; } else { @"Else"; }
+  if 9. > 10. { @"Then"; } else { @"Else"; }
+  if 10. >= 10. { @"Then"; } else { @"Else"; }
+  if 10. > 10. { @"Then"; } else { @"Else"; }
+
+  @ "Lt e Le";
+  if 9 < 10 { @"Then"; } else { @"Else"; }
+  if 10 < 9 { @"Then"; } else { @"Else"; }
+  if 10 <= 10 { @"Then"; } else { @"Else"; }
+  if 10 < 10 { @"Then"; } else { @"Else"; }
+
+  if 9. < 10 { @"Then"; } else { @"Else"; }
+  if 10. < 9 { @"Then"; } else { @"Else"; }
+  if 10. <= 10 { @"Then"; } else { @"Else"; }
+  if 10. < 10 { @"Then"; } else { @"Else"; }
+
+  if 9. < 10. { @"Then"; } else { @"Else"; }
+  if 10. < 9. { @"Then"; } else { @"Else"; }
+  if 10. <= 10. { @"Then"; } else { @"Else"; }
+  if 10. < 10. { @"Then"; } else { @"Else"; }
+
+  @ "Eq";
+  if 10 == 10 { @"Then"; } else { @"Else"; }
+  if 10 == 11 { @"Then"; } else { @"Else"; }
+  if 10. == 10 { @"Then"; } else { @"Else"; }
+  if 10. == 11 { @"Then"; } else { @"Else"; }
+  if 10. == 10. { @"Then"; } else { @"Else"; }
+  if 10. == 11. { @"Then"; } else { @"Else"; }
+  if true == true { @"Then"; } else { @"Else"; }
+  if true == false { @"Then"; } else { @"Else"; }
+
+  @ "Ne";
+  if 10 ~= 11 { @"Then"; } else { @"Else"; }
+  if 10 ~= 10 { @"Then"; } else { @"Else"; }
+  if 10. ~= 11 { @"Then"; } else { @"Else"; }
+  if 10. ~= 10 { @"Then"; } else { @"Else"; }
+  if 10. ~= 11. { @"Then"; } else { @"Else"; }
+  if 10. ~= 10. { @"Then"; } else { @"Else"; }
+  if true ~= false { @"Then"; } else { @"Else"; }
+  if true ~= true { @"Then"; } else { @"Else"; }
+
+  @ "And";
+  if true && true { @"Then"; } else { @"Else"; }
+  if true && false { @"Then"; } else { @"Else"; }
+  if false && false { @"Then"; } else { @"Else"; }
+  if false && true { @"Then"; } else { @"Else"; }
+
+  if true && true && false { @"Then"; } else { @"Else";}
+  if true && false && true { @"Then"; } else { @"Else";}
+  if false && true && true { @"Then"; } else { @"Else";}
+  if true && true && true { @"Then"; } else { @"Else";}
+
+  @ "Or";
+  if true || true { @"Then"; } else { @"Else"; }
+  if true || false { @"Then"; } else { @"Else"; }
+  if false || false { @"Then"; } else { @"Else"; }
+  if false || true { @"Then"; } else { @"Else"; }
+
+  if false || false || true { @"Then"; } else { @"Else";}
+  if false || true || false { @"Then"; } else { @"Else";}
+  if true || false || false { @"Then"; } else { @"Else";}
+  if false || false || false { @"Then"; } else { @"Else";}
+
+  @ "Not";
+  if !true { @"Then"; } else { @"Else";}
+  if !false { @"Then"; } else { @"Else";}
+
+
+  return 0;
+}

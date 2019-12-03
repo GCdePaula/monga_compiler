@@ -1,0 +1,36 @@
+
+main () : int {
+  b : bool;
+  c : char;
+  i : int;
+  f : float;
+
+  @ "Bool cast";
+  b = true; @b;
+  @ b as int;
+  @ b as char as int;
+  @ b as float;
+
+  @ "Char cast";
+  c = "A"[0]; @c;
+  @ c as int;
+  @ c as float;
+
+  @ "Int cast";
+  i = 65; @i;
+  @ i as char;
+  @ i as float;
+
+  @ "Float cast";
+  f = 65.1; @f;
+  @ f as char;
+  @ f as int;
+
+  @ "Signed cast";
+  @ -1 as char as int;
+
+  @ "Cast that doesn't fit";
+  @ 128 as char as int;
+
+  return 0;
+}

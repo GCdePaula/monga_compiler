@@ -239,7 +239,7 @@ let rec type_exp env (exp_node: UntypedAst.exp_node) =
 
   | UntypedAst.OrExp (lhs, rhs) ->
     logic_exp lhs rhs >>= fun (t_lhs, t_rhs, t) ->
-    let exp = AndExp (t_lhs, t_rhs) in
+    let exp = OrExp (t_lhs, t_rhs) in
     Ok {exp; t}
 
   (* Unary *)
@@ -504,8 +504,11 @@ let build_typed_tree u_tree : (typed_tree, error list) Result.t =
         (new_env, Ok (VarDef var) :: t_defs_res)
 
     | UntypedAst.FuncDef (loc, name, func_type, block) ->
+      (* Dirty solution to make sure params are not shadowed by declaration, and
+       * generate errors in case of duplicates. Must remove after all is done. *)
       let params = List.map func_type.parameters ~f:(fun x -> (loc, x)) in
       let new_block = {block with var_decs = params @ block.var_decs} in
+
       if NameEnv.mem name env then
         (* Error, uses newest declaration of func and keeps typing *)
         let new_env = NameEnv.add name (Func func_type) env in
@@ -523,7 +526,9 @@ let build_typed_tree u_tree : (typed_tree, error list) Result.t =
         | Error x ->
           (new_env, Error x :: t_defs_res)
         | Ok t_block ->
-          (new_env, Ok (FuncDef (name, func_type, t_block)) :: t_defs_res)
+          let var_decs = List.map block.var_decs ~f:snd in
+          let correct_block = {t_block with var_decs=var_decs } in
+          (new_env, Ok (FuncDef (name, func_type, correct_block)) :: t_defs_res)
   in
 
   let (_, results) = List.fold_left u_tree ~init:(NameEnv.empty, []) ~f:acc_def in

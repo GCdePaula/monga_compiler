@@ -10,10 +10,9 @@ let parse lexbuf =
       Utils.print_typed_program typed_ast
     | Error err_list ->
       Utils.print_type_error_list err_list
-  with
-    Parser.Error ->
-        let pos = lexbuf.lex_curr_p in
-        printf "Syntax Error at %d:%d\n" pos.pos_lnum (pos.pos_cnum - pos.pos_bol)
+  with Parser.Error ->
+    let pos = lexbuf.lex_curr_p in
+    printf "Syntax Error at %d:%d\n" pos.pos_lnum (pos.pos_cnum - pos.pos_bol)
 
 let test fileName =
   printf "PARSING FILE %s\n" fileName;
