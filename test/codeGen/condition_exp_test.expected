@@ -1,4 +1,4 @@
-FILE condition_exp_test.in LLVM CODE
+FILE condition_exp_test.monga LLVM CODE
 ; ModuleID = 'program'
 source_filename = "program"
 

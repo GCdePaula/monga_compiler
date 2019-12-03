@@ -1,4 +1,4 @@
-FILE function_call_test.in LLVM CODE
+FILE function_call_test.monga LLVM CODE
 ; ModuleID = 'program'
 source_filename = "program"
 

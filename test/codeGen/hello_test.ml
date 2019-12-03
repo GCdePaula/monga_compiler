@@ -1,7 +1,7 @@
 open Base
 
 let main () =
-  let fname = "hello_test.in" in
+  let fname = "hello_test.monga" in
   Gen.test fname
 
 let _ = Backtrace.Exn.with_recording true ~f:main

@@ -1,4 +1,4 @@
-FILE param_assign_test.in LLVM CODE
+FILE param_assign_test.monga LLVM CODE
 ; ModuleID = 'program'
 source_filename = "program"
 
