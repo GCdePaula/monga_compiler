@@ -1,0 +1,13 @@
+
+main () : int {
+  a : int;
+  b : float;
+
+  a = 10; @a;
+  b = 1.0; @b;
+
+  a = 11; @a;
+  b = 11.5; @b;
+
+  return 0;
+}

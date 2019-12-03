@@ -77,6 +77,16 @@ let gen_code typed_tree =
   (* Actual code generation *)
   let rec gen_stat curr_func start_basic_block env stat_node =
 
+    (* Adds inconditional jump, but only if there isn't a terminator already. 
+     * This isn't ideal. *)
+    let build_jmp from_bb to_bb =
+      match block_terminator from_bb with
+      | None ->
+        let _ = build_br to_bb (get_builder from_bb) in
+        ()
+      | Some _ -> ()
+    in
+
     (* Generates the value of given expressions, returning list of llvalue and llbasicblock *)
     let rec gen_args bb exp_list =
       match exp_list with
@@ -310,15 +320,15 @@ let gen_code typed_tree =
       (* Creates basic blocks for then, else, and the following block *)
       let true_bb = append_block llctx "" curr_func in
       let false_bb = append_block llctx "" curr_func in
-      let continue_bb = append_block llctx "" curr_func in
 
       (* Generates code for then block and else block*)
       let then_end = gen_block curr_func true_bb env then_block in
       let else_end = gen_block curr_func false_bb env else_block in
 
       (* Adds branch instruction from then/else last block to continue block *)
-      let _ = build_br continue_bb (get_builder then_end) in
-      let _ = build_br continue_bb (get_builder else_end) in
+      let continue_bb = append_block llctx "" curr_func in
+      let _ = build_jmp then_end continue_bb in
+      let _ = build_jmp else_end continue_bb in
 
       (* In current basic block, generate code for conditional jump *)
       gen_cond start_basic_block true_bb false_bb cond;
@@ -327,13 +337,13 @@ let gen_code typed_tree =
     | IfElseStat (cond, then_block, None) ->
       (* Creates basic blocks for then, else, and the following block *)
       let true_bb = append_block llctx "" curr_func in
-      let continue_bb = append_block llctx "" curr_func in
 
       (* Generates code for then block and else block*)
       let then_end = gen_block curr_func true_bb env then_block in
 
       (* Adds branch instruction from then/else last block to continue block *)
-      let _ = build_br continue_bb (get_builder then_end) in
+      let continue_bb = append_block llctx "" curr_func in
+      let _ = build_jmp then_end continue_bb in
 
       (* In current basic block, generate code for conditional jump *)
       gen_cond start_basic_block true_bb continue_bb cond;
@@ -441,7 +451,7 @@ let gen_code typed_tree =
 
       (* Add parameters to env *)
       let (new_new_env, _) =
-        List.fold_left ft.parameters ~init:(env, 0)  ~f:(
+        List.fold_left ft.parameters ~init:(new_env, 0)  ~f:(
           fun (env, ll_ppos) m_param ->
             let llparam = param f ll_ppos in
             let v = build_alloca (lltype_from_mongatype m_param.t) "" llbuilder in
@@ -452,7 +462,7 @@ let gen_code typed_tree =
 
       (* build function *)
       let _ = gen_block f llblock new_new_env block in
-      new_env
+      new_new_env
   in
 
   let _ = List.fold_left typed_tree ~init:(NameEnv.empty) ~f:acc_def in

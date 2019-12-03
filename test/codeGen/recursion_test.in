@@ -1,0 +1,54 @@
+
+fat (n : int) : int {
+  if n >= 1 {
+    return n*fat(n-1);
+  }
+  return 1;
+}
+
+fib(n : int) : int {
+  if n == 0 {
+    return 0;
+  }
+  else {
+    if n == 1 {
+      return 1;
+    }
+    else {
+      return fib(n-1) + fib(n-2);
+    }
+  }
+  return 0;
+}
+main () : int {
+  @ "Factorial";
+  @ fat(-1);
+  @ fat (0);
+  @ fat (1);
+  @ fat (2);
+  @ fat (3);
+  @ fat (4);
+  @ fat (5);
+  @ fat (6);
+  @ fat (7);
+  @ fat (8);
+  @ fat (9);
+  @ fat (10);
+  @ fat (11);
+
+  @ "Fib";
+  @ fib (0);
+  @ fib (1);
+  @ fib (2);
+  @ fib (3);
+  @ fib (4);
+  @ fib (5);
+  @ fib (6);
+  @ fib (7);
+  @ fib (8);
+  @ fib (9);
+  @ fib (10);
+  @ fib (11);
+
+  return 0;
+}

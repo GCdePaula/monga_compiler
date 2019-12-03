@@ -1,0 +1,15 @@
+
+
+foo(i : int, j : int) {
+  @i; @j;
+  i = 10; @i;
+  j = 11; @j;
+  i = j; @i;
+
+  return;
+}
+
+main() : int {
+  foo(1, 2);
+  return 0;
+}

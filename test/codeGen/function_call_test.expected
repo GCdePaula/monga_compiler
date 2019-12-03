@@ -36,6 +36,9 @@ entry:
   call void @foo()
   %0 = call i64 @bar(i64 10)
   %1 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @3, i32 0, i32 0), i64 %0)
+  %2 = call i64 @bar(i64 11)
+  %3 = add i64 %2, 1
+  %4 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @3, i32 0, i32 0), i64 %3)
   ret i64 0
 }
 
@@ -44,3 +47,4 @@ RETURN 0
 OUTPUT
 "Hello, World!"
 10
+12
