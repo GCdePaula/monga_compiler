@@ -1,0 +1,16 @@
+
+main () : int {
+  x : int;
+  y : int;
+
+  x = 10; @ x;
+  y = 11; @ y;
+  {
+    x : int;
+    x = 1; @ x;
+    y = 2; @ y;
+  }
+  @x; @ y;
+
+  return 0;
+}
