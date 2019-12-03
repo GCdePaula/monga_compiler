@@ -357,7 +357,7 @@ let gen_code typed_tree =
       (* Create loop basic block, generate code, and loop *)
       let while_start_bb = append_block llctx "" curr_func in
       let while_end_bb = gen_block curr_func while_start_bb env while_block in
-      let _ = build_br cond_bb (get_builder while_end_bb) in
+      build_jmp while_end_bb cond_bb;
 
       (* Create continuation basic block, and add conditional branch *)
       let continue_bb = append_block llctx "" curr_func in
@@ -365,8 +365,13 @@ let gen_code typed_tree =
       continue_bb
 
     | BlockStat block ->
-      let new_bb = gen_block curr_func start_basic_block env block in
-      new_bb
+      let block_start_bb = append_block llctx "" curr_func in
+      let block_end_bb = gen_block curr_func block_start_bb env block in
+      let continue_bb = append_block llctx "" curr_func in
+
+      build_jmp start_basic_block block_start_bb;
+      build_jmp block_end_bb continue_bb;
+      continue_bb
 
     | PutStat exp ->
       let (llval, new_bb) = gen_exp start_basic_block exp in
